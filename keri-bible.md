@@ -2522,7 +2522,7 @@ The clean statement: **BADA orders what a host stores; KRAM orders what a host a
 
 Two things distinguish this from the rest of the presentation design. First, it is **deliberately optional**, and the argument for optionality is quantitative: Issuer compromise is rampant and high-ROI, Issuee compromise is localized and low-ROI, so Issuee-side detectability is a measure an Issuee elects and pays for rather than a protocol requirement. Second, it does **two unrelated jobs with one mechanism** — impersonation-fraud detection and correlation resistance — and they have different preconditions, so a design that satisfies one may not deliver the other. Confusing them is the most likely error in this area.
 
-Status: **entirely pre-normative**, and thinner than its prominence suggests. The concept is specified in two GitHub discussions, appears in no specification, has no implementation, and its origin document has sat for ten months without a single comment.
+Status: **entirely pre-normative, and intended**. The concept is specified in two GitHub discussions, appears in no specification, has no implementation, and its origin document has sat for ten months without a single comment — but the silence is not a verdict: Sam named presentation registries alongside observers and registrars as work to be built, on a call on 2026-09-01 (§8). Read what follows as a design that is going somewhere and is not yet close to normative text.
 
 ## 0. How to read this chapter
 
@@ -2623,7 +2623,9 @@ Sam's KERIcon phrasing is the clean version: presentation registries let "presen
 
 Four things a hostile reviewer will reach for, stated here so they are not surprises.
 
-**The origin document has had no engagement.** #1095 is ten months old with zero comments, and #1627 — Sam's newest architecture discussion, updated 2026-09-01 — does not mention presentation or usage registries at all. Whether the idea is settled, parked, or quietly superseded cannot be determined from the corpus. **This is the first question to put to a maintainer**, and the answer changes how much weight anything else here should carry.
+**The origin document has had no engagement — but the idea is live.** #1095 is ten months old with zero comments, and #1627 — Sam's newest architecture discussion, updated 2026-09-01 — does not mention presentation or usage registries at all. On the written corpus alone, whether the idea was settled, parked or quietly superseded could not be determined. **It is not superseded.** On a call on 2026-09-01, Sam named observers, registrars and presentation registries together as things that need to be built (Daniel Hardman, first-hand, same day). So the silence in the written record is a gap in the record, not a signal about the design — which is worth knowing, because the natural inference from a ten-month-dead discussion is the opposite one.
+
+**Provenance note on that.** This is a new class of source for the corpus: a first-hand report of an unrecorded spoken statement, with no transcript and no artifact to cite. It is `[SAM-DIRECT]` in substance and weaker than `raw/14`'s edited captions in form, since not even approximate wording survives — treat it as reliable evidence of *intent and status*, and not as a quotation of anything. It settles that the work is intended; it settles nothing about the design's details, which remain as unresolved as §9 says.
 
 **The novelty claim is unverified.** "nobody else does as far as I've never seen anybody do it" (KERIcon) and "AFAIK, only KERI/ACDC provides such protection" (#1095) are both explicitly hedged by their author. Holder-side presentation logging is not an unheard-of idea in the wider VC world; what is distinctive here is that the log is cryptographically *required* by the credential and enforced by the verifier, rather than being a courtesy audit trail. That narrower claim is defensible; the broad one has not been checked.
 
@@ -2633,7 +2635,7 @@ Four things a hostile reviewer will reach for, stated here so they are not surpr
 
 ## 9. Open questions
 
-1. **Is this live?** Ten months of silence on #1095 and no mention in #1627. Parked, settled, or superseded?
+1. ~~**Is this live?**~~ **Answered: yes.** Sam named observers, registrars and presentation registries together as work to be built, on a call on 2026-09-01 (first-hand report, §8). The written silence — ten months of no comments on #1095, no mention in #1627 — does not reflect the design's status. What remains open is everything below, none of which the call addressed.
 2. **What is it called?** "Issuee usage registry" (#1095), "presentation registry" (#1613, #1618), "user presentation registry" (KERIcon). #1550's *Guardianship for SEDI* uses the same primitive for agent capability control, with a diagram legend reading `rd = issuee usage registry SAID` — so the general thing is not about presentation, and the general name should probably be the usage one, with "presentation registry" reserved for the IPEX-anchoring application.
 3. **Does `rd`-in-`a` get disambiguated, and how?** EGF-declared purpose, restriction to presentation registries in v1.1, or left ambiguous. Unresolved in #1613 and blocking any normative text. Tracked as open question 7 in `bible/08-presentation-architectures-and-ipex.md`.
 4. **Does the exchange need its own `rd`?** #1618 says an anchored exchange "would also need an rd on the exchange," which implies a field addition to `exn` that #1613 does not account for.
