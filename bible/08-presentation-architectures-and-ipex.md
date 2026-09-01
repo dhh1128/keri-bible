@@ -353,6 +353,13 @@ grant, "there is a set of Grantors that each must be uniquely authenticated."
 Everything about multiply-endorsed presentation rests on KRAM, so its status matters more
 than any other single fact in this chapter.
 
+> **This section is an audit of KRAM's status as it bears on presentation, not an account
+> of what KRAM is.** For the mechanism itself — the problem it solves, simple vs full KRAM,
+> the monotonic timeliness cache, the v0.7.6 redesign, and its relationship to BADA-RUN —
+> see `bible/09-kram-and-request-authentication.md`, which is built from Sam's whitepaper
+> rather than from #1613's paraphrase of it. Two claims below are corrected there and are
+> marked in place.
+
 **The problem [N-adjacent].** A signature is a bearer token: "Any holder of both the
 document and its signature can replay them, and the signature will verify" (#1613). The
 KERI spec states the general form and prefers non-interactive mitigation — "Because
@@ -360,10 +367,14 @@ non-interactive mitigations are asynchronous, however, they do not have the late
 scalability limitations of interactive mitigations and are therefore preferred" (KERI
 §Replay attack, ~L2878).
 
-**The proposed mechanism [P].** KRAM (KERI Request Authentication Mechanism) uses "a
-message SAID `d` field, a sender AID `i` field, a receiver AID `ri` field, a salty nonce
-`u` field, and a datetime stamp relative to the receiver's clock `dt` field." Its
-properties: one play or none, within a window measured on the *receiver's* clock, so "The
+**The proposed mechanism [P].** As #1613 describes it, KRAM (KERI Request Authentication
+Mechanism) uses "a message SAID `d` field, a sender AID `i` field, a receiver AID `ri`
+field, a salty nonce `u` field, and a datetime stamp relative to the receiver's clock `dt`
+field." **Corrected — the nonce is not part of KRAM.** The whitepaper builds uniqueness
+from monotonic ordering of receiver-clock datetimes, and argues at length that nonce-based
+mechanisms are what KRAM replaces; keripy reads `msg.stamp` and never touches `u`. See
+`bible/09-kram-and-request-authentication.md` §4, §8. Its properties are otherwise as
+stated: one play or none, within a window measured on the *receiver's* clock, so "The
 sender cannot therefore lie about the datetime in the message." A same-message replay
 inside the window is either ignored or, for a multisig sender, contributes its signature
 to an escrow — "This elegantly solves the multi-sig problem without requiring a
@@ -373,11 +384,18 @@ collection."
 **Three findings about KRAM's actual status, each verified.**
 
 *KRAM is not in the KERI specification.* A search for "KRAM" across KERI spec `main`
-@`be618e7` returns nothing. The spec discusses replay attacks and BADA-RUN at length and
-never names this mechanism. So the freshness guarantee the entire multiply-endorsed design
-depends on is, at the specification layer, absent.
+@`be618e7` returns nothing in `spec/spec-body.md`. The spec discusses replay attacks and
+BADA-RUN at length and never names this mechanism. So the freshness guarantee the entire
+multiply-endorsed design depends on is, at the specification layer, absent. (One near-miss,
+found later: the rendered v1 artifact carries a *glossary cross-reference* imported from
+`trustoverip/kerisuite-glossary`, defining simple KRAM in a single sentence. It is not spec
+text, and it describes the variant that cannot support multisig — see
+`bible/09-kram-and-request-authentication.md` §5.)
 
-*The `u` field KRAM is described as using does not exist on an `exn`.* The KERI spec fixes
+*The `u` field KRAM is described as using does not exist on an `exn`.* **This puzzle
+probably dissolves** — `u` is #1613's paraphrase, not the whitepaper's mechanism, per the
+correction above. The observation about message shapes stands on its own terms and is worth
+keeping, so it is recorded unchanged below. The KERI spec fixes
 both message shapes exactly: `xip` is `[v, t, d, u, i, ri, dt, r, q, a]` and `exn` is
 `[v, t, d, i, ri, x, p, dt, r, q, a]`, and for both, "All are REQUIRED. No other top-level
 fields are allowed (MUST NOT appear)" (~L1154, ~L1197). `u` is present on `xip` and
@@ -396,6 +414,10 @@ forwarding / escrow" (~L386), and `_normalizeCurrentSenderTsgs` notes that "down
 exn/rpy handling still needs the[m]" (~L448). It is instantiated inside `Kevery`
 (`src/keri/core/eventing.py:4176-4178`) and is **default-disabled**: "KRAM enforcement
 remains controlled by the provided configuration, defaulting to disabled without one."
+**Sharpen that at `upstream/main` @`4df8e4a8` (2026-09-01):** `Kevery.__init__` still takes
+`enableKram=False`, but the two runtimes that matter both pass `enableKram=True` —
+`src/keri/app/directing.py:470` and `src/keri/app/indirecting.py:76`. Default-disabled is a
+fact about the class, not about deployed agents and witnesses.
 
 So KRAM now does exactly what #1613 says it does — passes non-sender endorsements along.
 And then `Exchanger.processEvent` throws them away, along with the whole message:
@@ -655,7 +677,7 @@ most of what the ontology approach was supposed to avoid. #1627 does not say whi
 | Edge-group traversal | **[N]** ACDC v1.1 | — | **absent** — PR #1560 open |
 | `ME` operator | — | #1555 (not superseded) | absent |
 | Group-scoped unary defaults, `IAND` | — | #1556 | absent |
-| KRAM freshness | **absent from KERI spec** | #1555, #1613 | `Kramer` exists, exn-aware, **default-disabled**, wired into `Kevery` only |
+| KRAM freshness | **absent from KERI spec** (glossary xref only) | whitepaper v0.7.6, #934, #1555, #1613 | `Kramer` exists, exn-aware, wired via `Kevery.processMsg`; off by class default, **on** in `directing`/`indirecting` |
 | Non-sender endorsement pass-through | — | #1555, #1613 | KRAM preserves them; `Exchanger` **rejects the message** (`exchanging.py:88-95`) |
 | Multiply-endorsed IPEX post-processing | — | #1613 | absent |
 | Origin `o` field in `grant` | — | #1613 | absent |
@@ -686,8 +708,11 @@ sources or answered inconsistently across them.
    sent by two parties, when `dp` is in `q` on `apply`/`offer` and the others are in `a`
    including on `grant`? (§10.)
 5. **What is KRAM's normative home?** It is load-bearing for everything in §7-§9 and is in
-   no specification. Does it belong in the KERI spec, an IPEX spec, or neither?
-6. **How does KRAM apply to an `exn`, which has no `u` field?** (§7.)
+   no specification. Does it belong in the KERI spec, an IPEX spec, or neither? (Carried
+   forward and expanded in `bible/09-kram-and-request-authentication.md` §5, §9.)
+6. ~~**How does KRAM apply to an `exn`, which has no `u` field?**~~ **Resolved**: the `u`
+   field is #1613's paraphrase, not KRAM's mechanism. See §7 and
+   `bible/09-kram-and-request-authentication.md` §8.
 7. **Should `rd` in the attribute section be restricted to presentation registries?**
    #1613 raises it and does not settle it, and the two options have very different blast
    radii. Its *disambiguation* option (EGF declares the purpose; default is presentation

@@ -29,6 +29,7 @@ implementation) into a single adversarial-reviewer-ready reference.
 6. Governance, Ecosystems & Interop
 7. 07 — Shibboleths and Anti-Patterns
 8. Presentation Architectures & the IPEX Disclosure Model
+9. KRAM & Request Authentication
 
 ## Building
 
