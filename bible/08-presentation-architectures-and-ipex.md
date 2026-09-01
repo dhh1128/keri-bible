@@ -540,7 +540,11 @@ granted and, as importantly, what was not granted"; anchoring `admit` "removes p
 deniability regarding the Disclosee's knowledge of the disclosed information and could
 trigger safe harbor protections."
 
-**Presentation registries.** A registry controlled by the *Issuee*, whose latest
+**Presentation registries.** Summarized here because they bear on anchoring; treated in
+full in `bible/10-presentation-registries.md`, which is built from the concept's origin
+document — keripy discussion #1095, *ACDC Issuee Usage Registry*, ten months older than
+#1613 and filed under a different name, which is why earlier passes over this corpus
+missed it. A registry controlled by the *Issuee*, whose latest
 non-vacuous blinded state binds the `grant` SAID. Signalled by the issuer at issuance
 through a populated `rd` *and* `i` at the top level of the ACDC's **attribute `a`
 section** — note, not the ACDC's own top-level `rd`, which names the ACDC state registry.
@@ -682,7 +686,7 @@ most of what the ontology approach was supposed to avoid. #1627 does not say whi
 | Multiply-endorsed IPEX post-processing | — | #1613 | absent |
 | Origin `o` field in `grant` | — | #1613 | absent |
 | `ax` anchored-exchange field | — | #1613 | absent |
-| Presentation registry (`rd`+`i` in `a`) | v1 permits `rd`-in-`a`, purpose ambiguous | #1613 | absent |
+| Presentation registry (`rd`+`i` in `a`) | v1 permits `rd`-in-`a`, purpose ambiguous; nested-`rd` purpose list includes "usage" | #1095 (origin), #1613, #1618 | blindable-registry substrate exists; **no signal recognition, no anchor enforcement** (ch. 10 §7) |
 | Tethering | — | #1613 | absent |
 | Origin-AID anchoring priority rule | — | #1613 | absent |
 | DAG soup / field-map `dp`,`o`,`ax` | — | #1627 | absent |

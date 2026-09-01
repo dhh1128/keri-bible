@@ -30,6 +30,7 @@ implementation) into a single adversarial-reviewer-ready reference.
 7. 07 — Shibboleths and Anti-Patterns
 8. Presentation Architectures & the IPEX Disclosure Model
 9. KRAM & Request Authentication
+10. Presentation Registries & Issuee-Side Detectability
 
 ## Building
 

@@ -11,6 +11,7 @@
 - [07 — Shibboleths and Anti-Patterns](#07--shibboleths-and-anti-patterns)
 - [Presentation Architectures & the IPEX Disclosure Model](#presentation-architectures--the-ipex-disclosure-model)
 - [KRAM & Request Authentication](#kram--request-authentication)
+- [Presentation Registries & Issuee-Side Detectability](#presentation-registries--issuee-side-detectability)
 
 ---
 
@@ -965,6 +966,8 @@ Terminology a reviewer should keep straight: ACDCs generically are **Verifiable 
 The **anti-phone-home stance** is a deliberate rejection of OCSP/CRL. A **Registrar** (under the Issuer) maintains and publishes the registry; an **Observer** (under one or more Validators) caches the registry so Validators "validate the state... without exposing a point of validation (PoV)." "It can mask the usage of a given ACDC from the Issuer." Observer-to-Registrar sync happens on state changes, NOT at the point of validation, which "protects against forced validator-to-issuer correlation of ACDC usage, i.e., no forced phone home validation" (§TEL Registrars and TEL Observers, L1693). Race conditions on rare state changes are handled by "timed grace periods on revocations" (L1695). In Hardman's framing, "A registry consulted at verification time is a phone-home in disguise" (`sda.md §7`); the corollary invariant is that "verification must succeed from the credential and key-state alone, and any registry or log is an issuance-time and audit-time convenience, never a verification-time dependency."
 
 **The split is a governance decision, not a caching optimization** — a point the spec never makes but Sam states directly. At KERIcon 2026 he presented Registrar/Observer as a deliberate replay of the witness/watcher structure one layer up: "notice that this models the witness watcher governance structure. So, we learned a lesson. We shouldn't have shared governance. So, we have witnesses that are controlled by controllers, watchers that are controlled by verifiers. We split the verification between two places. We do the same thing with ACDCs" (*The Digital Identity Tradespace*; `raw/14`). The Observer's remit is correspondingly thin — "All our observer is doing is it's keeping track of the registry state" — and it is layered on, not substituted for, KEL assurance: asked why Observers and watchers must be separate components, "they have different purposes... They depend on watchers, but they aren't watchers" (*State of the KERI Suite*). The cleanest one-line distinction in the corpus is from the same Q&A: "watchers watch the KEL... looking for duplicity in your KEL. Observers are watching the state of issuances that are anchored to the KEL... it's a TEL observer." **Caution on provenance:** these are hand-edited auto-captions, `[SAM-DIRECT]` in substance but not verbatim in wording — see `raw/14` §0 before quoting any of it to Sam or into a spec issue.
+
+**The split has a proposed third leg.** Registrar (Issuer-controlled) and Observer (verifier-controlled) leave the Holder as the one party to a transaction running no state infrastructure of its own. A *presentation registry* — an Issuee-controlled blindable state registry that a `grant` must be anchored in — closes that, giving the Issuee the same detect-and-recover capability the Issuer already has against impersonation. It is pre-normative and unimplemented; see `bible/10-presentation-registries.md`, and note that its origin document calls it an *Issuee usage registry* (keripy #1095).
 
 **Bulk updates are a privacy requirement, not a performance one.** The spec mentions "optimized batch synchronization" in a performance register (L1695); the talks make batching load-bearing. "if you update it instantly, then the observer could correlate a change to some registries and not others. But if all the registries, 100% of them update at the same clock time... then there's [synchronization] in the time of update" (*Tradespace*), generalized to a design law in the same talk: "if you want to make it so that it's not statistically correlatable, you have to do it in a bulk or herd privacy protected way." The batch window closes correlation in both directions — backward from a point of validation to the state change that preceded it, forward from a state change to the validations that follow. **The residual weakness is named by Sam himself,** and a reviewer should quote it rather than overclaim: "if an observer is malicious and the issuer is malicious, they can collude... but there's no phone home here. The issuer can't force an observer... There's no technical thing that makes it impossible in this, but what it does is it means that there's no easy way for them to do it" (*Tradespace*). The claim is that collusion is unforced, out-of-band and legally repressible — the same technical-plus-legal posture as the rest of the ACDC privacy story (`bible/06` §three-party exploitation), not a cryptographic impossibility.
 
@@ -2128,7 +2131,11 @@ granted and, as importantly, what was not granted"; anchoring `admit` "removes p
 deniability regarding the Disclosee's knowledge of the disclosed information and could
 trigger safe harbor protections."
 
-**Presentation registries.** A registry controlled by the *Issuee*, whose latest
+**Presentation registries.** Summarized here because they bear on anchoring; treated in
+full in `bible/10-presentation-registries.md`, which is built from the concept's origin
+document — keripy discussion #1095, *ACDC Issuee Usage Registry*, ten months older than
+#1613 and filed under a different name, which is why earlier passes over this corpus
+missed it. A registry controlled by the *Issuee*, whose latest
 non-vacuous blinded state binds the `grant` SAID. Signalled by the issuer at issuance
 through a populated `rd` *and* `i` at the top level of the ACDC's **attribute `a`
 section** — note, not the ACDC's own top-level `rd`, which names the ACDC state registry.
@@ -2270,7 +2277,7 @@ most of what the ontology approach was supposed to avoid. #1627 does not say whi
 | Multiply-endorsed IPEX post-processing | — | #1613 | absent |
 | Origin `o` field in `grant` | — | #1613 | absent |
 | `ax` anchored-exchange field | — | #1613 | absent |
-| Presentation registry (`rd`+`i` in `a`) | v1 permits `rd`-in-`a`, purpose ambiguous | #1613 | absent |
+| Presentation registry (`rd`+`i` in `a`) | v1 permits `rd`-in-`a`, purpose ambiguous; nested-`rd` purpose list includes "usage" | #1095 (origin), #1613, #1618 | blindable-registry substrate exists; **no signal recognition, no anchor enforcement** (ch. 10 §7) |
 | Tethering | — | #1613 | absent |
 | Origin-AID anchoring priority rule | — | #1613 | absent |
 | DAG soup / field-map `dp`,`o`,`ax` | — | #1627 | absent |
@@ -2506,3 +2513,132 @@ The clean statement: **BADA orders what a host stores; KRAM orders what a host a
 7. **Does the `Exchanger` gap in the presentation chapter close here?** KRAM deliberately preserves non-sender endorsements for downstream handlers (`_normalizeSenderSeals`, "leaves only non-sender triples in ssts for non-auth forwarding / escrow"), and `Exchanger.processEvent` still rejects any message carrying a signature not from the sender (`src/keri/peer/exchanging.py:88-95`, verified at `upstream/main` @`4df8e4a8`). Two halves of one code path, still pulling in opposite directions.
 
 **Sources.** `raw/15-kram.md`. Primary: `SmithSamuelM/Papers` `whitepapers/kram.md` v0.7.6 @`67550b47`; keripy discussion [#934](https://github.com/WebOfTrust/keripy/discussions/934); keripy issues [#937](https://github.com/WebOfTrust/keripy/issues/937), [#1302](https://github.com/WebOfTrust/keripy/issues/1302), [#911](https://github.com/WebOfTrust/keripy/issues/911); `WebOfTrust/kram` README (superseded). Code: keripy `upstream/main` @`4df8e4a8` — `src/keri/core/kraming.py`, `src/keri/core/eventing.py:4136-4826`, `src/keri/db/basing.py:737-856`, `src/keri/peer/exchanging.py:88-95`; keria `src/keria/core/authing.py`. Spec: `trustoverip/kswg-keri-specification` `spec/spec-body.md` (KRAM absent), `specs.json:26` (glossary xref).
+
+---
+
+# Presentation Registries & Issuee-Side Detectability
+
+**Thesis.** KERI's answer to key compromise is not prevention but *detect and recover*, and for the Issuer that answer is already built: because an ACDC's state must be anchored in a TEL that is anchored in the Issuer's KEL, an Issuer can see fraudulent issuances it did not create, without anyone's cooperation. **The Issuee has no equivalent.** A compromised Issuee's keys can present its credentials, and the real Issuee has no place to look. A presentation registry — Sam's original and better name for it is an *Issuee usage registry* — closes that asymmetry by giving the Issuee its own blindable state registry, requiring that a presentation be anchored in it, and thereby letting the Issuee detect presentations it did not make and rotate to invalidate them.
+
+Two things distinguish this from the rest of the presentation design. First, it is **deliberately optional**, and the argument for optionality is quantitative: Issuer compromise is rampant and high-ROI, Issuee compromise is localized and low-ROI, so Issuee-side detectability is a measure an Issuee elects and pays for rather than a protocol requirement. Second, it does **two unrelated jobs with one mechanism** — impersonation-fraud detection and correlation resistance — and they have different preconditions, so a design that satisfies one may not deliver the other. Confusing them is the most likely error in this area.
+
+Status: **entirely pre-normative**, and thinner than its prominence suggests. The concept is specified in two GitHub discussions, appears in no specification, has no implementation, and its origin document has sat for ten months without a single comment.
+
+## 0. How to read this chapter
+
+Tier markers as in the presentation and KRAM chapters:
+
+- **[N]** — in a published specification branch. **Nearly empty here**; §5 gives the one word that qualifies.
+- **[P]** — proposed in a keripy discussion.
+- **[K]** — keripy behavior at `upstream/main` @`4df8e4a8` (2026-09-01).
+
+**A warning that is also a research finding: this concept has two names, and searching one misses the other.** Sam calls it an **Issuee usage registry** in [#1095](https://github.com/WebOfTrust/keripy/discussions/1095) (October 2025) and a **presentation registry** in [#1613](https://github.com/WebOfTrust/keripy/discussions/1613) (August 2026). A search for "presentation registry" across keripy returns #1613, #1618 and #1550 and **not** #1095 — which is the document that invents the idea and carries most of its security reasoning. In speech Sam has used a third name, "user presentation registry" (KERIcon 2026, `raw/14-kericonf-2026.md`). This chapter uses "presentation registry" for the IPEX-anchoring application and "usage registry" for the general primitive, and §7 argues that distinction is real rather than cosmetic. Sources mined in `raw/16-presentation-registries.md`.
+
+## 1. The asymmetry that motivates it
+
+**Issuer-side detectability is mandatory, and already exists [P].** #1095's argument: the catastrophic failure is Issuer key compromise, because "the worst form of fraud with the most widespread potential of harm would be rampant impersonation fraud… This could annihilate trust in the ecosystem fostered by any assurance derived from the Issuer. The ROI to an attacker for compromising the Issuer keys could be huge, especially if that Issuer is a root-of-trust for Identity assurance for an ecosystem." Anchoring answers it: "an impersonator cannot impersonate the Issuer of an ACDC merely by compromising the signing keys of the Issuer. The impersonator MUST anchor the ACDC in a TEL that is anchored in the Issuer's KEL. This anchor enables the Issuer to detect any fraudulent issuances without requiring the cooperation of any other party, such as the Verifier."
+
+That last clause is the KERI-shaped part: detection with no dependency on a counterparty. Sam attaches a comparative claim — "AFAIK, only KERI/ACDC provides such protection in a decentralized identity system" — which is his assessment, not a surveyed result, and should be repeated as such.
+
+**Issuee-side detectability is optional, and the reasoning is explicit [P].** "If a given Issuee's keys are compromised, the impersonation fraud is localized to that specific Issuee. It does not have rampant potential." Three consequences, all from #1095:
+
+1. **Low susceptibility.** "Because the fraud is localized to a single Issuee, the ROI to the attacker for compromising the Issuee's keys is low." And a cheap mitigation already exists: prophylactic rotation, effective "because the verifier always checks the presentation as being signed by the latest keys of the Issuee." Sam names this as distinctive — the Issuee's ability "to rotate signing keys without reissuing the ACDC is a unique super-power of KERI/ACDC as a decentralized identity system."
+2. **Localized harm licenses localized measures.** A Verifier could simply require a rotation as part of the presentation. Sam concedes what that costs doctrinally: "This violates the maxim that security not be dependent on a trusted third party, but for localized harm, the party most likely to be harmed is the Verifier (Validator), which provides incentives for them to protect themselves." **Record this as a real exception rather than smoothing it over** — it is one of the few places in the corpus where the no-trusted-third-party maxim is knowingly relaxed, and an adversarial reviewer will find it whether or not we flag it.
+3. **The Issuee can elect its own detectability.** That is the usage registry.
+
+**The design consequence of optionality [P].** "This is an optional protection measure. Many Issuees will feel that their key management is sufficient to protect against key compromise and therefore would not want the extra protection and friction of a usage Registrar." A presentation registry means the Issuee runs infrastructure — "the Issuee must have its own Registrar to manage its usage registries." That cost is why the mechanism is elective, and why any argument that it should be mandatory has to answer it.
+
+## 2. The mechanism
+
+**The rule, in its original form [P].** "The ACDC must include a requirement that the ACDC is only verifiable when the presentation of the ACDC by the Issuee is anchored as the latest state in an Issuee-controlled *usage registry*. The verifier won't accept the credential if it's also not anchored in the Issuee's (in addition to the Issuer's) registry" (#1095).
+
+**Developed into IPEX terms [P].** In #1613 the anchored object is the `grant`: "the value of the registry `rd` field in the attribute `a` section MUST be the SAID of the `rip` event of the associated presentation Registry. The Issuee of the associated ACDC, who is also a Grantor of that IPEX, MUST control this registry. The value of the ACDC SAID field in the blinded attribute block of the latest non-vacuous event in that presentation Registry must be the SAID of the `grant` message." Note the field reuse: the slot that normally carries an ACDC SAID carries a `grant` SAID.
+
+**One registry can serve many credentials without leaking which [P].** "A *usage registry* can be employed to track the usage of one or more ACDCs by the Issuee… This means that the registry does not leak specific usage of a given ACDC to third parties" (#1095). Blindable state is what makes many-to-one safe; without blinding, a shared registry would be a correlation engine rather than a defence.
+
+**Detection converted to prevention, at the price of latency [P].** #1095 offers a verifier-side trick that appears nowhere else in the corpus: "by adding a time delay from presentation anchor to acceptance, the verifier can assume that a compromised Issuee would do a recovery, invalidating the fraudulent presentation." Detect-and-recover normally means the damage lands and is then undone; a deliberate acceptance delay gives the real Issuee a window to rotate *before* the presentation is honored. **This is worth more attention than it has had.** It is the only proposal in the corpus that converts Issuee-side detectability into Issuee-side prevention, and its cost — every honest presentation waits — is exactly the kind of tradeoff an EGF should be setting.
+
+**Incentive alignment, stated as a rule of construction [P].** "The verifier has a vested interest in not accepting unanchored presentations as the presentation of an Issuee unanchored ACDC that declares it must be Issuee usage anchored, must be considered fraudulent" (#1095). #1613 sharpens it into a liability claim: a verifier accepting an unanchored grant "is presumptively in violation of any contractual or regulatory protection afforded to the real Grantor by colluding with a fraudulent grantor."
+
+## 3. Two jobs, two different preconditions
+
+This is the section to get right, because the mechanism is the same in both cases and the guarantees are not.
+
+**Job one: impersonation-fraud detection — requires that the Issuer is not the Grantor [P].** The protection works because the requirement is baked in by someone the attacker has not compromised: "an imposter that merely compromises the Grantor's signing infrastructure can't avoid the requirement without also compromising the Issuer." The Grantee enforces it by refusing an unanchored grant; the real Issuee then sees registry events it did not create and rotates.
+
+The hole is self-issuance, and #1613 states it plainly: "For ACDCs that the Grantor self-issues, this is only a vulnerability if the Issuance authentication factor is merely an unanchored signature. An imposter who controls the Grantor's signing infrastructure can create ACDCs whose authentication factor is an unanchored signature." An attacker holding your keys can simply issue itself a credential that demands nothing. **So the fraud-detection property is a property of the three-party arrangement, not of the registry.**
+
+**Job two: correlation resistance — works even self-issued [P].** The problem: if a Grantor anchors a `grant` SAID directly in its public KEL and the Grantee anchors the same SAID in its own, "a third party… would be able to detect the same grant SAID in both the Grantor's KEL and the Grantee's KEL, thereby correlating the IPEX." Anchoring in a blinded presentation registry instead means "neither the grant SAID nor any other artifacts of the granted DAG appear in the KEL of the Grantor," so "a Grantee could anchor every message in the IPEX without providing a point of correlation between the KELs of the Grantor and Grantee."
+
+For this job a Grantor needs no cooperating Issuer: it self-issues a bespoke origin ACDC carrying `i` and `rd` in its attribute section — "the Grantor is both Issuer and Issuee of that bespoke ACDC." One constraint rides along, and it is easy to violate: "the bespoke ACDC itself must use a blinded state Registry for its Issuer authentication so that the SAID of its ACDC is not correlatable. If it uses a direct KEL anchor, then that anchor itself would be correlatable. If it used a bare attached signature… then the ACDC itself would not be perpetually verifiable despite using a perpetually verifiable presentation registry."
+
+**Correlation resistance is itself conditional [P].** The registry is "bound to the AID of the Issuee, so it is linkable. A bulk-issued ACDC with independent AIDs can remove this linkage" (#1095). So full unlinkability needs blinded state *and* independent-registry bulk issuance. A presentation registry used naively hides *which* credential was presented while advertising *that* the Issuee presented something.
+
+**Multi-ACDC DAGs [P].** "When multiple ACDCs in the granted DAG each have a different presentation registry ID field value… the verifier must verify all of the anchors." And a precise statement of what a single anchor buys, worth quoting whenever someone over-claims: because the `grant`'s `o` field names the DAG origin, anchoring in one registry "provides a perpetually verifiable proof of the presentation of all ACDCs in that DAG, **but not necessarily a fresh proof of control for all Issuee AIDs in that DAG**. Multiple anchors in different registries provide multiple vectors of detectability and multiple fresh proofs-of-control; the perpetual verifiability is redundant."
+
+## 4. The trigger, and the ambiguity blocking it
+
+**The signal is a three-part test [P].** From #1613: the requirement fires when a non-empty `rd` **and** a valid Issuee `i` are at the top level of the ACDC's attribute `a` section, **and** the ACDC's own top-level `rd` is non-empty. Miss any one and the meaning changes: with no Issuee in `a`, an `rd` in `a` imposes no anchoring requirement at all; with the top-level `rd` empty or missing, the `rd` in `a` "refers to an ACDC state registry, not an IPEX presentation registry." **The top-level `rd` is doing disambiguation work**, which is the easiest part of this design to miss when reading #1613 quickly.
+
+**Why disambiguation is needed [P].** The v1 spec also permits `rd` in `a` as a *hidden ACDC state registry*, so one field slot carries two unrelated meanings. #1613 offers EGF-declared purpose with "The default, if not otherwise specified, should be for anchoring presentation exchanges," floats forbidding the hiding case in v1.1, and then argues that case down: its only benefit arises "when the ACDC in compact form is made public, independent of any given presentation, and the fact of it having a registry must remain undisclosed. It is not clear that this is a worthy use case… Given the potentially dubious value, we might want to forbid using the `rd` field in the attribute section for an ACDC state registry."
+
+The section ends unresolved — "Not sure if either is a worthy use case" — and **that unresolved state is what blocks normative text.** You cannot specify a trigger condition on a field whose meaning is still contested.
+
+**Field-placement consequence nobody else raises [P].** From #1618: "An exchange anchored in a presentation registry would also need an `rd` on the exchange." If true, this design implies a field addition to `exn`, not only to the ACDC — and that is not accounted for in #1613's `ax` treatment.
+
+## 5. What is normative: one word
+
+**[N]** In `trustoverip/kswg-acdc-specification` `spec/spec-body.md` @`f0bd097` (2026-08-28), neither "presentation registry" nor "usage registry" appears. What does exist:
+
+- The nested-`rd` field's purpose list includes usage. Top-level: "Issuance and/or revocation, transfer, or retraction registry for ACDC" (`:23`). Not-at-top-level: "Issuance and/or revocation, transfer, retraction, **or usage** registry for ACDC when not at top-level" (`:48`). **That word "usage" is the only trace of this design in any specification.**
+- Nested `rd` is open-ended, but the examples point elsewhere: it "MAY be used for some other registry, such as an application-specific or **Issuer-specific** registry" (`:85`). The spec does not contemplate an Issuee-controlled registry.
+- The spec's rationale for nesting is bulk issuance and graduated disclosure — it "may better facilitate contractually protected disclosure of the bulk-issued registry" (`:326`) — not fraud detection.
+- Blindable state registries and `rip` are fully normative, with a worked lifecycle. A `rip` is "a vacuous placeholder that reveals nothing about what will later be issued," which is where #1613's "latest non-vacuous event" phrasing comes from.
+
+**One wording tension to fix before any spec text [N/P].** "Because the Issuer `i` field appears in the `rip` event, the Registry SAID, `rd` field value cryptographically binds the Registry to the Issuer AID" (`:2019`). For a presentation registry the incepting AID is the **Issuee**. The spec sentence is about the registry's own incepting controller and is not wrong, but its vocabulary assumes the two coincide, and they do not here.
+
+## 6. Where this sits against Registrar/Observer and KRAM
+
+**It extends the governance split to a third party.** `bible/05-acdc-and-verifiable-data.md` §Registrar/Observer records Sam's framing that the split deliberately replays witness/watcher one layer up: "we have witnesses that are controlled by controllers, watchers that are controlled by verifiers… We have registrars controlled by the issuers, and observers controlled by the verifiers" (KERIcon 2026, `raw/14`). A presentation registry adds an Issuee-controlled Registrar to that picture — the Holder, previously the one party in the triangle running no state infrastructure, now runs some. **This is the synthesis the corpus does not state anywhere**, and it makes the design look less like a bolt-on: "We shouldn't have shared governance" applied consistently gives every party to a transaction its own state service.
+
+Sam's KERIcon phrasing is the clean version: presentation registries let "presenters detect compromise of their proofs that are in their credentials that they're presenting. So they themselves will protect it from fraud, not just the issuer." (Edited auto-caption — read `raw/14` §0 before quoting it to anyone.)
+
+**It sits inside KRAM's window [P].** "in order to pass KRAM, a `grant` message anchor must happen in a timely fashion relative to the IPEX exchange. The `grant` message… must be created, then anchored, and then pass the receiver's KRAM" (#1613). A presentation registry therefore inserts a registry write into the critical path of a freshness window — and #1095's verifier-side delay deliberately adds more latency on top. Nothing in the corpus connects the two numerically. See `bible/09-kram-and-request-authentication.md` §3 on why full KRAM's windows can be long enough to absorb this, and §9 on the absence of any window-class policy guidance.
+
+**It is independent of, and stronger than, `ax` [P].** "Notwithstanding the presence or absence of the `ax` field, when an ACDC in a granted DAG meets the requirements for a Issuer signaled presentation anchor registry… then that `grant` message MUST be anchored in that registry for the `grant` to be valid. Otherwise, the presumption is that the grant is fraudulent." `ax` lets a party *request* perpetual verifiability; a presentation registry lets an Issuer *impose* it at issuance time, and the Grantor cannot opt out later. See `bible/08-presentation-architectures-and-ipex.md` §9.
+
+**Scope judgment on which registry may be used [P].** "There is no security advantage to using a presentation registry specified by the Grantor, as the main purpose… is to allow the Grantor to detect a compromise of its signing key infrastructure… Thus, the main use case for impersonation fraud detection of the Grantor requires a pre-specified presentation registry **by an Issuer different from the Grantor**." On tooling, #1613 declines to build anything special: "we should use the existing tooling for a bulk-issued ACDC to handle it."
+
+## 7. keripy: the substrate exists, the feature does not
+
+**[K] Present.** `src/keri/acdc/regeventing.py` (1,204 lines) is the v2 registry event layer — `_validateRip`, `_validateUpdate` for blindable updates, `vet()` returning verified registry state. `src/keri/acdc/registraring.py` (400 lines) provides `Regery` ("Local manager for V2 ACDC blindable state registries"), `Registry` and `Registrar` ("facade for V2 registry inception and blindable state updates"). `src/keri/acdc/messaging.py` builds ACDCs with a `regid` and an `iseaid`.
+
+**[K] Absent.** Nothing recognizes the three-part signal: `acdcatt`'s `regid` parameter is the *top-level* `rd`, so a caller wanting `rd` in the attribute section must hand-build the attribute dict. Nothing enforces a grant anchor: `src/keri/acdc/ipexing.py` (722 lines — `IpexHandler` plus the `apply`/`offer`/`agree`/`grant`/`admit` builders) contains no registry or anchor check. And nothing distinguishes an Issuee-controlled registry from an Issuer-controlled one — a `Registrar` is a `Registrar`, and no code consumes the difference.
+
+**So an Issuee could stand up a usage registry today with shipped tooling, and no verifier would look at it.** The gap is entirely on the verification side.
+
+**[K] No implementation work is proposed.** Across all of keripy there are no issues and no pull requests for this (searched 2026-09-01 across "presentation registry", "presentation registries", "issuee usage registry", "usage registry"). The single PR hit is our own merged `#1505`, whose mentions record a deliberate decision *not* to use one in a bespoke one-time presentation, with a follow-up example flagged and not yet written.
+
+## 8. Reading this adversarially
+
+Four things a hostile reviewer will reach for, stated here so they are not surprises.
+
+**The origin document has had no engagement.** #1095 is ten months old with zero comments, and #1627 — Sam's newest architecture discussion, updated 2026-09-01 — does not mention presentation or usage registries at all. Whether the idea is settled, parked, or quietly superseded cannot be determined from the corpus. **This is the first question to put to a maintainer**, and the answer changes how much weight anything else here should carry.
+
+**The novelty claim is unverified.** "nobody else does as far as I've never seen anybody do it" (KERIcon) and "AFAIK, only KERI/ACDC provides such protection" (#1095) are both explicitly hedged by their author. Holder-side presentation logging is not an unheard-of idea in the wider VC world; what is distinctive here is that the log is cryptographically *required* by the credential and enforced by the verifier, rather than being a courtesy audit trail. That narrower claim is defensible; the broad one has not been checked.
+
+**The trusted-third-party concession is real.** §1 records it in Sam's own words. Any presentation of KERI that leads with "security never depends on a trusted third party" has to account for it.
+
+**Fraud protection has a self-issuance hole that its own author documents.** §3. An attacker with the Grantor's keys can self-issue a credential that requires nothing. The mitigation is that high-stakes credentials come from third-party Issuers — which is true and is also an admission that the property lives in the deployment pattern, not the mechanism.
+
+## 9. Open questions
+
+1. **Is this live?** Ten months of silence on #1095 and no mention in #1627. Parked, settled, or superseded?
+2. **What is it called?** "Issuee usage registry" (#1095), "presentation registry" (#1613, #1618), "user presentation registry" (KERIcon). #1550's *Guardianship for SEDI* uses the same primitive for agent capability control, with a diagram legend reading `rd = issuee usage registry SAID` — so the general thing is not about presentation, and the general name should probably be the usage one, with "presentation registry" reserved for the IPEX-anchoring application.
+3. **Does `rd`-in-`a` get disambiguated, and how?** EGF-declared purpose, restriction to presentation registries in v1.1, or left ambiguous. Unresolved in #1613 and blocking any normative text. Tracked as open question 7 in `bible/08-presentation-architectures-and-ipex.md`.
+4. **Does the exchange need its own `rd`?** #1618 says an anchored exchange "would also need an rd on the exchange," which implies a field addition to `exn` that #1613 does not account for.
+5. **What is the latency budget?** Registry write inside KRAM's window, plus a deliberate verifier delay. No number anywhere.
+6. **What would `rip` spec text say?** The current wording binds a registry to "the Issuer AID" (`spec-body.md:2019`); for a presentation registry the incepting AID is the Issuee.
+7. **Who verifies, and against what?** The design says the Grantee must check the anchor. Against the Issuee's Registrar directly, or via an Observer? `bible/05` records that Observers are verifier-controlled and watch registrar state — which is exactly the shape this needs — but no source connects them.
+
+**Sources.** `raw/16-presentation-registries.md`. Primary: keripy discussions [#1095](https://github.com/WebOfTrust/keripy/discussions/1095), [#1613](https://github.com/WebOfTrust/keripy/discussions/1613); supporting [#1618](https://github.com/WebOfTrust/keripy/discussions/1618), [#1550](https://github.com/WebOfTrust/keripy/discussions/1550), [#1627](https://github.com/WebOfTrust/keripy/discussions/1627) (silence); `raw/14-kericonf-2026.md` (KERIcon, edited captions). Spec: `trustoverip/kswg-acdc-specification` `spec/spec-body.md` @`f0bd097` — `:23`, `:48`, `:85`, `:326`, `:2019`. Code: keripy `upstream/main` @`4df8e4a8` — `src/keri/acdc/regeventing.py`, `src/keri/acdc/registraring.py`, `src/keri/acdc/messaging.py`, `src/keri/acdc/ipexing.py`.
