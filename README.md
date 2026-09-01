@@ -16,8 +16,12 @@ implementation) into a single adversarial-reviewer-ready reference.
   concatenated in sorted order with a title and an auto-generated table of
   contents. This is the mechanically built artifact; edit the section files in
   `bible/`, not this file.
-- **`keri-doctrine.md`** — the ~5k-word panel-ready distillation of the whole
-  corpus (marked **DRAFT**, pending endorsement).
+- **`keri-doctrine.md`** — the ~6.5k-word panel-ready distillation of the whole
+  corpus (marked **DRAFT**, pending endorsement). This file is **consumed by the
+  `keri-review-panel` workflow**, where every persona loads it first; the panel keeps
+  its own copy alongside a `reference/bible/` synced from `bible/`. Editing it here
+  does not change what a review reads until the panel is synced — run
+  `./sync-reference.sh` in `~/code/wot/keri-review-panel`.
 
 ## Sections (in `bible/`, sorted)
 
