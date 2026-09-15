@@ -1,0 +1,320 @@
+# sources.yaml — the bible's source manifest and watermark.
+#
+# Every doctrinal source the bible rests on, with a pin recording how far it has been read.
+# refresh/detect.py reads this file to work out what has moved since the last pass; the
+# monthly refresh PR updates the pins. Nothing else should edit it by hand except the
+# REVIEWED fields called out below.
+#
+# FIELDS
+#   id            stable key, used in delta reports and state files
+#   kind          git | gh-discussions | gh-prs | gh-repo | web
+#   path          repo location relative to $CODE_ROOT (default ~/code), per ~/code/repos.yaml
+#   remote        git remote to fetch and resolve branches against
+#   watch         paths within the repo that carry doctrine; changes elsewhere are noise
+#   tier          hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
+#   branches      one entry per tracked line. Specs carry TWO, and they are not interchangeable:
+#                   role: standardizing  — what the community is standardizing now. Marker [N].
+#                   role: forward        — new thinking likely, not certain, to fold into the
+#                                          next standard. Marker [N1.1].
+#                 last_scanned advances every run. last_mined advances ONLY when a note was
+#                 actually re-read against that commit. Never advance last_mined for a change
+#                 triaged as noise — the manifest must not claim a reading nobody did.
+#   feeds         the raw/ mining note(s) this source is extracted into
+#   chapters      bible/ chapters that depend on it, so propagation is mechanical
+#   caveat        free text; anything the pins would otherwise over-claim
+#
+# REVIEWED FIELDS — a refresh run may PROPOSE changes to these in the PR body, never apply them
+# itself: `branches` (which lines are tracked), `chapters` (the propagation map), `tier`.
+# Rationale: on 2026-09-15 the ACDC spec's v1.1 branch was 491 lines of spec-body.md ahead of
+# main and nothing tracked it. A job that silently retargets its own sources can drift the same
+# way without anyone noticing it happened.
+#
+# unknown = mined before pinning existed. The first run treats it as a full re-anchor, not a delta.
+
+version: 1
+code_root: ~/code
+
+sources:
+
+  # ---------------------------------------------------------------- specifications
+
+  - id: keri-spec
+    kind: git
+    path: wot/kswg-keri-specification
+    remote: upstream
+    watch: [spec/spec-body.md, spec/termdefs.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
+    tier: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: 4df80aa, date: 2026-07-17},
+         last_mined:   {commit: 4df80aa, date: 2026-07-17}}
+      - {name: v1.1, role: forward, marker: "[N1.1]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/01-keri-spec.md]
+    chapters: ["01", "02", "03", "04", "06", "07", "09"]
+    caveat: >-
+      raw/01 carries no pin of its own; 4df80aa is the corpus-wide 2026-07-17 stamp recorded in
+      keri-doctrine.md. Its line-number hints (L33, L89, L1836…) are hints as of that commit only.
+
+  - id: cesr-spec
+    kind: git
+    path: me/kswg-cesr-specification
+    remote: upstream
+    watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
+    tier: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: d35125e, date: 2026-07-17},
+         last_mined:   {commit: d35125e, date: 2026-07-17}}
+      - {name: v1.1, role: forward, marker: "[N1.1]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/02-cesr-spec.md]
+    chapters: ["04", "07"]
+
+  - id: acdc-spec
+    kind: git
+    path: me/kswg-acdc-specification
+    remote: upstream
+    watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
+    tier: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: f0bd097, date: 2026-09-01},
+         last_mined:   {commit: 11832a3, date: 2026-07-17}}
+      - {name: v1.1, role: forward, marker: "[N1.1]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/03-acdc-spec.md]
+    chapters: ["05", "07", "08", "10"]
+    caveat: >-
+      Partially re-anchored at f0bd097 on 2026-09-01 for the bible 09/10 material only (rd, rip,
+      blindable state registries). The rest of raw/03 still stands at 11832a3.
+
+  - id: dossier-spec
+    kind: git
+    path: me/kswg-dossier-specification
+    remote: upstream
+    watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
+    tier: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: 3900e62, date: 2026-07-17},
+         last_mined:   {commit: 3900e62, date: 2026-07-17}}
+    feeds: [raw/04-dossier-spec.md]
+    chapters: ["05", "06", "08"]
+
+  # ---------------------------------------------------------------- implementations
+
+  - id: keripy-code
+    kind: git
+    path: wot/keripy
+    remote: upstream
+    watch: [src/keri]
+    tier: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: 4df8e4a8, date: 2026-09-01},
+         last_mined:   {commit: 3a8e01ae, date: 2026-07-17}}
+    feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md]
+    chapters: ["03", "04", "05", "08", "09", "10"]
+    caveat: >-
+      last_mined is deliberately the OLDER pin. raw/15 and raw/16's implementation-status sections
+      were verified at 4df8e4a8 (2026-09-01) and kraming.py at fe161709; raw/09 has not been
+      re-read since the 2026-07-17 corpus stamp. Under-claim rather than over-claim.
+
+  - id: keripy-knowledge
+    kind: git
+    path: wot/keripy-knowledge
+    remote: origin
+    watch: ["."]
+    tier: warm
+    branches:
+      - {name: knowledge, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown, date: 2026-06-05}}
+    feeds: [raw/08-keripy-kb.md]
+    chapters: ["03", "04", "07"]
+    caveat: >-
+      A git worktree of dhh1128/keripy on branch `knowledge`, not a separate repo. Already-distilled
+      doctrine — its own scope tags ([protocol] vs [2.0-code]/[2.0-wire]) must survive mining, since
+      a 2.0 code detail is not an eternal protocol truth. Re-verified 2026-06-05 against keripy 60ab9e08.
+
+  - id: keria
+    kind: git
+    path: wot/keria
+    remote: upstream
+    watch: [src/keria]
+    tier: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/10-keria-signify.md]
+    chapters: ["03", "06"]
+
+  - id: signify-ts
+    kind: git
+    path: wot/signify-ts
+    remote: upstream
+    watch: [src]
+    tier: warm
+    branches:
+      - {name: development, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/10-keria-signify.md]
+    chapters: ["03", "06"]
+
+  # ---------------------------------------------------------------- papers and analysis
+
+  - id: papers
+    kind: git
+    path: me/papers
+    remote: origin
+    watch: ["*.md"]
+    tier: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: f94f50f, date: 2026-07-17},
+         last_mined:   {commit: f94f50f, date: 2026-07-17}}
+    feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md]
+    chapters: ["01", "02", "03", "04", "05", "06", "07"]
+    caveat: >-
+      Daniel's own framing. Marker [N] is wrong here in the specification sense — these are
+      authored positions, not normative text. Chapters cite them as the author's framing and
+      should keep doing so; the marker field is unused for this source.
+
+  - id: keri-security-analysis
+    kind: git
+    path: wot/keri-security-analysis
+    remote: origin
+    watch: ["*.md"]
+    tier: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[N]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown, date: 2026-07-17}}
+    feeds: [raw/07-security-analysis.md]
+    chapters: ["01", "02", "07"]
+    caveat: >-
+      Carries the assumption catalog A1-A13 and the survivability framing that keri-doctrine.md's
+      load-bearing claims 2, 3 and 5 rest on. A change here moves doctrine, not just a chapter.
+
+  - id: smithsamuelm-papers
+    kind: gh-repo
+    repo: SmithSamuelM/Papers
+    branch: master
+    watch: [whitepapers/kram.md]
+    tier: warm
+    branches:
+      - {name: master, role: standardizing, marker: "[P]",
+         last_scanned: {commit: 67550b47, date: 2026-03-06},
+         last_mined:   {commit: 67550b47, date: 2026-09-01}}
+    feeds: [raw/15-kram.md]
+    chapters: ["09"]
+    caveat: >-
+      KRAM whitepaper v0.7.6. Not cloned locally; read via the GitHub API. WebOfTrust/kram's README
+      is an earlier, shorter subset — superseded, cite the Papers version.
+
+  # ---------------------------------------------------------------- GitHub conversations
+
+  - id: keripy-discussions
+    kind: gh-discussions
+    repo: WebOfTrust/keripy
+    tier: hot
+    since: 2026-09-01
+    primary_authors: [SmithSamuelM]
+    feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md]
+    chapters: ["07", "08", "09", "10"]
+    caveat: >-
+      The most doctrinally live source in the corpus and the one least visible to any local check.
+      Sam edits posts in place — #1095 and #1613 both show "last edited" — so a quote can drift with
+      no commit anywhere. Snapshotting (refresh/snapshot-discussions.py) is what makes those quotes
+      re-verifiable. Watch BOTH vocabularies for a topic: "presentation registry" misses #1095,
+      which invents the idea under the name "issuee usage registry".
+
+  - id: keripy-prs
+    kind: gh-prs
+    repo: WebOfTrust/keripy
+    tier: hot
+    since: 2026-09-01
+    feeds: []
+    chapters: ["03", "04", "05", "08", "09", "10"]
+    caveat: >-
+      Merged PRs are the tier-movement signal for [P] → [K]. They feed triage rather than a note of
+      their own; the note that moves is whichever one carries the design they implement.
+
+  - id: conf26-subtitles
+    kind: gh-repo
+    repo: keri-foundation/CONF26-subtitles
+    branch: main
+    watch: [subtitles]
+    tier: cold
+    branches:
+      - {name: main, role: standardizing, marker: "[P]",
+         last_scanned: {commit: unknown, date: 2026-09-01},
+         last_mined:   {commit: unknown, date: 2026-09-01}}
+    feeds: [raw/14-kericonf-2026.md]
+    chapters: ["06", "08", "10"]
+    caveat: >-
+      Edited auto-captions of spoken talks. A WEAK provenance class: near-wording only, never exact.
+      See raw/14 §0 before any quote reaches a chapter. A conference corpus is near-static, hence cold.
+
+  # ---------------------------------------------------------------- applied / web
+
+  - id: bakobo-schema
+    kind: git
+    path: bakobo/schema
+    remote: origin
+    watch: ["."]
+    tier: cold
+    branches:
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: 8db57eb, date: 2026-07-17}}
+    feeds: [raw/11-credentials.md]
+    chapters: ["05", "06"]
+
+  - id: public-schema
+    kind: git
+    path: provenant/public-schema
+    remote: origin
+    watch: ["."]
+    tier: cold
+    branches:
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/11-credentials.md]
+    chapters: ["05", "06"]
+
+  - id: origin-platform
+    kind: git
+    path: provenant/origin-platform
+    remote: origin
+    watch: [docs]
+    tier: cold
+    branches:
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: unknown},
+         last_mined:   {commit: unknown}}
+    feeds: [raw/12-origin-security.md]
+    chapters: ["02", "06"]
+    caveat: >-
+      Provenant client work, read locally and never quoted outward from here. Doctrine-in-practice:
+      useful as evidence of how the worldview survives a shipping deployment, not as normative text.
+
+  - id: keri-one
+    kind: web
+    urls:
+      - https://keri.one/
+      - https://keri.one/keri-resources/
+      - https://keri.one/131-2/
+    tier: cold
+    feeds: [raw/13-keri-one-web.md]
+    chapters: ["01", "06"]
+    caveat: >-
+      Thin original content on the homepage and About page; the rest is an outbound-link directory.
+      Detected by content hash, since there is no commit to diff. Mined 2026-07-17.

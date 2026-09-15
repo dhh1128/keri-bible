@@ -1,0 +1,77 @@
+{
+  "note": "Snapshots live in .cache/discussions/ and are deliberately untracked: this repo is public and the text is other people's writing. The hashes here are what makes a quote re-verifiable and an in-place edit visible. Regenerate with refresh/snapshot-discussions.py.",
+  "snapshots": {
+    "WebOfTrust/keripy#1095": {
+      "author": "SmithSamuelM",
+      "comments": 0,
+      "created": "2025-10-13",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-1095.md",
+      "last_edited": "2025-11-11",
+      "sha256": "c8decb109c320b2f70f7fb5ab0afbd2eb550b1e6ee485f9955216f17d623aceb",
+      "title": "ACDC Issuee Usage Registry for Detection of Issuee Key State Compromise with Regard to Presentations",
+      "updated": "2025-11-11",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/1095"
+    },
+    "WebOfTrust/keripy#1550": {
+      "author": "SmithSamuelM",
+      "comments": 3,
+      "created": "2026-07-28",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-1550.md",
+      "last_edited": "2026-07-28",
+      "sha256": "09a7e534219b42d0c46c607e0b6baf34f1208cc2fad8a7c1609b1e340d2ae9b5",
+      "title": "Guardianship for SEDI",
+      "updated": "2026-08-05",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/1550"
+    },
+    "WebOfTrust/keripy#1613": {
+      "author": "SmithSamuelM",
+      "comments": 1,
+      "created": "2026-08-12",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-1613.md",
+      "last_edited": "2026-09-02",
+      "sha256": "eded5c26d50dffb27b89cc11c081463d099148353cd0330e267056f8c608d0f6",
+      "title": "Authentication Factors in IPEX",
+      "updated": "2026-09-02",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/1613"
+    },
+    "WebOfTrust/keripy#1618": {
+      "author": "ryan-hansen",
+      "comments": 1,
+      "created": "2026-08-13",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-1618.md",
+      "last_edited": "",
+      "sha256": "360ae04fd93d2c926e035f0aa4aa731fe2e1826da4b06e71abb4fb87b2ddbe57",
+      "title": "IPEX / ACDC V2: authentication factors for issuance and presentation",
+      "updated": "2026-08-13",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/1618"
+    },
+    "WebOfTrust/keripy#1627": {
+      "author": "SmithSamuelM",
+      "comments": 5,
+      "created": "2026-08-19",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-1627.md",
+      "last_edited": "2026-09-11",
+      "sha256": "ccc69a7b0a537dd77824849b5ac64404cd219c8d5be0efdf8cf90a42a9d013ed",
+      "title": "ACDC Presentation Architectures",
+      "updated": "2026-09-11",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/1627"
+    },
+    "WebOfTrust/keripy#934": {
+      "author": "SmithSamuelM",
+      "comments": 2,
+      "created": "2025-01-30",
+      "fetched": "2026-09-15",
+      "file": ".cache/discussions/WebOfTrust-keripy-934.md",
+      "last_edited": "2025-12-01",
+      "sha256": "afc7e8eb275769f09d1622a835f0eb9c7bfa392f821c6fefb32a4f7cef04b70a",
+      "title": "KERI Architectures for Group Issuance (KAGI) and KRAM",
+      "updated": "2025-12-01",
+      "url": "https://github.com/WebOfTrust/keripy/discussions/934"
+    }
+  }
+}

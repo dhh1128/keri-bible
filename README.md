@@ -40,3 +40,12 @@ implementation) into a single adversarial-reviewer-ready reference.
 
 `python3 build-bible.py > keri-bible.md` regenerates the assembled reference from
 `bible/*.md`. Run it after editing any section file.
+
+## Keeping it current
+
+`refresh/` holds the monthly refresh: a manifest of every source with a pin recording how far it
+has been read, a deterministic detector that reports what has moved since those pins, and the
+prompts and standards the model phases are bound by. It runs from cron on the 3rd of each month
+and delivers a draft PR against this repo. See [`refresh/README.md`](refresh/README.md) — and
+[`refresh/prompts/standards.md`](refresh/prompts/standards.md), which is the citation contract for
+anyone editing the corpus by hand as well.
