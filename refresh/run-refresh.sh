@@ -14,6 +14,12 @@
 #   --no-fetch    pass through to detect.py (offline testing)
 set -euo pipefail
 
+# cron hands you a PATH of roughly /usr/bin:/bin and nothing else, so `claude` (in ~/.local/bin)
+# is not found and the model phases die with a bare "command not found" halfway through a run
+# that already spent its detect budget. Prepend rather than replace, so an interactive run keeps
+# whatever the shell gave it.
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}/keri-bible-refresh"
 LOCK="$STATE_HOME/run.lock"
