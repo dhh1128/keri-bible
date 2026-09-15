@@ -1,8 +1,20 @@
 # KERI/ACDC/CESR Doctrine — Ground Truth from the keripy Reference Implementation
 
-Source: `/home/daniel/code/keripy/src/keri` (Python reference verifier).
-Mandate: what the code ACTUALLY enforces vs. what prose claims. Every "code does X" claim carries `file:line`.
-Read-only pass; nothing modified.
+Source: keripy, `src/keri` (Python reference implementation), repo `~/code/wot/keripy`. Mandate: what the code ACTUALLY enforces vs. what prose claims. Every "code does X" claim carries a quote and a `file:line` hint. Read-only pass; nothing modified.
+
+## Pin and coverage
+
+**Pinned commit: `b8f60166b`** (`main`, 2026-09-14, "Merge pull request #1668 from evanja57/compactor-disclosure-test"). Mining date 2026-09-15. Prior pin for this note was `3a8e01ae` (2026-07-17).
+
+**Version fact that scopes every `[K]` claim in this corpus.** `__version__ = '2.1.0-dev1' # also change in setup.py` (`src/keri/__init__.py` L3 @`b8f60166b`). The corpus's older keripy material was tagged against 2.0.0-dev6; the line has moved to the 2.1 development series. Nothing here is a release.
+
+**Modules actually re-read at `b8f60166b` in this pass** — claims below carrying that pin rest on reading the file at that commit: `vdr/verifying.py` (whole file), `acdc/ipexing.py` (L1–300, L330–1230, L1604–1622), `core/mapping.py` (`Compactor.trace`/`_trace`/`compact`, L930–1245), `peer/exchanging.py` (L95–360, L440–475), `db/basing.py` (L525–610, L1100–1140), `vc/protocoling.py` (L1–135, L478–483), `core/serdering.py` (`.iseaid` property, L2823–2855), `src/keri/__init__.py`.
+
+**Modules NOT re-read at `b8f60166b`.** Everything in §1–§5 and §8 below — `core/coring.py`, `core/eventing.py`, `core/counting.py`, `vdr/eventing.py` — still stands at `3a8e01ae` and its line hints are hints as of that commit. Those claims were not re-verified in this pass and should not be read as pinned to `b8f60166b`. Likewise not re-read: `app/habbing.py`, `core/signing.py`, `acdc/regeventing.py`, `acdc/messaging.py`, `acdc/acdcing.py`, `acdc/containing.py`, `core/structing.py`. `core/kraming.py` belongs to `raw/15`; registry/TEL status (`acdc/regeventing.py`, `acdc/messaging.py`, `acdc/regbasing.py`) belongs to `raw/16` — findings that touch them are flagged as cross-references, not recorded here as the primary record.
+
+**What this pass covered.** The `dp` (disclosure-path) construct as landed in code; the IPEX rework in the new `acdc/ipexing.py`; edge-operator and graph-semantics validation; EXN evidence handling and the durable exchange stores; the version line; and a set of named negative results.
+
+**A note on quote form.** keripy wraps its comments and docstrings at ~80 columns. Where a quote below is longer than one source line, the words are verbatim and only the source's own line breaks and comment markers have been removed; the line hint then names the range the quote spans. No quote joins text across a blank line, a different comment block, or an intervening statement.
 
 ---
 
@@ -101,12 +113,14 @@ Pre-rotation: inception commits to **digests of the next keys** (`ndigers`), not
 
 ---
 
-## 6. ACDC edge operators — GROUND TRUTH vs. prose gloss (`vdr/verifying.py:336-380`)
+## 6. ACDC edge operators — GROUND TRUTH vs. prose gloss (`vdr/verifying.py:336-380`) — **SUPERSEDED 2026-09-15, see §6c**
+
+**Status as of 2026-09-15.** This section describes `Verifier.verifyChain` as it stood at `3a8e01ae`. At `b8f60166b` the method was rewritten: the operator table grew from three to five, list-valued `o` is resolved, a new `E1E` operator is enforced, DI2I now raises `ValidationError` rather than `NotImplementedError`, and the edge `s` field is enforced. The bullets below are kept as the record of what was true at `3a8e01ae` and what the corpus believed; **§6c is the current record**. Individual bullets that are now false are struck inline.
 
 `Verifier.verifyChain(nodeSaid, op, issuer)` is what ACTUALLY enforces edge semantics:
-- Only three operators recognized: `['I2I', 'DI2I', 'NI2I']` (`verifying.py:354`). If the edge's `o` is not one of these, it is INFERRED from data: `op = 'I2I' if 'i' in creder.attrib else 'NI2I'` (`verifying.py:355`). So "issuer-to-issuee" is the default whenever the far node has a subject `i` field.
-- **I2I** is enforced as **plain AID string equality**: `if op == 'I2I' and issuer != creder.attrib['i']: return None` (`verifying.py:365-366`). Semantics: the issuer of THIS credential must equal the issuee (`attrib['i']`) of the node credential it points to. That is the entirety of the I2I check — an equality of qb64 AID strings. No chain-of-authority reasoning beyond it.
-- **DI2I is NOT IMPLEMENTED**: `if op == "DI2I": raise NotImplementedError()` (`verifying.py:368-369`). Any prose describing delegated-issuer-to-issuee edge behavior is a **gloss with no machine behavior** in this verifier — it will crash if exercised.
+- ~~Only three operators recognized: `['I2I', 'DI2I', 'NI2I']` (`verifying.py:354`).~~ **Superseded 2026-09-15**: five are recognized at `b8f60166b`, and the default-inference test now reads `.iseaid` rather than `attrib['i']`. See §6c.
+- **I2I** is enforced as **plain AID string equality** — *still true at `b8f60166b`*, with the far side resolved through `.iseaid` instead of `attrib['i']`. At `3a8e01ae`: `if op == 'I2I' and issuer != creder.attrib['i']: return None` (`verifying.py:365-366`). Semantics: the issuer of THIS credential must equal the issuee of the node credential it points to. That is the entirety of the I2I check — an equality of qb64 AID strings. No chain-of-authority reasoning beyond it.
+- ~~**DI2I is NOT IMPLEMENTED**: `if op == "DI2I": raise NotImplementedError()` (`verifying.py:368-369`)~~ — **partly superseded 2026-09-15**. DI2I is *still* unimplemented at `b8f60166b`, so the doctrinal point survives, but the mechanism changed: it now raises `ValidationError`, deliberately, rather than crashing with `NotImplementedError`. See §6c.
 - **NI2I** ("not-issuer-to-issuee") skips the issuer/issuee binding entirely (the `if op != 'NI2I':` guard, `verifying.py:357`) — it only requires the node credential exists and is in issued state. It is a non-authority reference.
 - For I2I/DI2I the node MUST have a subject: `if 'i' not in creder.attrib: return None` (`verifying.py:358-359`), and its subject must be indexed (`subjs`, `verifying.py:361-363`).
 - Node must be in a known registry (`creder.regid not in self.tevers → None`, `verifying.py:371`) and its TEL state non-None (`verifying.py:376-378`).
@@ -118,7 +132,35 @@ Order of enforcement in `processCredential`: (1) registry known? else escrow MRE
 
 ---
 
+## 6c. Edge operators at `b8f60166b` — the operator table grew, and part of it is now enforced
+
+This is the section that moves doctrine. All quotes are from `src/keri/vdr/verifying.py` at `b8f60166b` unless otherwise marked.
+
+**Five unary operators, not three.** `UnaryOps = ('I2I', 'NI2I', 'DI2I', 'E1E', 'NOT')` (`Verifier.UnaryOps`, L41). The class comment above it is explicit about why the unimplemented ones are listed rather than omitted: "DI2I and NOT are recognized but unimplemented: they are listed so they fail closed diagnosably instead of being dropped and silently defaulting." (L38-39). `E1E` carries its own provenance caveat: "E1E is a keripy extension not yet in the spec's normative operator table." (L40). Treat `E1E` as `[K]`-only — it is implementation-led, and this note has not verified it against any spec text.
+
+**A second, narrower table.** `DelegativeOps = ('I2I', 'NI2I', 'DI2I')` (`Verifier.DelegativeOps`, L47), described as operators that "constrain the near ACDC's issuer relative to the far node's issuee, so they are mutually exclusive" (L44-45).
+
+**`o` may now be a list, and conflict resolution is latest-wins within the delegative subset only.** `op = next((cand for cand in reversed(ops) if cand in self.DelegativeOps), None)` (`Verifier.verifyChain`, L433), preceded by a comment citing the spec: latest-wins applies only "among the conflicting Operators" (ACDC spec-body.md L1186) (L425) — a citation the code makes, which this note has NOT independently checked against the ACDC spec at any commit. Unrecognized tokens are dropped: `ops = [cand for cand in ops if cand in self.UnaryOps]` (L432).
+
+**Default inference changed.** `op = 'I2I' if creder.iseaid is not None else 'NI2I'` (L440), applied only when the list is "absent, empty, or nothing recognized" (L435). The predicate moved from `'i' in creder.attrib` to `.iseaid`, which resolves an aggregate (`acg`) far node's issuee at `.sad["A"][1]["i"]` as well as an attributive one's at `.sad["a"]["i"]` (`core/serdering.py` `.iseaid`, L2824-2841 @`b8f60166b`). So the silent-default behavior the corpus flagged at §9 persists, but it now sees aggregate credentials too.
+
+**DI2I and NOT fail closed, diagnosably.** `if 'NOT' in ops:` → `ValidationError` (L446-448); `if op == 'DI2I':` → `ValidationError` carrying "DI2I validation is not implemented" (L450-452). The choice of exception is deliberate and is the load-bearing part: "escrowing would promise a retry that can never succeed." (L445). A reviewer must not "simplify" either branch into a `MissingChainError` or into silent skipping.
+
+**`E1E` IS enforced.** "the issuee AID of the near ACDC (the one carrying this edge) MUST equal the issuee AID of the far node." (L455-456), implemented at L461-463: `farIssuee = creder.iseaid` then `if farIssuee is None or issuee is None or issuee != farIssuee: return None`. The comment draws the distinction that matters: "Unlike the delegative I2I, this says nothing about the issuer, so the common SEDI case -- both credentials issued by a third party to the same subject" (L457-459) is valid, and is exactly what I2I rejects. `E1E` composes (AND) with the delegative winner rather than overriding it — "E1E constrains the near issuee instead, so it does not conflict with them and composes (AND)" (L428-429).
+
+**I2I is still string equality.** `if op == 'I2I' and issuer != farIssuee:` → `return None` (L478-479). Nothing multi-hop; the doctrine survives unchanged.
+
+**New: the edge `s` field is enforced, and its semantics are "satisfy", not "equal".** In `processCredential` (not `verifyChain`), an edge's declared far-node schema is checked: "the edge 's' is a schema the far node must *satisfy*" (L194-195, citing S. Smith, keripy issue #1534). A direct SAID match short-circuits; otherwise the far node is validated against the edge's schema and a failure raises `MissingChainError` (L219-227). A schema not yet cached escrows and cues a query rather than failing (L211-218) — transient vs. permanent is distinguished here.
+
+**New: an ACDC's `e` section may be a list of edge blocks.** `if isinstance(prov, list): edges = prov` / `elif isinstance(prov, dict): edges = [prov]` / else `ValidationError` (L163-169).
+
+**Doctrinal bottom line.** "Edge operators are read but unused" is **no longer accurate** as a blanket statement at `b8f60166b`, and the corpus's shibboleth table (`keri-doctrine.md` L98, L107, L132) needs resyncing. The accurate replacement: of five recognized unary operators, **I2I and E1E are enforced, NI2I is by construction a no-op binding check, and DI2I and NOT are recognized-but-unimplemented and fail closed with `ValidationError`**; the edge `s` constraint is now enforced; and the operator is still silently inferred when `o` is absent.
+
+---
+
 ## 7. IPEX — the presentation/issuance state machine (`vc/protocoling.py`)
+
+**Re-verified at `b8f60166b`, and the claims below still hold — with one scoping correction.** Every claim in this section was re-read against `src/keri/vc/protocoling.py` at `b8f60166b` and is still true; line hints shift by a few (`IpexHandler.verify` now spans L55-106, `PreviousRoutes` L16-22, `response` L108-121, `loadHandlers` L478-483). The correction is that **this is now one of two IPEX implementations in the tree**. `vc/protocoling.py` is the V1 handler and is the one keripy's own CLI wires up (`src/keri/cli/commands/ipex/list.py` L25: `from ....vc import loadHandlers, Ipex` @`b8f60166b`). The V2 handler is the new `acdc/ipexing.py`, covered in §7b. Where the two disagree, this section describes V1 only.
 
 - Verbs: `Ipexage(apply, offer, agree, grant, admit, spurn)` (`protocoling.py:15-16`).
 - **Legal predecessor table (invariant)** `PreviousRoutes` (`protocoling.py:17-23`):
@@ -134,6 +176,81 @@ Order of enforcement in `processCredential`: (1) registry known? else escrow MRE
 
 ---
 
+## 7b. IPEX V2 — `acdc/ipexing.py` at `b8f60166b`
+
+The file roughly tripled between `4df8e4a8` and `b8f60166b` (+1118 lines). All quotes are from `src/keri/acdc/ipexing.py` at `b8f60166b`.
+
+**Scoping caveat that bounds every claim in this section.** `acdc.ipexing.loadHandlers` has **no caller anywhere in `src/keri` at `b8f60166b`**. The module is exported (`src/keri/acdc/__init__.py` L12) and exercised by tests, but keripy's own CLI still loads the V1 handler from `vc/protocoling.py`. So these are `[K]` claims about *code that exists and is tested in the reference implementation*, not about behavior any shipped keripy command performs. Do not upgrade them past that.
+
+**The predecessor table changed.** `Ipex.grant: (Ipex.apply, Ipex.agree),` (L34) — a grant may now reply directly to an `apply`, skipping `offer`/`agree`. V1 still has `Ipex.grant: (Ipex.agree,)` (`vc/protocoling.py` L19 @`b8f60166b`). The rest of the table is unchanged. `spurn` gains one restriction: a spurn of a thread-opening grant is rejected — `if verb == Ipex.spurn and pverb == Ipex.grant and pserder.ked.get("p", ""):` → `return None` (L608-609).
+
+**Role symmetry is now checked, not just verb order.** "Replies must target the prior sender and come from the prior receiver" (L611), implemented as three equality tests on `ri`/`i` plus a fourth on the exchange id `x` (L612-619). The single-response rule survives: `if self.response(pserder) is not None: return None` (L622-623), still via `db.erpy`.
+
+**Verification is staged, and the stages are numbered in the source.** `IpexHandler.verify` (L368-550) runs six labelled stages: shape (L406), disclose-paths (L414), reply-chain resolution (L449), anchoring negotiation (L474), graph disclosure (L532), and per-node issuer-auth proof (L545). Every failure path is `return False` — fail-closed, matching V1.
+
+**Anchoring (`ax`) is a negotiated bit that a reply may not silently change.** "Binding replies must exactly preserve the negotiated state." (L484) — for `agree`/`grant`/`admit`, `if messageRequiresAnchor != priorRequiresAnchor: return False` (L485-486). An offer is allowed to turn anchoring on but not off: "An offer may initiate anchoring, but may not drop it." (L487-490). This is an invariant a reviewer must not relax into a one-sided check.
+
+**When anchoring is required, the sender's KEL is checked for a real seal.** The message's source-seal couple must name an event at or after the sender's last establishment event (`if number.sn < lastEst.s:` with the source's own typo comment "# Reject if reference is older thant the current key state", L504), must match that event's SAID when at the same `sn` (L508-509), must be an `ixn` when beyond it (`if number.sn > lastEst.s and event.ilk != Ilks.ixn:`, L525-526), and that event must actually seal this exn: `seal.get("d") == serder.said` over `event.seals` (L527-530). Missing KEL evidence raises `MissingSenderKeyStateError` (L500, L514, L521) rather than returning False — retryable, not a rejection.
+
+**A grant discloses one closed DAG; an offer may disclose a reachable subgraph.** "grant must disclose one fully closed reachable DAG rooted at the message's `a.o[0]`." (L533-534). `_walkGraph(origin, nests, closed=)` (L627) is a BFS from the origin. With `closed=True` a dangling edge target aborts the walk (`if edgeSaid not in nodes: if closed: return None`, L699-701); with `closed=False` it is skipped. Either way orphan nests are rejected: "every carried nest must still be part of the root-reachable disclosed graph." (L714-715), enforced by `if len(seen) != len(nodes): return None` (L716-717).
+
+**One nest per node, and only ACDC nodes.** `_validNodeNest` (L552) requires each nest to verify, to be an ACDC of a disclosed-node ilk (`if nserder.proto != Protocols.acdc or nserder.ilk not in DisclosedNodeIlks: return None`, L571-572, where `DisclosedNodeIlks = (None, Ilks.acm, Ilks.ace, Ilks.act, Ilks.acg)` at L39), and to be unique: "Each disclosed DAG node must occupy exactly one nest so the node body cannot appear twice with conflicting attachment groups." (L575-576). This last is an anti-substitution guard — do not simplify it away.
+
+**Graph semantics are evaluated over the walked DAG — this is `verifyGraphSemantics`.** `_verifyGraphSemantics(nodes, order)` (L905) walks every disclosed node's `e` section and reduces an edge tree to one boolean; `if matched is not True: return False` (L952-953). The tri-state return convention is the design: a leaf returns `True`/`False` for satisfied/unsatisfied and `None` for malformed, and malformed always fails closed.
+
+- Leaf operators use the same five-name table as the verifier: `UnaryEdgeOps = ("I2I", "NI2I", "DI2I", "E1E", "NOT")` (L43), `DelegativeEdgeOps = ("I2I", "NI2I", "DI2I")` (L44).
+- An absent `o` is legal and unconstrained; an unrecognized `o` is malformed, not defaulted: `elif op not in UnaryEdgeOps: return None` (L765-766). Note this differs from `vdr/verifying.py`, which *drops* unrecognized tokens (L432) — the two modules disagree on strictness. Recorded as an open tension in §10.
+- DI2I and NOT here fail as *unsatisfied*, not malformed: `if recognizedOp == "NOT" or dop == "DI2I": return False` (L776-777). Different mechanism from `vdr/verifying.py`'s `ValidationError`, same outcome: unimplemented means unsatisfiable.
+- I2I: `elif dop == "I2I" and nserder.israid != fserder.iseaid:` → unmatched (L793-794). Still string equality, now near-issuer against far-issuee resolved via `.iseaid`.
+- E1E: `if recognizedOp == "E1E":` requires both `.iseaid` present and equal (L782-786).
+- **M-ary group operators are implemented.** `EdgeGroupOps = ("AND", "OR")` (L45), defaulting to AND (`groupOp = group.get("o", "AND")`, L870) and reduced at L903: `return any(results) if groupOp == "OR" else all(results)`. An empty group is malformed (`if not results: return None`, L899-900). This is genuinely new machine behavior for m-ary edge operators.
+- **Edge schema pins inherit down groups.** A group's `s` becomes the default for every child (L875); a leaf's own `s` overrides it (L798). An inline schema map must be self-consistent: `if edgeSchemer.said != declared: return None` (L811-812).
+- Label sets are closed and checked: `EdgeSectionLabels = ("d", "u", "o", "w")`, `EdgeGroupLabels = ("d", "u", "s", "o", "w")`, `EdgeNodeLabels = ("d", "u", "n", "s", "o", "w")` (L40-42); an unknown label in a leaf is malformed (L744-746).
+
+**Per-node issuer-auth proof.** `_verifyIssuerAuthNode` (L982) fires only for registry-backed nodes (`regk = serder.sad.get("rd")`, L1025). Its model of a disclosed node is stated as an equation: "one disclosed DAG node is: ``ACDC body + that node's issuer-auth attachment group``" (L989-991). Exactly one blinded state is allowed — "The proof group must disclose exactly one blinded state for the registry's root event." (L1043), `if len(proofs) != 1: return False` (L1044-1045). The trust assumption is written down: "IPEX verification assumes the disclosee has already learned the foreign TEL chain" (L1047-1048), and with no injected `Regery` the node simply fails (`if self.rgy is None: return False`, L1051-1052). Verification itself delegates to `regeventing.vet(...)` (L1067-1071) — **cross-reference: `acdc/regeventing.py` is `raw/16`'s territory; the split of retryable vs. permanent failure there (`MissingAnchorError` → `MissingChainError` retry, L1074-1075; eight named refusals → permanent `False`, L1078-1081) is recorded here only because IPEX depends on it.**
+
+**Evidence policy per verb.** `verifyEvidence` (L1085): "Grant evidence is optional, so retain the valid subset despite invalid extras." (L1099-1100) — a grant returns whatever verified; every other verb rejects any non-sender evidence at all (`if tsgs or cigars or sourceSeals or invalid: return None`, L1103-1104).
+
+---
+
+## 7c. `dp` — disclosure paths as landed in code, and the sharp limit on what "landed" means
+
+This is the month's headline tier movement, and the honest answer is **partial**: the `dp` field exists on the wire and its *shape* is validated, but nothing in keripy at `b8f60166b` checks that a grant's disclosed DAG actually satisfies the `dp` plan that was negotiated, and the `Compactor` machinery that could produce a targeted disclosure has no production caller.
+
+**What IS implemented — wire shape and syntax.** `dp` lives in the exn query/modifier section `q`, and is required on `apply` and `offer`: `if ("dp" not in q or not _validSingleDagList(q["dp"], list) or not _validDisclosurePath(q["dp"][0])): return False` (`acdc/ipexing.py` `IpexHandler.verify` L420-423 @`b8f60166b`). The outer list is a single-DAG container that is explicitly future-proofing: "We currently only support one DAG (until Multi DAG), so exactly one entry is required." (L223). An offer that opens a thread must carry a non-empty plan (L424-425).
+
+**The path grammar.** `_validDisclosurePath` (L233) requires each entry to be a triple: "disclosure-path triples of ``[schema SAID, DAG path, ACDC paths]`` for one DAG" (L240-241). The DAG path is either the root `"/"` or a prefix that "terminates at the far-node hop ``\"_/\"`` such as ``\"/e/holder/_/\"``" (L243-244), enforced by `if segments[-1] != "_": return False` (L269-270) plus a start/end-slash check (L263-264). The third element is a list of non-empty field-path strings (L272-275). The generator side raises rather than returning False: `raise ValueError("modifiers['dp'] is required and must carry one disclose-path list per DAG")` (`apply`, L1184; similarly `offer`, L1288).
+
+**What is NOT implemented, at `b8f60166b`, and these are the findings that matter.**
+
+1. **No verb checks a disclosed DAG against a `dp` plan.** `dp` is validated only for `apply` and `offer` (L419). `grant` — the verb that actually discloses — never reads `dp`; its stage-5 check is `_walkGraph(..., closed=True)` plus `_verifyGraphSemantics`, both of which are about the DAG's internal shape and edge semantics, not about whether it matches what was asked for. So the disclosure plan is **negotiated but not enforced**. A grant disclosing more or less than the agreed paths is accepted by this code.
+2. **`Compactor` targeted disclosure has no production caller.** `Compactor.compact(paths=None, root=None)` (`core/mapping.py` L1114 @`b8f60166b`) is the machinery for producing a partial: "ACDC-relative SAD paths whose combined closure remains expanded in one saved partial. A trailing path separator keeps the whole node expanded." (L1129-1131), with numeric components selecting "mapping fields by ordinal" (L1132-1133). The only calls to `.compact()` in `src/keri` are two bare, argument-less calls in `core/serdering.py` (L3058, L3112 — `sector.compact()  # only compact do not expand`). The `paths=` form appears nowhere in `src/`; the only file in the repo that exercises it is `tests/core/test_mapping.py`. So the disclosure-path→partial-ACDC bridge is library capability, not a wired pipeline.
+3. **The `dp` path syntax and the `Compactor` path syntax are not obviously the same language, and nothing in the tree reconciles them.** `_validDisclosurePath` speaks of `/e/holder/_/` hops across a DAG; `Compactor.compact` takes SAD paths resolved by `Pather(path=path, relative=True).rparts` within one mapping (L1156). No code at `b8f60166b` translates one into the other. Recorded as an open question in §10.
+
+**Compactor invariants worth not simplifying away.** A targeted disclosure cannot be taken from an already-compacted mapping — `raise InvalidValueError("Cannot disclose from compact mapping")` (L1146) — and the call is destructive: "A targeted call consumes the expanded mapping. Use a new Compactor instance to create another targeted partial." (L1125-1126). Whole-node disclosure preserves descendants: "Preserve every nested mapping for whole-node disclosure." (L1192). Restoration order is load-bearing: "Restore marked ancestors before descendants from canonical leaves." (L1224), implemented by sorting the marked paths by length (L1226).
+
+---
+
+## 7d. EXN evidence and the durable exchange stores (`peer/exchanging.py`, `db/basing.py`)
+
+All quotes at `b8f60166b`.
+
+**A route now opts into an evidence policy, and the absence of one is itself a policy.** `Exchanger.processEvent` looks up `evidenceVerifier = getattr(behavior, "verifyEvidence", None)` (`peer/exchanging.py` L155). Routes without one keep the old precedence: "Routes without an evidence policy preserve the existing TSG-over-cigar precedence. A sender TSG causes all cigars to be ignored." (L157-159), and they reject foreign evidence outright rather than ignoring it (L235-241, L256-262). Routes with one receive only the *validated* foreign subset and get to accept or refuse it (L308-314); refusing returns `False` and the message is not persisted (L315-319).
+
+**Sender authentication now has two independent satisfiers.** A valid source seal is sufficient on its own: "A valid sender seal authenticates the EXN. Retain only valid optional sender TSGs and do not fail on invalid ones." (L184-186). This is a deliberate asymmetry — once a seal authenticates, a bad optional TSG is tolerated rather than fatal. Do not "simplify" it into a conjunction.
+
+**Missing sender-KEL evidence escrows only for handlers that opted in.** "IPEX uses sender seals as required workflow evidence, so retain the complete message until the referenced sender KEL arrives." (L174-175), gated on `if getattr(behavior, "acceptsSscs", False):` (L176). `IpexHandler.acceptsSscs = True` (`acdc/ipexing.py` L348).
+
+**Foreign key-state is frozen before escrow, not re-resolved after.** "Freeze foreign last-establishment references before sender escrow can return, so replay retains the evidence and its original keys." (L125-126). The reason is replay correctness: an escrowed message replayed later must be judged against the keys that were current when it arrived, not the keys current at replay.
+
+**"Rejects what it preserves" — the precise version.** The handler distinguishes three outcomes, and only one of them is a rejection with preservation. A `MissingChainError` from behavior verification escrows the message and cues a proof fetch, returning `None`: "Registry-backed IPEX grants may arrive before the disclosee has fetched the issuer's TEL history from observers." (L340-341), escrow at L343-346. A behavior `verify` returning False returns False **before** `logEvent`, so a permanently-invalid message is *not* persisted (L335-338 precedes L352-353). Acceptance is unconditional at that point: `# Always persist events` / `self.logEvent(serder, ptds, tsgs, cigars, essrs, ...)` (L352-353). So the corpus's shorthand needs qualifying: **IPEX preserves what it defers on, and drops what it refuses.**
+
+**Escrow replay trims before rewriting.** "The same stores hold escrowed and accepted evidence. Remove the temporary branches so processEvent writes back only the evidence that passes current verification and policy." (L460-462), executed as `esigs.trim` / `ecigs.rem` / `ests.trim` before the replayed `processEvent` (L463-468). A reviewer removing the trim would leave stale evidence permanently attached to an accepted message.
+
+**Durable exchange stores (`db/basing.py`).** The V2 workflow added subDBs beside the existing `exns`/`erpy`/`esigs`/`ecigs`/`epath`: `.enst` "for exchange message nested child substreams." (L573-575), `.essrs` "for exchange message event source records." (L578-580), and `.ests` "for resolved exchange source seals." (L583-585) keyed by "exchange message SAID and sealing AID" (L586). `.ests` carries the invariant that names which table is authoritative: "The exchange message in ``exns`` remains the acceptance marker." (L588-589) — evidence tables may hold escrowed material, so presence in `ests` is not acceptance. The single-response forward pointer is unchanged: `self.erpy = subing.CesrSuber(db=self, subkey="erpy.", klas=coring.Saider)` (L1125).
+
+---
+
 ## 8. CESR framing (structural doctrine, `core/counting.py`)
 
 - CESR is genus/version-aware: `GenusCodex`/`GenDex` map protocol genera to code tables (`counting.py:24-44`); counters differ across `Vrsn_1_0`/`Vrsn_2_0` (`CounterCodex_1_0`, `counting.py:50`).
@@ -144,8 +261,44 @@ Order of enforcement in `processCredential`: (1) registry known? else escrow MRE
 
 ## 9. Notes on prose-vs-machine gaps found
 
-- **DI2I edge operator**: documented meaning exists in ACDC prose, but the verifier raises `NotImplementedError` (`verifying.py:368-369`). No machine behavior — a pure gloss today.
-- **Edge `o` operator inference**: when omitted, the verifier silently defaults I2I/NI2I from presence of `attrib['i']` (`verifying.py:354-355`) — the "explicit operator" story is softer than prose implies.
+- **DI2I edge operator**: documented meaning exists in ACDC prose, but ~~the verifier raises `NotImplementedError` (`verifying.py:368-369`)~~ — **updated 2026-09-15**: at `b8f60166b` it raises `ValidationError` instead (`verifying.py:450-452`), and the leaf evaluator returns an unsatisfied edge (`acdc/ipexing.py:776-777`). The gap itself survives: still no machine behavior, now failing closed on purpose rather than by accident.
+- **Edge `o` operator inference**: when omitted, the verifier silently defaults I2I/NI2I ~~from presence of `attrib['i']` (`verifying.py:354-355`)~~ — **updated 2026-09-15**: from `creder.iseaid is not None` (`verifying.py:440` @`b8f60166b`), which also covers aggregate ACDCs. The "explicit operator" story is still softer than prose implies.
 - **Revoked-credential handling**: prose framing of revocation as invalidation is nuanced by the code choosing to SAVE revoked credentials (root) while propagating revocation only along edges (`verifying.py:129-132` vs `:178-180`).
-- **I2I as "chain of authority"**: machine reality is a single AID string equality (`verifying.py:365`), not multi-hop authority evaluation; multi-hop is left to the recursive edge walk in `processCredential`, which does not re-derive delegated authority.
-- **`CacheResolver` schema trust**: schema is fetched from a local cache/resolver (`verifying.py:70, 135`); if absent it escrows and queries — the verifier does not itself fetch trust roots from any global authority.
+- **I2I as "chain of authority"**: machine reality is a single AID string equality (`verifying.py:365` @`3a8e01ae`; `verifying.py:478` @`b8f60166b`), not multi-hop authority evaluation; multi-hop is left to the recursive edge walk in `processCredential`, which does not re-derive delegated authority. **Re-verified 2026-09-15 — unchanged.**
+- **`CacheResolver` schema trust**: schema is fetched from a local cache/resolver (`verifying.py:70, 135`); if absent it escrows and queries — the verifier does not itself fetch trust roots from any global authority. **Re-verified 2026-09-15 — unchanged** (`verifying.py:83, 148` @`b8f60166b`), and now extended to edge-declared schemas, which escrow the same way (`verifying.py:211-218`).
+
+---
+
+## 10. Named negative results at `b8f60166b`
+
+These are findings, not absences. Each was looked for deliberately and not found; each is a claim about the code at this commit, and each should be re-tested at the next pin rather than assumed to persist.
+
+1. **No enforcement of DI2I anywhere in `src/keri`.** Two independent sites reject it rather than evaluate it: `vdr/verifying.py:450-452` (`ValidationError`) and `acdc/ipexing.py:776-777` (`return False`). A repo-wide search for `DI2I` at `b8f60166b` returns only these two sites plus the two operator tables that name it. The ACDC prose meaning of delegated-issuer-to-issuee remains unrealized in the reference implementation.
+
+2. **No DAG acyclicity check.** `_walkGraph` (`acdc/ipexing.py:627-719`) is a BFS with a `seen` set, so a cycle among disclosed nodes terminates the walk rather than triggering a rejection — the set is a termination guard, not a validity check, and no code path reports a cycle. `vdr/verifying.py`'s edge walk does not recurse at all (`verifyChain` resolves one hop). A repo-wide search for `acyclic`/`cycle` in `src/keri` at `b8f60166b` returns only `hio` scheduler cycle-time docstrings. The corpus's standing claim that DAG acyclicity is unchecked (`keri-doctrine.md` L132) is **confirmed still true at `b8f60166b`**.
+
+3. **No post-quantum signature codes in keripy.** A case-insensitive repo-wide search of `src/keri` at `b8f60166b` for `dilithium|falcon|ml-dsa|mldsa|slh-dsa|slhdsa|fn-dsa|fndsa|sphincs|kyber|ml-kem|post.?quantum` returns **only** hits on the `falcon` HTTP framework in `app/httping.py` and `app/indirecting.py`. `MatterCodex` in `core/coring.py` has no FN-DSA / ML-DSA / SLH-DSA entries. So the CESR v1.1 PQ code sizes that signify-ts added on 2026-09-05 have **not** landed in keripy as of `b8f60166b`. This is the answer another chapter needed; it is a point-in-time fact and cheap to re-check.
+
+4. **`Compactor` targeted disclosure is not wired to anything.** `compact(paths=…)` has no caller in `src/` at `b8f60166b`; the only file in the repo exercising it is `tests/core/test_mapping.py`. See §7c item 2.
+
+5. **A `dp` plan is never checked against a disclosed DAG.** `dp` is validated for `apply` and `offer` only, and only for shape. See §7c item 1.
+
+6. **The new V2 IPEX handler is not wired into keripy's own CLI.** `acdc.ipexing.loadHandlers` has no caller in `src/keri`; the only references to the module in `src/keri` are its own docstring and the `acdc/__init__.py` re-export. See §7b.
+
+---
+
+## 11. Open questions and unresolved tensions
+
+1. **Two modules disagree on how to treat an unrecognized edge operator.** `vdr/verifying.py:432` filters unrecognized tokens out of the list and then applies the default rule; `acdc/ipexing.py:765-766` treats an unrecognized `o` as malformed and fails closed. The same edge could therefore pass credential processing and fail IPEX grant verification, or vice versa. Nothing in either file acknowledges the other. Unresolved: which is intended, and whether the ACDC spec says anything about unrecognized operators.
+
+2. **Is `E1E` anywhere but keripy?** The code itself hedges — "E1E is a keripy extension not yet in the spec's normative operator table." (`vdr/verifying.py:40`) — and traces the idea to a discussion rather than a spec: "Identity relation (discussion #1515)" (`vdr/verifying.py:455`). This note has not read that discussion and has not checked the ACDC spec's v1.1 branch for `E1E`. If it is absent there, `E1E` is `[K]`-only and must not be cited as `[N1.1]`. Worth a `raw/03` cross-check.
+
+3. **The latest-wins rule cites a spec line this note did not read.** `vdr/verifying.py:427-428` attributes latest-wins-among-conflicting-operators to "ACDC spec-body.md L1186". Verifying that citation belongs to `raw/03`; until then this note repeats it as the code's own claim, not as a spec fact.
+
+4. **How does a `dp` path resolve to a `Compactor` path?** §7c item 3. The two path languages are not reconciled anywhere in the tree at `b8f60166b`, and there is no code that consumes a negotiated `dp` to produce a partial ACDC. Either a piece is still to be written, or the bridge lives outside keripy (KERIA/signify) — unchecked.
+
+5. **Does the V2 grant's freedom to reply directly to an `apply` (`ipexing.py:34`) reflect a spec change or an implementation convenience?** The V1 table still requires `agree` first. Not settled here.
+
+6. **Are the eight named `regeventing.vet` refusals the right permanent/retryable split?** `acdc/ipexing.py:1074-1081` hard-codes `MissingAnchorError` as retryable and eight other named errors as permanent. Whether that enumeration is complete is a question for `raw/16`, which owns `acdc/regeventing.py`.
+
+7. **Not re-read this pass, and therefore not re-verified:** `core/eventing.py`, `core/coring.py`, `core/counting.py`, `vdr/eventing.py` (all of §1–§5 and §8 above), plus `app/habbing.py`, `core/signing.py`, `acdc/acdcing.py`, `acdc/containing.py`, `core/structing.py`. `core/signing.py` and `app/habbing.py` both changed in the window this pass covers and were not examined.

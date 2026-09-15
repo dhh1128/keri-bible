@@ -1,0 +1,1067 @@
+{
+  "generated": "2026-09-15T04:15:03+00:00",
+  "tiers": [
+    "hot",
+    "warm"
+  ],
+  "previous_run": null,
+  "sources": [
+    {
+      "id": "keri-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/01-keri-spec.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "06",
+        "07",
+        "09"
+      ],
+      "caveat": "raw/01 carries no pin of its own; 4df80aa is the corpus-wide 2026-07-17 stamp recorded in keri-doctrine.md. Its line-number hints (L33, L89, L1836\u2026) are hints as of that commit only.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "4df80aa",
+          "to": "fbdd4a615",
+          "stat": " 2 files changed, 28 insertions(+), 14 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "0fce77c",
+              "author": "Daniel Hardman",
+              "date": "2026-08-05",
+              "subject": "Fix \"hexidecimal\" typo in the Event seal field descriptions"
+            },
+            {
+              "sha": "547cb7e",
+              "author": "Kevin Griffin",
+              "date": "2026-05-29",
+              "subject": "updates to well-known oobis for provisional IANA registration of .well-known/oobi"
+            },
+            {
+              "sha": "37ded2a",
+              "author": "henkvancann",
+              "date": "2026-02-10",
+              "subject": "tref installed"
+            }
+          ]
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "unknown",
+          "to": "3753f3797",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true,
+      "crossdiff_size": 1115
+    },
+    {
+      "id": "cesr-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/02-cesr-spec.md"
+      ],
+      "chapters": [
+        "04",
+        "07"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "d35125e",
+          "to": "bad6edd84",
+          "stat": " 1 file changed, 1 insertion(+), 17 deletions(-)",
+          "diverged_from_pin": true,
+          "full_reanchor": false,
+          "commits": []
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "unknown",
+          "to": "65fd7518b",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true,
+      "crossdiff_size": 103
+    },
+    {
+      "id": "acdc-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/03-acdc-spec.md"
+      ],
+      "chapters": [
+        "05",
+        "07",
+        "08",
+        "10"
+      ],
+      "caveat": "Partially re-anchored at f0bd097 on 2026-09-01 for the bible 09/10 material only (rd, rip, blindable state registries). The rest of raw/03 still stands at 11832a3.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "f0bd097",
+          "to": "f0bd097de",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "unknown",
+          "to": "2362e48a1",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true,
+      "crossdiff_size": 1504
+    },
+    {
+      "id": "dossier-spec",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/04-dossier-spec.md"
+      ],
+      "chapters": [
+        "05",
+        "06",
+        "08"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "3900e62",
+          "to": "b9227753c",
+          "stat": " 9 files changed, 118 insertions(+), 49 deletions(-)",
+          "diverged_from_pin": true,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "b922775",
+              "author": "Daniel Hardman",
+              "date": "2026-08-25",
+              "subject": "Correct signing language in the schemas and recompute their SAIDs"
+            },
+            {
+              "sha": "b97c2f2",
+              "author": "Daniel Hardman",
+              "date": "2026-08-25",
+              "subject": "Distinguish anchoring from signing throughout the spec"
+            },
+            {
+              "sha": "5906e8c",
+              "author": "Daniel Hardman",
+              "date": "2026-08-12",
+              "subject": "Normalize heading capitalization to title case"
+            },
+            {
+              "sha": "7aeadc2",
+              "author": "henkvancann",
+              "date": "2026-08-06",
+              "subject": "first try amendments and comments to the Dossier spec"
+            },
+            {
+              "sha": "c2d261c",
+              "author": "Daniel Hardman",
+              "date": "2026-06-30",
+              "subject": "Prune obsolete qualification-operator term; link live glossary terms"
+            },
+            {
+              "sha": "ff5b0a4",
+              "author": "Daniel Hardman",
+              "date": "2026-06-09",
+              "subject": "Replace the `m` threshold field with weighted-unity thresholds"
+            },
+            {
+              "sha": "e99878d",
+              "author": "Daniel Hardman",
+              "date": "2026-06-09",
+              "subject": "Use a single threshold field name `m` across all four operators"
+            },
+            {
+              "sha": "9d8f9a0",
+              "author": "Daniel Hardman",
+              "date": "2026-06-09",
+              "subject": "Consolidate endorsement/declination/qualified schemas into one"
+            },
+            {
+              "sha": "4dae85a",
+              "author": "Daniel Hardman",
+              "date": "2026-06-09",
+              "subject": "Replace M/Q/FIN joint-issuance model with MxN/RMxN/MxQ/RMxQ operators"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-code",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/09-keripy-code.md",
+        "raw/15-kram.md",
+        "raw/16-presentation-registries.md"
+      ],
+      "chapters": [
+        "03",
+        "04",
+        "05",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "last_mined is deliberately the OLDER pin. raw/15 and raw/16's implementation-status sections were verified at 4df8e4a8 (2026-09-01) and kraming.py at fe161709; raw/09 has not been re-read since the 2026-07-17 corpus stamp. Under-claim rather than over-claim.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "4df8e4a8",
+          "to": "b8f60166b",
+          "stat": " 13 files changed, 1964 insertions(+), 452 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "c9b2b55cc",
+              "author": "Keanu",
+              "date": "2026-09-11",
+              "subject": "tighten anchor validation"
+            },
+            {
+              "sha": "5384edc8d",
+              "author": "Samuel M Smith",
+              "date": "2026-09-10",
+              "subject": "upgraded to version 2.1.0.dev1"
+            },
+            {
+              "sha": "74d431c34",
+              "author": "Keanu",
+              "date": "2026-09-10",
+              "subject": "add KEL anchoring for ax"
+            },
+            {
+              "sha": "90ee99bef",
+              "author": "Evan Asakawa",
+              "date": "2026-09-08",
+              "subject": "fix EXN evidence handling"
+            },
+            {
+              "sha": "1914bce5a",
+              "author": "Evan Asakawa",
+              "date": "2026-09-08",
+              "subject": "Fix IPEX proof verification and escrow"
+            },
+            {
+              "sha": "d70f670c7",
+              "author": "Evan Asakawa",
+              "date": "2026-09-02",
+              "subject": "Verify EXN evidence and clear KRAM partials"
+            },
+            {
+              "sha": "e46fd026a",
+              "author": "Evan Asakawa",
+              "date": "2026-08-31",
+              "subject": "Clarify and test EXN evidence handling"
+            },
+            {
+              "sha": "f7c5723d6",
+              "author": "Evan Asakawa",
+              "date": "2026-08-31",
+              "subject": "Persist verified IPEX evidence"
+            },
+            {
+              "sha": "72131e52f",
+              "author": "Samuel M Smith",
+              "date": "2026-09-07",
+              "subject": "created ACDCs for guy and gal guardian IARs"
+            },
+            {
+              "sha": "fbc6bcaf9",
+              "author": "Keanu",
+              "date": "2026-09-07",
+              "subject": "adjust docstring anda comments"
+            },
+            {
+              "sha": "30825b63d",
+              "author": "Evan Asakawa",
+              "date": "2026-09-04",
+              "subject": "Simplify targeted Compactor disclosure"
+            },
+            {
+              "sha": "30be2cf07",
+              "author": "Samuel M Smith",
+              "date": "2026-09-04",
+              "subject": "blindate now raises ValueError when it gets sn < 1. Fixed unit tests. Added snh sn and sner properties to SerderACDC  for convenience access for registry event messages More setup detail for sedi ACDCs more work to be done"
+            },
+            {
+              "sha": "feb2cb707",
+              "author": "Evan Asakawa",
+              "date": "2026-09-04",
+              "subject": "add dp path support to Compactor"
+            },
+            {
+              "sha": "f09d49e91",
+              "author": "Keanu",
+              "date": "2026-09-03",
+              "subject": "tighten edge group and edge leaf validation"
+            },
+            {
+              "sha": "c155edf34",
+              "author": "Keanu",
+              "date": "2026-09-03",
+              "subject": "fix sn to num, bound and blind proof serialization, add registry validation to regeventing"
+            },
+            {
+              "sha": "85fc3616f",
+              "author": "Keanu",
+              "date": "2026-09-03",
+              "subject": "add verifyGraphSemantics function"
+            },
+            {
+              "sha": "028a20137",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "add dp validation for bare offer"
+            },
+            {
+              "sha": "05bad5e3e",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "tighten dp field validation"
+            },
+            {
+              "sha": "4b79f8f43",
+              "author": "Daniel Hardman",
+              "date": "2026-09-02",
+              "subject": "Correct the SigVerifyResult docstring's key state ref"
+            },
+            {
+              "sha": "06bfa0bc8",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "fix dp field shape, add proof logic in verify issuer auth"
+            },
+            {
+              "sha": "72b034073",
+              "author": "Daniel Hardman",
+              "date": "2026-09-02",
+              "subject": "KRAM: pin partial-multisig key state to the last establishment event"
+            },
+            {
+              "sha": "8870ea6a0",
+              "author": "Daniel Hardman",
+              "date": "2026-09-01",
+              "subject": "KRAM: decide tsg currency against the last establishment event"
+            },
+            {
+              "sha": "50c5cfce2",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "loosen offer reqs"
+            },
+            {
+              "sha": "0a6ca3206",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "explicitly mention preload TEL evidence"
+            },
+            {
+              "sha": "73f5bb78c",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "fix walkGraph failures"
+            },
+            {
+              "sha": "54720cc15",
+              "author": "Keanu",
+              "date": "2026-09-02",
+              "subject": "refractor offer.a.o"
+            },
+            {
+              "sha": "607410441",
+              "author": "Keanu",
+              "date": "2026-09-01",
+              "subject": "bind offer.a.o to grant.a.o"
+            },
+            {
+              "sha": "82a6f3874",
+              "author": "Keanu",
+              "date": "2026-09-01",
+              "subject": "fix offer disclosed acdc"
+            },
+            {
+              "sha": "323fad4aa",
+              "author": "Keanu",
+              "date": "2026-08-31",
+              "subject": "solidify credential node type"
+            },
+            {
+              "sha": "9611c3d16",
+              "author": "Keanu",
+              "date": "2026-08-31",
+              "subject": "refractor verify and validate offer DAG"
+            },
+            {
+              "sha": "015beadee",
+              "author": "Keanu",
+              "date": "2026-08-31",
+              "subject": "fix dup acdc node for offer and grant"
+            },
+            {
+              "sha": "9eead9423",
+              "author": "Keanu",
+              "date": "2026-08-31",
+              "subject": "add single-dag nesting, origin walk"
+            },
+            {
+              "sha": "6a2f29418",
+              "author": "Daniel Hardman",
+              "date": "2026-08-28",
+              "subject": "Let an encrypted key store hold any seed algorithm"
+            },
+            {
+              "sha": "885c4c75c",
+              "author": "Daniel Hardman",
+              "date": "2026-08-28",
+              "subject": "Carry an identifier's signing algorithm across rotation"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "v1.2.14",
+          "date": "2026-09-02"
+        },
+        {
+          "branch": "v1.2.15",
+          "date": "2026-09-02"
+        },
+        {
+          "branch": "revert-1614-fix/witness-transmission-draining-v1.2.14",
+          "date": "2026-09-02"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-knowledge",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/08-keripy-kb.md"
+      ],
+      "chapters": [
+        "03",
+        "04",
+        "07"
+      ],
+      "caveat": "A git worktree of dhh1128/keripy on branch `knowledge`, not a separate repo. Already-distilled doctrine \u2014 its own scope tags ([protocol] vs [2.0-code]/[2.0-wire]) must survive mining, since a 2.0 code detail is not an eternal protocol truth. Re-verified 2026-06-05 against keripy 60ab9e08.",
+      "branches": [
+        {
+          "name": "knowledge",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "9489ac9bd",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "fix-stale-spec-refs",
+          "date": "2026-09-11"
+        },
+        {
+          "branch": "feat-di2i-direct-delegates",
+          "date": "2026-09-10"
+        },
+        {
+          "branch": "feat-indep-registry-bulk-issuance",
+          "date": "2026-09-10"
+        },
+        {
+          "branch": "main",
+          "date": "2026-09-09"
+        },
+        {
+          "branch": "feat-edge-group-traversal",
+          "date": "2026-09-08"
+        },
+        {
+          "branch": "feat-dnd-cli-visibility",
+          "date": "2026-09-08"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keria",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/10-keria-signify.md"
+      ],
+      "chapters": [
+        "03",
+        "06"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "7e685edaa",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "development",
+          "date": "2024-01-23"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "signify-ts",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/10-keria-signify.md"
+      ],
+      "chapters": [
+        "03",
+        "06"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "development",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "4c0072f62",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "main",
+          "date": "2026-09-10"
+        },
+        {
+          "branch": "docs",
+          "date": "2023-08-23"
+        },
+        {
+          "branch": "reg-poc-demo",
+          "date": "2023-07-18"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "papers",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/05-papers-priority.md",
+        "raw/06-papers-di-drift.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07"
+      ],
+      "caveat": "Daniel's own framing. Marker [N] is wrong here in the specification sense \u2014 these are authored positions, not normative text. Chapters cite them as the author's framing and should keep doing so; the marker field is unused for this source.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "f94f50f",
+          "to": "181569b64",
+          "stat": " 16 files changed, 448 insertions(+), 222 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "181569b",
+              "author": "Daniel Hardman",
+              "date": "2026-09-15",
+              "subject": "Publish Progressive Assurance (prog-a) as v0.9"
+            },
+            {
+              "sha": "ab7d4d2",
+              "author": "Daniel Hardman",
+              "date": "2026-08-24",
+              "subject": "spell out the CQT abbreviation in its title"
+            },
+            {
+              "sha": "463f50a",
+              "author": "Daniel Hardman",
+              "date": "2026-08-24",
+              "subject": "date Canonical Quoted Text to its 2.17 release"
+            },
+            {
+              "sha": "3ec6424",
+              "author": "Daniel Hardman",
+              "date": "2026-08-20",
+              "subject": "Revise \"Where Trust Bottoms Out\" to 1.8"
+            },
+            {
+              "sha": "5c81915",
+              "author": "Daniel Hardman",
+              "date": "2026-08-20",
+              "subject": "Revise \"KERI's Strategy for Post-Quantum Security\" to 1.2"
+            },
+            {
+              "sha": "ccbb04b",
+              "author": "Daniel Hardman",
+              "date": "2026-08-14",
+              "subject": "Revise \"Building Active Discovery\" to 1.1"
+            },
+            {
+              "sha": "57843b6",
+              "author": "Daniel Hardman",
+              "date": "2026-08-14",
+              "subject": "Publish \"Building Active Discovery\"; add errata to crna"
+            },
+            {
+              "sha": "2f569a9",
+              "author": "Daniel Hardman",
+              "date": "2026-08-07",
+              "subject": "Withdraw the PPreD paper from the archive"
+            },
+            {
+              "sha": "9fec44f",
+              "author": "Daniel Hardman",
+              "date": "2026-08-06",
+              "subject": "Generate amp-diff.md from upstream instead of hand-copying it"
+            },
+            {
+              "sha": "465230e",
+              "author": "Daniel Hardman",
+              "date": "2026-07-31",
+              "subject": "Republish m-glance v1.3 with a halved abstract"
+            },
+            {
+              "sha": "bde75bb",
+              "author": "Daniel Hardman",
+              "date": "2026-07-31",
+              "subject": "Republish amp-diff v1.3 and m-glance v1.2 from revised upstreams"
+            },
+            {
+              "sha": "8306c68",
+              "author": "Daniel Hardman",
+              "date": "2026-07-30",
+              "subject": "Guard doi/pdf_url format so the SSRN mistakes cannot recur"
+            },
+            {
+              "sha": "24c18bb",
+              "author": "Daniel Hardman",
+              "date": "2026-07-30",
+              "subject": "Fix SSRN DOIs; point pdf_url at our own copy, not SSRN"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keri-security-analysis",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/07-security-analysis.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "07"
+      ],
+      "caveat": "Carries the assumption catalog A1-A13 and the survivability framing that keri-doctrine.md's load-bearing claims 2, 3 and 5 rest on. A change here moves doctrine, not just a chapter.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "unknown",
+          "to": "149fa6c35",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "smithsamuelm-papers",
+      "kind": "gh-repo",
+      "tier": "warm",
+      "feeds": [
+        "raw/15-kram.md"
+      ],
+      "chapters": [
+        "09"
+      ],
+      "caveat": "KRAM whitepaper v0.7.6. Not cloned locally; read via the GitHub API. WebOfTrust/kram's README is an earlier, shorter subset \u2014 superseded, cite the Papers version.",
+      "branches": [],
+      "items": [
+        {
+          "sha": "6ed1ceff4",
+          "date": "2026-03-06",
+          "author": "Samuel M Smith",
+          "subject": "Merge remote-tracking branch 'origin/master'",
+          "path": "whitepapers/kram.md"
+        },
+        {
+          "sha": "67550b477",
+          "date": "2026-03-06",
+          "author": "Samuel M Smith",
+          "subject": "updated KRAM spec to clarify that we leave the partially signed database entries in place until prune time",
+          "path": "whitepapers/kram.md"
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-discussions",
+      "kind": "gh-discussions",
+      "tier": "hot",
+      "feeds": [
+        "raw/15-kram.md",
+        "raw/16-presentation-registries.md",
+        "raw/08-keripy-kb.md"
+      ],
+      "chapters": [
+        "07",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "The most doctrinally live source in the corpus and the one least visible to any local check. Sam edits posts in place \u2014 #1095 and #1613 both show \"last edited\" \u2014 so a quote can drift with no commit anywhere. Snapshotting (refresh/snapshot-discussions.py) is what makes those quotes re-verifiable. Watch BOTH vocabularies for a topic: \"presentation registry\" misses #1095, which invents the idea under the name \"issuee usage registry\".",
+      "branches": [],
+      "items": [
+        {
+          "number": 1627,
+          "title": "ACDC Presentation Architectures",
+          "url": "https://github.com/WebOfTrust/keripy/discussions/1627",
+          "updated": "2026-09-11",
+          "created": "2026-08-19",
+          "edited": "2026-09-11",
+          "author": "SmithSamuelM",
+          "category": "Ideas",
+          "comments": 5,
+          "primary": true
+        },
+        {
+          "number": 1613,
+          "title": "Authentication Factors in IPEX",
+          "url": "https://github.com/WebOfTrust/keripy/discussions/1613",
+          "updated": "2026-09-02",
+          "created": "2026-08-12",
+          "edited": "2026-09-02",
+          "author": "SmithSamuelM",
+          "category": "Ideas",
+          "comments": 1,
+          "primary": true
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-prs",
+      "kind": "gh-prs",
+      "tier": "hot",
+      "feeds": [],
+      "chapters": [
+        "03",
+        "04",
+        "05",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "Merged PRs are the tier-movement signal for [P] \u2192 [K]. They feed triage rather than a note of their own; the note that moves is whichever one carries the design they implement.",
+      "branches": [],
+      "items": [
+        {
+          "number": 1677,
+          "title": "fix(setup): allow Python 3.14 patch releases below 3.14.7",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1677",
+          "author": "jaelliot",
+          "merged": "2026-09-11"
+        },
+        {
+          "number": 1675,
+          "title": "upgraded to version 2.1.0.dev1",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1675",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-10"
+        },
+        {
+          "number": 1674,
+          "title": "Add direct KEL anchoring for truthy ax exchanges",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1674",
+          "author": "KeaxD",
+          "merged": "2026-09-11"
+        },
+        {
+          "number": 1672,
+          "title": "SEDI example Added schema checks and ACDC creation to example for Identity Assurance Receipt Example",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1672",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-07"
+        },
+        {
+          "number": 1670,
+          "title": "Work  on SEDI examples and some convenience updates to SerderACDC as a result",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1670",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-04"
+        },
+        {
+          "number": 1668,
+          "title": "Add disclosure path support to Compactor",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1668",
+          "author": "evanja57",
+          "merged": "2026-09-14"
+        },
+        {
+          "number": 1662,
+          "title": "KRAM: pin partial-multisig key state to the last establishment event",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1662",
+          "author": "dhh1128",
+          "merged": "2026-09-04"
+        },
+        {
+          "number": 1660,
+          "title": "Correct KLI challenge file and mailbox request paths",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1660",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1659,
+          "title": "Bump KERIpy version to 1.2.14",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1659",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1658,
+          "title": "KRAM: decide tsg currency against last establishment event, not last event",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1658",
+          "author": "dhh1128",
+          "merged": "2026-09-04"
+        },
+        {
+          "number": 1657,
+          "title": "Fix messenger idle accounting",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1657",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1655,
+          "title": "Avoid scheduling messengers for completed receipts",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1655",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1653,
+          "title": "Fix #1654: Admit TCP stream payloads",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1653",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1651,
+          "title": "fix: resolve WitnessPublisher lifecycle bugs (#1652)",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1651",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1650,
+          "title": "fix: read witness AIDs from config mapping",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1650",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1649,
+          "title": "Revert \"fix: make witness transmission teardown deterministic\"",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1649",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1648,
+          "title": "Revert \"Close direct connections without Reactants immediately\"",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1648",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1647,
+          "title": "Revert \"Use gleif_hio 0.6.20rc2 on v1.2.14\"",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1647",
+          "author": "kentbull",
+          "merged": "2026-09-02"
+        },
+        {
+          "number": 1644,
+          "title": "Add durable IPEX stores",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1644",
+          "author": "evanja57",
+          "merged": "2026-09-08"
+        },
+        {
+          "number": 1643,
+          "title": "Add single-DAG IPEX nesting, origin walk, and node verification",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1643",
+          "author": "KeaxD",
+          "merged": "2026-09-08"
+        },
+        {
+          "number": 1640,
+          "title": "Preserve non-Ed25519 key algorithm across rotations",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1640",
+          "author": "dhh1128",
+          "merged": "2026-09-01"
+        },
+        {
+          "number": 1637,
+          "title": "Split local TEL eventing into regeventing.py",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1637",
+          "author": "KeaxD",
+          "merged": "2026-09-01"
+        },
+        {
+          "number": 1577,
+          "title": "Add the ward-presents guardianship worked example (sibling to #1530)",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1577",
+          "author": "dhh1128",
+          "merged": "2026-09-04"
+        },
+        {
+          "number": 1561,
+          "title": "Adopt the settled `dp` disclosure-paths construct in the IPEX examples",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1561",
+          "author": "dhh1128",
+          "merged": "2026-09-09"
+        },
+        {
+          "number": 1530,
+          "title": "Add SEDI guardianship represented-presentation worked example",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1530",
+          "author": "dhh1128",
+          "merged": "2026-09-08"
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    }
+  ],
+  "errors": [],
+  "freshness": {
+    "status": "ok",
+    "live": 1435,
+    "missing": 994,
+    "total": 2429,
+    "new": 0,
+    "new_misses": []
+  },
+  "material": true
+}
