@@ -4,7 +4,7 @@ You are running the model phases of the KERI bible's monthly refresh, unattended
 
 Read `refresh/prompts/standards.md` first and treat it as binding. Read `refresh/state/<RUN>/delta.md` — the run directory is named in your instructions — for what moved. Read `refresh/sources.yaml` for the manifest.
 
-Write your report to `refresh/state/<RUN>/report.md` as you go, not at the end. If you run out of context or die mid-run, that file is what tells the next person how far you got.
+**Write the report's SKELETON FIRST** — create `refresh/state/<RUN>/report.md` with all seven section headings from "The report" below, each marked `*(pending)*`, before you do any other work. Then fill sections in as you go and drop the `(pending)` marker as each completes. If you run out of context or are cut off mid-run, that file is what tells the next person how far you got, and a report that ends mid-narrative with no JUDGMENT NEEDED section leaves them nothing to act on. That happened on the first real run.
 
 ## Phase 2 — triage
 
@@ -74,4 +74,4 @@ Anything you cannot settle goes under `JUDGMENT NEEDED` in the report rather tha
 6. **Cuts** — quotes removed for failing verification, and what each used to support.
 7. **JUDGMENT NEEDED** — proposed new chapters, proposed manifest changes (untracked branches, `chapters` mapping), doctrine changes owing a panel sync, unresolved tensions, anything upstream that Daniel may want to raise himself.
 
-Then update the pins in `refresh/sources.yaml`: `last_scanned` for every source scanned, `last_mined` **only** for notes actually re-read. If you are unsure whether a note was genuinely re-read against a commit, it was not.
+**Update `refresh/sources.yaml` pins as you go, not at the end.** The moment a note is re-read against a commit, advance that source's `last_mined` — bookkeeping done incrementally survives being cut off, and a single pass at the end is the first thing lost when a run is truncated. `last_scanned` advances for every source scanned, which you can do right after triage. `last_mined` advances **only** for notes actually re-read; if you are unsure whether a note was genuinely re-read against a commit, it was not.

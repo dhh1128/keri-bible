@@ -49,10 +49,12 @@ fail() { log "FAILED: $*"; notify "KERI bible refresh FAILED for $RUN: $* — se
 
 notify() {
   # Agent-side notification is an MCP tool, not a CLI, so it takes one cheap headless turn.
+  # The prompt goes in on STDIN, not as a positional argument: --allowedTools is variadic
+  # (<tools...>), so a trailing positional is swallowed as another tool name and claude then
+  # exits with "Input must be provided either through stdin or as a prompt argument".
   # Never let a notification failure fail the run.
-  timeout 300 claude -p --permission-mode acceptEdits \
-    --allowedTools "mcp__confer__notify" \
-    "Use the confer notify tool to tell Daniel exactly this, then stop: $1" \
+  printf 'Use the confer notify tool to tell Daniel exactly this, then stop: %s\n' "$1" \
+    | timeout 300 claude -p --permission-mode acceptEdits --allowedTools "mcp__confer__notify" \
     >>"$LOG" 2>&1 || log "(notify failed; continuing)"
 }
 
@@ -116,6 +118,12 @@ refresh/prompts/standards.md for the rules you are bound by. Write refresh/state
 you go. Do not run git, do not push, do not open a pull request — the calling script does that
 after you exit. Cap concurrent subagents at 4 and tell each to run heavy searches under nice -n 19."
 
+# `claude -p` terminates still-running background tasks after 600s by default, which on the first
+# real run cut the verify phase off mid-flight — the model exited 0 with its report unfinished and
+# the manifest pins never updated. Phases 3-5 fan out to subagents that routinely run longer than
+# ten minutes, so the ceiling has to come off.
+export CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0
+
 set +e
 timeout "$TIMEOUT" nice -n 19 ionice -c 3 claude -p "$PROMPT" \
   --permission-mode acceptEdits \
@@ -149,17 +157,33 @@ what was dismissed, and what needs judgment." || fail "commit failed"
 
 git push -q -u origin "$BRANCH" || fail "push failed"
 
+# GitHub caps a PR body at 65,536 characters and rejects the whole call past that — the first real
+# run produced a 77 KB report and lost the PR to it. Both documents are committed on the branch, so
+# the body carries the report alone, truncated if need be, and points at the files for the rest.
 BODY="$STATE_HOME/$RUN-pr-body.md"
-{
-  cat "$REPORT"
-  echo; echo "---"; echo
-  echo "<details><summary>Phase 1 delta report</summary>"; echo
-  cat "$DELTA"
-  echo; echo "</details>"
-} > "$BODY"
+python3 - "$REPORT" "$BODY" "$RUN" <<'PY'
+import sys
+report, out, run = sys.argv[1], sys.argv[2], sys.argv[3]
+LIMIT = 60000
+text = open(report, encoding="utf-8").read()
+footer = (f"\n\n---\n\nFull report: `refresh/state/{run}/report.md` on this branch. "
+          f"Phase 1 delta: `refresh/state/{run}/delta.md`.\n")
+if len(text) + len(footer) > LIMIT:
+    keep = LIMIT - len(footer) - 200
+    text = text[:keep] + (f"\n\n**[Truncated at {keep:,} of {len(text):,} characters — GitHub caps "
+                          f"a PR body at 65,536. Read the whole report in the branch.]**\n")
+open(out, "w", encoding="utf-8").write(text + footer)
+PY
 
-PR_URL="$(gh pr create --draft --base main --head "$BRANCH" \
-  --title "Bible refresh $RUN" --body-file "$BODY")" || fail "gh pr create failed"
+if ! PR_URL="$(gh pr create --draft --base main --head "$BRANCH" \
+    --title "Bible refresh $RUN" --body-file "$BODY")"; then
+  # The branch is already pushed, so the work is safe; only the PR is missing. Say where the body
+  # is rather than losing the run.
+  log "gh pr create failed — branch $BRANCH is pushed, body is at $BODY"
+  notify "KERI bible refresh $RUN committed and pushed to $BRANCH, but opening the PR failed. Body: $BODY"
+  git switch main >>"$LOG" 2>&1
+  exit 1
+fi
 log "opened $PR_URL"
 
 git switch main >>"$LOG" 2>&1
