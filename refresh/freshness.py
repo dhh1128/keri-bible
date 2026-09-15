@@ -27,7 +27,9 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
+from fnmatch import fnmatch
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -62,41 +64,91 @@ def norm(s: str) -> str:
     return _WS.sub(" ", s)
 
 
-def source_roots() -> list[Path]:
+def tracked_refs() -> list[tuple[Path, str, list[str]]]:
+    """(repo, ref, watch-paths) for every tracked branch of every git source.
+
+    The corpus is read from the REF, not from the working tree. Reading the tree means the check
+    silently depends on whichever branch each repo happens to be sitting on — the first real run
+    hit exactly that: keripy was parked on a feature branch, so "verified against keripy" meant
+    "verified against somebody's work in progress". Every tracked line is read, so a quote living
+    only in v1.1 resolves too; which TIER it belongs to is the report's job, not this one's.
+    """
     m = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
     root = Path(os.path.expanduser(os.environ.get("CODE_ROOT", m["code_root"])))
-    roots = []
+    out = []
     for s in m["sources"]:
         if s["kind"] != "git":
             continue                 # GitHub and web sources have no checkout; see class 2 below
         base = root / s["path"]
-        for w in s.get("watch", ["."]):
-            roots.append(base if any(c in w for c in "*?[") else base / w)
+        watch = s.get("watch", ["."])
+        for b in s.get("branches", []):
+            out.append((base, f"{s['remote']}/{b['name']}", watch))
+            out.append((base, b["name"], watch))     # local-only branch fallback (worktrees)
+    return out
+
+
+def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
+    """Concatenated text of the watched paths at `ref`, or None if the ref does not resolve."""
+    if subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify", "--quiet", ref],
+                      capture_output=True).returncode != 0:
+        return None
+    # List the whole tree and filter in Python. `git ls-tree -- '*.md'` matches NOTHING — the
+    # pathspec is not globbed the way a shell would glob it — and a watch entry of ["*.md"] then
+    # yields an empty, perfectly quiet result. That silently emptied `papers` and
+    # `keri-security-analysis` out of the corpus and reported ~150 sound quotes as drifted.
+    files = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "--name-only", ref],
+                           capture_output=True, text=True)
+    if files.returncode != 0:
+        return None
+    literals = [w.rstrip("/") for w in watch if not any(c in w for c in "*?[") and w != "."]
+    globs = [w for w in watch if any(c in w for c in "*?[")]
+    everything = not literals and not globs      # watch: ["."] means the whole tree
+
+    def wants(f: str) -> bool:
+        if everything:
+            return True
+        if any(f == w or f.startswith(w + "/") for w in literals):
+            return True
+        return any(fnmatch(f, g) or fnmatch(Path(f).name, g) for g in globs)
+
+    wanted = [f for f in files.stdout.split("\n")
+              if f and wants(f) and Path(f).suffix in EXTS
+              and not (SKIP_DIRS & set(Path(f).parts))]
+    if not wanted:
+        return ""
+    chunks = []
+    for i in range(0, len(wanted), 200):           # keep the argv under the exec limit
+        batch = wanted[i:i + 200]
+        cat = subprocess.run(["git", "-C", str(repo), "show"] + [f"{ref}:{f}" for f in batch],
+                             capture_output=True, text=True, errors="replace")
+        chunks.append(cat.stdout)
+    return "\n".join(chunks)
+
+
+def build_corpus() -> tuple[str, int, int]:
+    chunks, resolved, repos = [], 0, set()
+    for repo, ref, watch in tracked_refs():
+        if not (repo / ".git").exists():
+            continue
+        text = read_ref(repo, ref, watch)
+        if text is None:
+            continue                 # this branch does not exist here; a sibling entry may
+        resolved += 1
+        repos.add(str(repo))
+        chunks.append(norm(text))
+
+    for repo in {r for r, _, _ in tracked_refs()}:
+        if not (repo / ".git").exists():
+            print(f"WARNING: source not a git checkout, skipping: {repo}", file=sys.stderr)
+
     # Snapshotted discussions, if any. Without them every #1613 quote reports missing forever,
-    # and the real signal drowns in known-benign noise.
+    # and the real signal drowns in known-benign noise. These are files, not refs.
     cache = REPO / ".cache" / "discussions"
     if cache.is_dir():
-        roots.append(cache)
-    return roots
-
-
-def build_corpus(roots: list[Path]) -> tuple[str, int, int]:
-    live, chunks = 0, []
-    for r in roots:
-        if not r.exists():
-            print(f"WARNING: source root missing, skipping: {r}", file=sys.stderr)
-            continue
-        live += 1
-        files = [r] if r.is_file() else (
-            p for p in r.rglob("*")
-            if p.is_file() and p.suffix in EXTS
-            and not (SKIP_DIRS & set(p.relative_to(r).parts)))
-        for f in files:
-            try:
-                chunks.append(norm(f.read_text(encoding="utf-8", errors="replace")))
-            except OSError:
-                continue
-    return " ".join(chunks), live, len(roots)
+        for f in cache.glob("*.md"):
+            chunks.append(norm(f.read_text(encoding="utf-8", errors="replace")))
+        resolved += 1
+    return " ".join(chunks), resolved, len(repos)
 
 
 def longest_fragment(span: str) -> str:
@@ -122,19 +174,15 @@ def main() -> int:
         targets = sorted(REPO.glob("bible/*.md")) + sorted(REPO.glob("raw/*.md"))
         targets.append(REPO / "keri-doctrine.md")
 
-    roots = source_roots()
-    print("building normalized source corpus...", file=sys.stderr)
-    corpus, live_roots, all_roots = build_corpus(roots)
+    print("building normalized source corpus from tracked refs...", file=sys.stderr)
+    corpus, refs, repos = build_corpus()
 
     # A dead config looks exactly like total citation rot. Refuse to report that as a result.
-    if live_roots == 0:
-        print("ERROR: no source roots exist. Check refresh/sources.yaml (or set CODE_ROOT). "
+    if refs == 0:
+        print("ERROR: no source ref resolved. Check refresh/sources.yaml (or set CODE_ROOT). "
               "Not reporting drift.", file=sys.stderr)
         return 2
-    if live_roots < all_roots / 2:
-        print(f"WARNING: only {live_roots}/{all_roots} source roots resolved; counts unreliable.",
-              file=sys.stderr)
-    print(f"corpus: {len(corpus)} bytes from {live_roots}/{all_roots} roots", file=sys.stderr)
+    print(f"corpus: {len(corpus)} bytes from {refs} refs across {repos} repos", file=sys.stderr)
 
     baseline = load_baseline()
     total = live = 0
