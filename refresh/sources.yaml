@@ -46,16 +46,18 @@ sources:
     tier: hot
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: 4df80aa, date: 2026-07-17},
-         last_mined:   {commit: 4df80aa, date: 2026-07-17}}
+         last_scanned: {commit: fbdd4a615, date: 2026-09-15},
+         last_mined:   {commit: fbdd4a615, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[N1.1]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown}}
+         last_scanned: {commit: 3753f3797, date: 2026-09-15},
+         last_mined:   {commit: 3753f3797, date: 2026-09-15}}
     feeds: [raw/01-keri-spec.md]
     chapters: ["01", "02", "03", "04", "06", "07", "09"]
     caveat: >-
-      raw/01 carries no pin of its own; 4df80aa is the corpus-wide 2026-07-17 stamp recorded in
-      keri-doctrine.md. Its line-number hints (L33, L89, L1836…) are hints as of that commit only.
+      Both lines mined 2026-09-15 and the note now carries its own pins. The branches have DIVERGED —
+      neither commit is an ancestor of the other — so a citation here must name its branch. Note also
+      that spec-head.md reads "Specification Status: v1.1" on BOTH branches, so this corpus's
+      [N]/[N1.1] split tracks the git line, not the document's own version label.
 
   - id: cesr-spec
     kind: git
@@ -65,13 +67,18 @@ sources:
     tier: hot
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: d35125e, date: 2026-07-17},
-         last_mined:   {commit: d35125e, date: 2026-07-17}}
+         last_scanned: {commit: bad6edd84, date: 2026-09-15},
+         last_mined:   {commit: bad6edd84, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[N1.1]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown}}
+         last_scanned: {commit: 65fd7518b, date: 2026-09-15},
+         last_mined:   {commit: 65fd7518b, date: 2026-09-15}}
     feeds: [raw/02-cesr-spec.md]
     chapters: ["04", "07"]
+    caveat: >-
+      The previous pin d35125e is UNREACHABLE from every ref in the repo — `git branch -a --contains`
+      returns nothing — so the 2026-07-17 citations rested on a commit that no longer exists on any
+      branch. Both lines re-mined 2026-09-15. A pin that cannot be resolved is worse than no pin,
+      because it reads as provenance; check reachability when recording one.
 
   - id: acdc-spec
     kind: git
@@ -81,16 +88,17 @@ sources:
     tier: hot
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: f0bd097, date: 2026-09-01},
-         last_mined:   {commit: 11832a3, date: 2026-07-17}}
+         last_scanned: {commit: f0bd097de, date: 2026-09-15},
+         last_mined:   {commit: f0bd097de, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[N1.1]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown}}
+         last_scanned: {commit: 2362e48a1, date: 2026-09-15},
+         last_mined:   {commit: 2362e48a1, date: 2026-09-15}}
     feeds: [raw/03-acdc-spec.md]
     chapters: ["05", "07", "08", "10"]
     caveat: >-
-      Partially re-anchored at f0bd097 on 2026-09-01 for the bible 09/10 material only (rd, rip,
-      blindable state registries). The rest of raw/03 still stands at 11832a3.
+      Fully re-mined 2026-09-15 on both lines; the 2026-09-01 partial re-anchor is superseded.
+      f0bd097de is the long form of the old f0bd097 pin — main has not moved since 2026-08-28 —
+      while v1.1 is ahead by 346 insertions / 145 deletions in spec-body.md.
 
   - id: dossier-spec
     kind: git
@@ -100,8 +108,8 @@ sources:
     tier: warm
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: 3900e62, date: 2026-07-17},
-         last_mined:   {commit: 3900e62, date: 2026-07-17}}
+         last_scanned: {commit: b9227753c, date: 2026-09-15},
+         last_mined:   {commit: b9227753c, date: 2026-09-15}}
     feeds: [raw/04-dossier-spec.md]
     chapters: ["05", "06", "08"]
 
@@ -115,14 +123,17 @@ sources:
     tier: hot
     branches:
       - {name: main, role: standardizing, marker: "[K]",
-         last_scanned: {commit: 4df8e4a8, date: 2026-09-01},
-         last_mined:   {commit: 3a8e01ae, date: 2026-07-17}}
+         last_scanned: {commit: b8f60166b, date: 2026-09-15},
+         last_mined:   {commit: b8f60166b, date: 2026-09-15}}
     feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md]
     chapters: ["03", "04", "05", "08", "09", "10"]
     caveat: >-
-      last_mined is deliberately the OLDER pin. raw/15 and raw/16's implementation-status sections
-      were verified at 4df8e4a8 (2026-09-01) and kraming.py at fe161709; raw/09 has not been
-      re-read since the 2026-07-17 corpus stamp. Under-claim rather than over-claim.
+      Mined 2026-09-15 at b8f60166b, but PARTIALLY, and raw/09 says which parts: vdr/verifying.py,
+      acdc/ipexing.py, core/mapping.py and core/kraming.py were re-read at that commit; core/coring.py,
+      core/eventing.py, core/counting.py and vdr/eventing.py were NOT, and the claims resting on them
+      still stand at 3a8e01ae (2026-07-17) with line hints valid only there. The version also moved:
+      every [K] claim written before this pass was tagged against 2.0.0-dev6, and the line is now
+      2.1.0-dev1.
 
   - id: keripy-knowledge
     kind: git
@@ -132,14 +143,16 @@ sources:
     tier: warm
     branches:
       - {name: knowledge, role: standardizing, marker: "[K]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown, date: 2026-06-05}}
+         last_scanned: {commit: 9489ac9bd, date: 2026-09-15},
+         last_mined:   {commit: 9489ac9bd, date: 2026-09-15}}
     feeds: [raw/08-keripy-kb.md]
     chapters: ["03", "04", "07"]
     caveat: >-
       A git worktree of dhh1128/keripy on branch `knowledge`, not a separate repo. Already-distilled
       doctrine — its own scope tags ([protocol] vs [2.0-code]/[2.0-wire]) must survive mining, since
-      a 2.0 code detail is not an eternal protocol truth. Re-verified 2026-06-05 against keripy 60ab9e08.
+      a 2.0 code detail is not an eternal protocol truth. Re-mined 2026-09-15 at 9489ac9bd, whose tip
+      is dated 2026-07-02. The previously recorded mining date of 2026-06-05 cannot have been right;
+      raw/08 records why.
 
   - id: keria
     kind: git
@@ -149,10 +162,13 @@ sources:
     tier: warm
     branches:
       - {name: main, role: standardizing, marker: "[K]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown}}
+         last_scanned: {commit: 7e685eda2, date: 2026-09-15},
+         last_mined:   {commit: 7e685eda2, date: 2026-09-15}}
     feeds: [raw/10-keria-signify.md]
     chapters: ["03", "06"]
+    caveat: >-
+      First anchoring, 2026-09-15; the pin was `unknown` before. Upstream renamed `development` to
+      `main`, which is why a bare `git fetch upstream` failed here until the refspec was made explicit.
 
   - id: signify-ts
     kind: git
@@ -161,11 +177,19 @@ sources:
     watch: [src]
     tier: warm
     branches:
-      - {name: development, role: standardizing, marker: "[K]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown}}
+      - {name: main, role: standardizing, marker: "[K]",
+         last_scanned: {commit: ffba8406e, date: 2026-09-15},
+         last_mined:   {commit: ffba8406e, date: 2026-09-15}}
     feeds: [raw/10-keria-signify.md]
     chapters: ["03", "06"]
+    caveat: >-
+      RETARGETED 2026-09-15, development -> main, by hand after the refresh flagged it. `development`
+      is a real branch and genuinely the head of that name, but it has not moved since 2024-04-12;
+      the project develops on `main` (ffba8406e, 2026-09-10). A pin on a dormant branch is the
+      failure this manifest exists to prevent, wearing a valid commit hash. ffba8406e was
+      SPOT-CHECKED, not fully re-read — raw/10 says which claims that covers. Note also that the
+      CESR post-quantum and stream-parser work is NOT upstream: those commits live only on
+      feat/cesr-pq-codes and feat/cesr-stream-parser* in Daniel's fork.
 
   # ---------------------------------------------------------------- papers and analysis
 
@@ -177,8 +201,8 @@ sources:
     tier: hot
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: f94f50f, date: 2026-07-17},
-         last_mined:   {commit: f94f50f, date: 2026-07-17}}
+         last_scanned: {commit: 181569b64, date: 2026-09-15},
+         last_mined:   {commit: 181569b64, date: 2026-09-15}}
     feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md]
     chapters: ["01", "02", "03", "04", "05", "06", "07"]
     caveat: >-
@@ -194,13 +218,16 @@ sources:
     tier: warm
     branches:
       - {name: main, role: standardizing, marker: "[N]",
-         last_scanned: {commit: unknown},
-         last_mined:   {commit: unknown, date: 2026-07-17}}
+         last_scanned: {commit: 149fa6c35, date: 2026-09-15},
+         last_mined:   {commit: 149fa6c35, date: 2026-07-17}}
     feeds: [raw/07-security-analysis.md]
     chapters: ["01", "02", "07"]
     caveat: >-
       Carries the assumption catalog A1-A13 and the survivability framing that keri-doctrine.md's
       load-bearing claims 2, 3 and 5 rest on. A change here moves doctrine, not just a chapter.
+      The `unknown` pin was RESOLVED rather than re-mined on 2026-09-15: the repo has exactly one
+      commit, 149fa6c35 (2026-04-23), so the content read on 2026-07-17 is necessarily that commit.
+      last_mined keeps the original reading date because no re-reading happened.
 
   - id: smithsamuelm-papers
     kind: gh-repo
@@ -210,8 +237,8 @@ sources:
     tier: warm
     branches:
       - {name: master, role: standardizing, marker: "[P]",
-         last_scanned: {commit: 67550b47, date: 2026-03-06},
-         last_mined:   {commit: 67550b47, date: 2026-09-01}}
+         last_scanned: {commit: 67550b477, date: 2026-09-15},
+         last_mined:   {commit: 67550b477, date: 2026-09-15}}
     feeds: [raw/15-kram.md]
     chapters: ["09"]
     caveat: >-
@@ -224,7 +251,7 @@ sources:
     kind: gh-discussions
     repo: WebOfTrust/keripy
     tier: hot
-    since: 2026-09-01
+    since: 2026-09-15
     primary_authors: [SmithSamuelM]
     feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md]
     chapters: ["07", "08", "09", "10"]
@@ -239,7 +266,7 @@ sources:
     kind: gh-prs
     repo: WebOfTrust/keripy
     tier: hot
-    since: 2026-09-01
+    since: 2026-09-15
     feeds: []
     chapters: ["03", "04", "05", "08", "09", "10"]
     caveat: >-

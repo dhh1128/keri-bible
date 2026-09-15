@@ -477,3 +477,43 @@ It reports a clean "nothing moves" for doctrine claims 1, 2, 3, 6 and the CT, bl
 
 Two items it raises are mine to act on: **the heading corrections may need propagating to other chapters** (it owns only chapter 01 and did not look), and many KERI-spec citations across that chapter are bare `(KERI spec, L88)` with **no `§heading`**, which standards §1 requires. Closing that gap is mechanical but larger than a refresh.
 
+
+---
+
+## Run closeout — added by hand, 2026-09-15, after PR #1 merged
+
+The run was cut off. `claude -p` terminates background tasks after 600 seconds, so the verify phase ended mid-flight: the model exited 0 with this report stopping mid-narrative, no JUDGMENT NEEDED section, and `refresh/sources.yaml` pins unadvanced. The ceiling is removed for future runs (`CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0`) and the prompt now writes the report skeleton first and advances pins incrementally, so a truncated run leaves usable bookkeeping. This section closes the gap for this run only, and is written from evidence in the mined notes rather than from anything the run did not record.
+
+### Sources advanced
+
+Every pin below comes from the note that was mined against it, not from inference. Cold-tier sources were not scanned in September — that tier runs quarterly — and their pins are untouched.
+
+| Source | Branch | `last_mined` | Note |
+|---|---|---|---|
+| keri-spec | `main` / `v1.1` | `fbdd4a615` / `3753f3797` | both lines, first `v1.1` anchoring |
+| cesr-spec | `main` / `v1.1` | `bad6edd84` / `65fd7518b` | both lines, first `v1.1` anchoring |
+| acdc-spec | `main` / `v1.1` | `f0bd097de` / `2362e48a1` | supersedes the 2026-09-01 partial re-anchor |
+| dossier-spec | `main` | `b9227753c` | |
+| keripy-code | `main` | `b8f60166b` | **partial** — see below |
+| keripy-knowledge | `knowledge` | `9489ac9bd` | first real pin |
+| keria | `main` | `7e685eda2` | first anchoring |
+| signify-ts | `main` | `ffba8406e` | **branch retargeted** — see below |
+| papers | `main` | `181569b64` | |
+| keri-security-analysis | `main` | `149fa6c35` | pin *resolved*, not re-mined; `last_mined` keeps its 2026-07-17 date |
+| smithsamuelm-papers | `master` | `67550b477` | re-verified, unmoved |
+
+### JUDGMENT NEEDED
+
+1. **signify-ts was pinned to a dormant branch, and the manifest has been retargeted by hand.** `development` is a real branch and genuinely the head of that name, but it has not moved since 2024-04-12; the project develops on `main`. A pin on a two-and-a-half-year-old branch is the failure this manifest exists to prevent, wearing a valid commit hash. `ffba8406e` was **spot-checked, not fully re-read**. Related: the CESR post-quantum and stream-parser work is **not upstream** — those commits live only on `feat/cesr-pq-codes` and `feat/cesr-stream-parser*` in Daniel's fork, so any claim that CESR PQ codes are implemented in signify-ts is wrong about where.
+
+2. **The CESR spec's previous pin `d35125e` is unreachable from every ref.** `git branch -a --contains` returns nothing. The 2026-07-17 citations rested on a commit that exists on no branch. A pin that cannot be resolved is worse than no pin, because it reads as provenance — reachability needs checking when one is recorded.
+
+3. **The KERI and CESR spec lines have diverged**, with neither pin an ancestor of the other, so a citation must now name its branch. And `spec-head.md` reads `Specification Status: v1.1` on **both** branches, so this corpus's `[N]`/`[N1.1]` split tracks the git line rather than the document's own version label. That is a naming hazard worth a decision.
+
+4. **keripy coverage is partial and the note says exactly how.** `vdr/verifying.py`, `acdc/ipexing.py`, `core/mapping.py` and `core/kraming.py` were re-read at `b8f60166b`; `core/coring.py`, `core/eventing.py`, `core/counting.py` and `vdr/eventing.py` were not, and claims resting on them still stand at `3a8e01ae` with line hints valid only there. The version line also moved: `[K]` claims written before this pass were tagged against 2.0.0-dev6, and keripy is now 2.1.0-dev1.
+
+5. **Chapter 01 carries many bare `(KERI spec, L88)` citations with no `§heading`**, which standards §1 requires. Six broken heading citations were corrected in that chapter alone, none of them caused by this month's sources. Closing the gap corpus-wide is mechanical but larger than a refresh.
+
+6. **Nine quotes resolve only in somebody's working tree.** `freshness.py` now reads tracked refs rather than whatever each of thirteen repos has checked out, and nine previously "live" quotes do not survive that change. They are left visible in the baseline rather than absorbed, because they are exactly what the fix exists to stop counting as verified.
+
+7. **Untracked branches, dispositioned.** keripy's `v1.2.14` / `v1.2.15` / the revert branch are the 1.x maintenance line and were rejected for tracking. signify-ts `main` was adopted (item 1). No others proposed.
