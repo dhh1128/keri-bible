@@ -55,6 +55,12 @@ _DASH = re.compile(r"[—–]")
 _SLASH = re.compile(r" */ *")
 _WS = re.compile(r"\s+")
 _QUOTED = re.compile(r'"([^"]{%d,})"' % MINLEN)
+_GLUE = re.compile(r"@`[0-9a-f]{7,}`|\bL\d+[,.)]|^\s*\w+\.md\s+§")
+_EDITORIAL = re.compile(r"\[(sic|emphasis added|emphasis mine|\.\.\.|…)\]", re.I)
+# A genuine quotation opens with a word, a digit, or an opening mark. A span that opens with a
+# comma, a closing bracket or a dash is the regex having paired one quote's closing mark with the
+# next quote's opening one, and the text between them is the citation, not the quotation.
+_OPENS = re.compile(r"[\w*_`'\"(\[“‘]")
 
 
 def norm(s: str) -> str:
@@ -114,14 +120,30 @@ def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
     wanted = [f for f in files.stdout.split("\n")
               if f and wants(f) and Path(f).suffix in EXTS
               and not (SKIP_DIRS & set(Path(f).parts))]
-    if not wanted:
-        return ""
+    # A watched path can be real on disk and absent from the tree. The Dossier spec's `.ref/`
+    # directory is untracked, so reading refs alone dropped 96 of that note's quotes — a corpus
+    # gap wearing the costume of citation rot. Fall back to the working copy for exactly those
+    # paths, because there is no ref to read them from.
+    extra = []
+    for w in literals:
+        if any(f == w or f.startswith(w + "/") for f in wanted):
+            continue
+        ondisk = repo / w
+        if ondisk.is_dir():
+            extra += [q for q in ondisk.rglob("*")
+                      if q.is_file() and q.suffix in EXTS
+                      and not (SKIP_DIRS & set(q.relative_to(ondisk).parts))]
+        elif ondisk.is_file() and ondisk.suffix in EXTS:
+            extra.append(ondisk)
+
     chunks = []
     for i in range(0, len(wanted), 200):           # keep the argv under the exec limit
         batch = wanted[i:i + 200]
         cat = subprocess.run(["git", "-C", str(repo), "show"] + [f"{ref}:{f}" for f in batch],
                              capture_output=True, text=True, errors="replace")
         chunks.append(cat.stdout)
+    for q in extra:
+        chunks.append(q.read_text(encoding="utf-8", errors="replace"))
     return "\n".join(chunks)
 
 
@@ -193,10 +215,17 @@ def main() -> int:
         for span in _QUOTED.findall(tf.read_text(encoding="utf-8")):
             if len(span) > MAXLEN or "\n" in span or "](" in span:
                 continue            # mis-paired quotes and link-bearing prose, not citations
+            # Citation glue: the regex happily pairs one quote's closing mark with the next
+            # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
+            # @`181569b64`).` is not a quotation and can never be found in a source.
+            if _GLUE.search(span) or not _OPENS.match(span.strip()):
+                continue
             frag = longest_fragment(span)
             if len(frag) < MINLEN:
                 continue
-            needle = norm(frag).strip(" \t.,;:!?()[]{}…")
+            # Editorial insertions — [sic], [emphasis added], [the Issuee] — are the quoter's
+            # words, not the source's, so they must come out before matching.
+            needle = norm(_EDITORIAL.sub(" ", frag)).strip(" \t.,;:!?()[]{}…")
             total += 1
             if needle in corpus:
                 live += 1

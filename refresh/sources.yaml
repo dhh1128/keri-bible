@@ -162,8 +162,8 @@ sources:
     tier: warm
     branches:
       - {name: main, role: standardizing, marker: "[K]",
-         last_scanned: {commit: 7e685eda2, date: 2026-09-15},
-         last_mined:   {commit: 7e685eda2, date: 2026-09-15}}
+         last_scanned: {commit: 7e685edaa, date: 2026-09-15},
+         last_mined:   {commit: 7e685edaa, date: 2026-09-15}}
     feeds: [raw/10-keria-signify.md]
     chapters: ["03", "06"]
     caveat: >-
