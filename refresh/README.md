@@ -33,7 +33,7 @@ Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff
 | `prompts/standards.md` | The contract every phase is bound by. |
 | `prompts/refresh.md` | Phases 2–5, the model's instructions. |
 | `run-refresh.sh` | Cron entry point. Runs phase 1, the model, then phase 6. |
-| `install-cron.sh` | Shows or installs the crontab line. |
+| `install-cron.sh` | Shows or stages the schedule (`../cron/70-keri-bible-refresh.cron`) via devenv's `cron-link`. |
 | `state/<YYYY-MM>/` | Per-run audit trail, tracked. A month with no PR still leaves a record of what was looked at and dismissed. |
 
 ## The six phases

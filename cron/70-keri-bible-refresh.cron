@@ -1,0 +1,15 @@
+# cron-name: keri-bible monthly refresh
+# cron-boxes: kelun
+# cron-mailto: daniel.hardman@bakobo.com
+#
+# 3rd of the month, 05:23 local. A couple of days in so the month's merges have settled, and
+# off the hour because everything else in the world fires at :00.
+#
+# The bakobo address is deliberate. It was previously inherited rather than declared — the line
+# sat at the bottom of the crontab, below a MAILTO set for a bakobo job, and took its recipient
+# from there. Same destination, now stated outright, so that reordering the blocks or editing
+# an unrelated fragment cannot change where this mail goes.
+#
+# Staged automatically by `cron-sync` on any box named in cron-boxes above.
+
+23 5 3 * * /home/daniel/code/me/keri-bible/refresh/run-refresh.sh >> ${XDG_STATE_HOME:-$HOME/.local/state}/keri-bible-refresh/cron.log 2>&1
