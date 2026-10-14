@@ -54,7 +54,10 @@ _EMPH = str.maketrans("", "", "*_`\"'")
 _DASH = re.compile(r"[—–]")
 _SLASH = re.compile(r" */ *")
 _WS = re.compile(r"\s+")
-_QUOTED = re.compile(r'"([^"]{%d,})"' % MINLEN)
+# Pair every quote mark on a line, short spans included, and filter by length afterwards. Requiring
+# MINLEN inside the pattern skipped short quotes during pairing, so the next real quotation was
+# paired with the gap after it; a reworded locator between two quotes could flip a whole file.
+_QUOTED = re.compile(r'"([^"\n]*)"')
 _GLUE = re.compile(r"@`[0-9a-f]{7,}`|\bL\d+[,.)]|^\s*\w+\.md\s+§")
 _EDITORIAL = re.compile(r"\[(sic|emphasis added|emphasis mine|\.\.\.|…)\]", re.I)
 # A genuine quotation opens with a word, a digit, or an opening mark. A span that opens with a
@@ -213,7 +216,7 @@ def main() -> int:
         if not tf.is_file():
             continue
         for span in _QUOTED.findall(tf.read_text(encoding="utf-8")):
-            if len(span) > MAXLEN or "\n" in span or "](" in span:
+            if len(span) < MINLEN or len(span) > MAXLEN or "](" in span:
                 continue            # mis-paired quotes and link-bearing prose, not citations
             # Citation glue: the regex happily pairs one quote's closing mark with the next
             # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
