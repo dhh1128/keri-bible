@@ -16,11 +16,19 @@ In this chapter "normative" means CESR's standardizing line, `main` at `bad6edd8
 
 CESR is a dual text-binary encoding format whose unique property is text-binary concatenation composability (CESR spec > SAD Path Signatures, L1390; CESR spec > Composability, L5). This is the root claim; the rest of the format is derived from it.
 
-Three corrections to outsider priors are worth stating at the top, because they are the tells of someone who has not read the spec:
+Three corrections to outsider priors are worth stating at the top, because they are the tells of someone who has not read the spec.
 
-- CESR is not crypto-only. "The CESR protocol... is not limited to merely encoding Cryptographic Primitives but any primary data type (numbers, text, datetimes, lists, maps) may be encoded in a composable way" (CESR spec > Abstract Domain representations, L11). Reviewers who model CESR as "a signature envelope" miss that it is a general primary-datatype encoding.
-- CESR is not naive Base64. Standard Base64 pads each individual conversion to a multiple of 4 characters, which yields only "one-way composability" — primitives are separable but not losslessly round-trippable en masse (CESR spec > Text Code Size, L252; L95; L139). Convert a concatenation of raw binary values through naive Base64 and bits from two adjacent primitives can land in a single text character (L184), destroying the boundaries. CESR therefore forbids the `=` pad character entirely "because all CESR-encoded Primitives are composable" (CESR spec > Concrete Domain representations, L93). If a proposal reaches for `=`, it has already lost composability.
-- The encoding is an external interop contract, not an implementation detail. Compliance is normative: "All compliant encoded Primitives MUST be Composable. All compliant encoded Primitives MUST be self-framing" (CESR spec > Composability, L5); "All compliant implementations MUST support the transformations between all three domains" (CESR spec > Transformations, L31). keripy is a reference implementation whose intent layer is exogenous — the spec itself. "A change that passes keripy's own tests but diverges from the spec/wire format is a defect, because it silently breaks interop" (00-lens.md, claim 5).
+#### CESR is not crypto-only {#not-crypto-only}
+
+CESR is not crypto-only. "The CESR protocol... is not limited to merely encoding Cryptographic Primitives but any primary data type (numbers, text, datetimes, lists, maps) may be encoded in a composable way" (CESR spec > Abstract Domain representations, L11). Reviewers who model CESR as "a signature envelope" miss that it is a general primary-datatype encoding.
+
+#### CESR is not naive Base64 {#not-naive-base64}
+
+CESR is not naive Base64. Standard Base64 pads each individual conversion to a multiple of 4 characters, which yields only "one-way composability" — primitives are separable but not losslessly round-trippable en masse (CESR spec > Text Code Size, L252; L95; L139). Convert a concatenation of raw binary values through naive Base64 and bits from two adjacent primitives can land in a single text character (L184), destroying the boundaries. CESR therefore forbids the `=` pad character entirely "because all CESR-encoded Primitives are composable" (CESR spec > Concrete Domain representations, L93). If a proposal reaches for `=`, it has already lost composability.
+
+#### The encoding is an external interop contract {#interop-contract}
+
+The encoding is an external interop contract, not an implementation detail. Compliance is normative: "All compliant encoded Primitives MUST be Composable. All compliant encoded Primitives MUST be self-framing" (CESR spec > Composability, L5); "All compliant implementations MUST support the transformations between all three domains" (CESR spec > Transformations, L31). keripy is a reference implementation whose intent layer is exogenous — the spec itself. "A change that passes keripy's own tests but diverges from the spec/wire format is a defect, because it silently breaks interop" (00-lens.md, claim 5).
 
 The design aesthetic is minimally-sufficient strength, no waste: "there is minimally sufficient cryptographic strength and more cryptographic strength just wastes computation and bandwidth" (CESR spec > Compact fixed-size codes, L446). 128 bits of entropy is the accepted floor; the compact tables deliberately exclude weak suites (CESR spec > Annex A > Code table entry policy, L783). And the format is text-first for humans, binary-only for compactness: "A primary design goal of CESR is to select an encoding approach that provides high usability, readability, or human friendliness in the 'T' domain... The 'B' domain's purpose is merely to provide convenient compactness at scale" (CESR spec > Stable Framing Codes, L202).
 
@@ -44,7 +52,11 @@ The interop payoff is precise and load-bearing: `T(B)` is naive Base64 encode an
 
 ## 3. Composability — the core invariant and the 24-bit backbone {#composability}
 
-Definition (well-established): "An encoding has Composability when any set of Self-Framing concatenated Primitives expressed in either the Text domain or Binary domain may be converted as a group to the other Domain and back again without loss" (CESR spec > Composability, L5). Formally, `T(B)` and `B(T)` are jointly concatenation-composable iff `T(cat(b[k])) = cat(T(b[k]))` and `B(cat(t[k])) = cat(B(t[k]))` for all k — "the transformation of a set (as a whole) of concatenated Primitives is equal to the concatenation of the set of individually transformed Primitives" (CESR spec > Concatenation composability property, L70-73). The invariant is total: "Each and every Primitive or Count Code group of primitives MUST satisfy the Concatenation Composability property" (L73).
+#### Definition (well-established) {#composability-definition}
+
+"An encoding has Composability when any set of Self-Framing concatenated Primitives expressed in either the Text domain or Binary domain may be converted as a group to the other Domain and back again without loss" (CESR spec > Composability, L5). Formally, `T(B)` and `B(T)` are jointly concatenation-composable iff `T(cat(b[k])) = cat(T(b[k]))` and `B(cat(t[k])) = cat(B(t[k]))` for all k — "the transformation of a set (as a whole) of concatenated Primitives is equal to the concatenation of the set of individually transformed Primitives" (CESR spec > Concatenation composability property, L70-73). The invariant is total: "Each and every Primitive or Count Code group of primitives MUST satisfy the Concatenation Composability property" (L73).
+
+#### Self-framing makes de-concatenation possible {#self-framing}
 
 Self-framing is the mechanism that makes de-concatenation possible. A parser reads the first character (T) or byte (B), indexes a lookup table, and thereby learns exactly how many remaining characters/bytes belong to this primitive: "The self-framing property of the primitives enables de-concatenation" (L87); "This makes the Primitive self-framing" (CESR spec > Examples of pre-padding, L358). There are no delimiters and no ambiguity — the type code carries the length. keripy enforces this at parse dispatch [K]: `_exfil` reads `first = qb64b[:1]  # extract first char code selector`, and routes on it — a leading `-` is a count code, `_` is an op code, anything else indexes the `Hards` table (keripy core/coring.py, L1350-1362 @`b8f60166b`).
 
@@ -75,15 +87,15 @@ The padding-and-alignment math is the most fragile surface in the entire stack. 
 
 Two stability invariants govern how a type code behaves as the value changes.
 
-### 4.1 Stable type coding (invariant) {#stable-type-coding}
+#### Stable type coding (invariant) {#stable-type-coding}
 
 "The type portion of all compliant prepended Framing Codes MUST be stable in the Text domain" — "the leading characters that determine the type do not change when any other portion of the primitive changes" (CESR spec > Stable type encoding, L202-206). The type comes first, consumes a fixed integral number of T-domain characters (L210), and never shares information bits with the length or value in any single T-domain character. Stability is imposed on T, not B, and the choice is deliberate: binary parsers handle bit-fields and shifts trivially, but text parsers only see whole characters, "another reason to impose a stability constraint on the 'T' domain type coding instead of the 'B' domain" (L208).
 
-### 4.2 Stable value coding (invariant) {#stable-value-coding}
+#### Stable value coding (invariant) {#stable-value-coding}
 
 "the value portion of any primitive MUST be right aligned" (CESR spec > Stable value encoding, L216). This makes small numbers legible — decimal `0, 1, 2` map to Base64 `A, B, C` (L214).
 
-### 4.3 Each code table is keyed by the first character {#first-character-tables}
+#### Each code table is keyed by the first character {#first-character-tables}
 
 "Each code table MUST be uniquely indicated by the first character of the type code in the 'T' domain" (CESR spec > Multiple code table approach, L240). There is one integrated parse-and-convert table: read the type selector, and you know how to parse and convert the rest (L238). keripy realizes this [K] with the `Hards`/`Bards` dictionaries of hard-code sizes keyed by the T-domain and B-domain selector respectively (20-crosswalk.md @`9489ac9bd`; keripy core/coring.py, L1350-1355 @`b8f60166b`).
 
@@ -189,16 +201,16 @@ There are two major raw-primitive kinds, fixed-length and variable-length, plus 
 
 ### 6.1 Fixed-length raw-size tables (CESR spec, L503-531) {#fixed-size-tables}
 
-- 1-char table (`[A-Z, a-z]`): 52 codes, pad size 1 — the 32-byte sweet spot.
-- 2-char table (selector `0`): 64 codes, pad size 2 — the 64-byte sweet spot.
-- Large fixed (selectors `1`/`2`/`3` = 0/1/2 lead bytes): 4-char codes, 3 type characters -> `64**3 = 262,144` codes each. The selector "implicitly encodes the number of lead bytes." This is the headroom [section 5.6](#allocation-rules) now reserves post-quantum codes to, and on `v1.1` `65fd7518b` the `3` table is populated with a cryptographic suite for the first time — it was structurally defined but empty of crypto before [N1.1].
+- 1-char table (`[A-Z, a-z]`) — 52 codes, pad size 1 — the 32-byte sweet spot.
+- 2-char table (selector `0`) — 64 codes, pad size 2 — the 64-byte sweet spot.
+- Large fixed (selectors `1`/`2`/`3` = 0/1/2 lead bytes) — 4-char codes, 3 type characters -> `64**3 = 262,144` codes each. The selector "implicitly encodes the number of lead bytes." This is the headroom [section 5.6](#allocation-rules) now reserves post-quantum codes to, and on `v1.1` `65fd7518b` the `3` table is populated with a cryptographic suite for the first time — it was structurally defined but empty of crypto before [N1.1].
 
 ### 6.2 Variable-length raw-size tables (CESR spec, L533-577) {#variable-size-tables}
 
 Size is measured in quadlets (4 T-chars) / triplets (3 B-bytes) — the 24-bit unit. T count = size × 4 chars; B count = size × 3 bytes.
 
-- Small variable (selectors `4`/`5`/`6` = 0/1/2 lead): 4-char code = selector + 1 type + 2 size chars. 64 types; size up to `64**2 - 1 = 4095` quadlets = 16,380 chars / 12,285 bytes.
-- Large variable (selectors `7`/`8`/`9` = 0/1/2 lead): 8-char code = selector + 3 type + 4 size chars. `262,144` types; size up to `64**4 - 1 = 16,777,215` quadlets = 67,108,860 chars / 50,331,645 bytes. The first 62 entries mirror the small-variable types so a value can use the shorter 4-char code when it is small.
+- Small variable (selectors `4`/`5`/`6` = 0/1/2 lead) — 4-char code = selector + 1 type + 2 size chars. 64 types; size up to `64**2 - 1 = 4095` quadlets = 16,380 chars / 12,285 bytes.
+- Large variable (selectors `7`/`8`/`9` = 0/1/2 lead) — 8-char code = selector + 3 type + 4 size chars. `262,144` types; size up to `64**4 - 1 = 16,777,215` quadlets = 67,108,860 chars / 50,331,645 bytes. The first 62 entries mirror the small-variable types so a value can use the shorter 4-char code when it is small.
 
 ### 6.3 Parse-part vocabulary (CESR spec, L718-778) {#parse-parts}
 
@@ -212,11 +224,15 @@ Some fixed-size codes carry their value inside the code's soft/size part (compac
 
 ## 7. Count / group framing codes (grouping and pipelining) {#count-codes}
 
+#### Count codes count quadlets, never primitives {#count-quadlets}
+
 Count Codes (a.k.a. Group Codes) count quadlets/triplets in a group — never primitives. "always counts the number of quadlets/triplets in the group not the number of primitives" (CESR spec > Count Code tables, L591). This is a recurring correction: reviewers reach for "number of items," but the count is in 24-bit units precisely so the group can be skipped without parsing its contents. Count codes enable pipelining (multiplex/demultiplex), core-affinity offloading, and hierarchical group-of-groups composition (CESR spec > Count or Group Framing Codes, L362; CESR spec > Composability, L7).
 
 A count code is itself a composable primitive with no raw value, only its text code; pad size is always 0, and its length is a multiple of 4 chars / 3 bytes (L364, L591). keripy encodes this as invariant A7: for counters `hs + ss == fs` always — count codes carry no padding, and the soft encodes the quadlet/triplet count via `intToB64` (30-invariants.md, A7 @`9489ac9bd`; keripy core/counting.py, Counter).
 
-Domain-invariant count (INVARIANT): because the count is in quadlets/triplets (both 24 bits), "the count value is invariant between 'T' and 'B' Domains... MUST be the number of Quadlets in the 'T' domain and the number of Triplets in the 'B' domain" (L581). This lets a parser "extract the number of characters/bytes in a group from the Stream without parsing the group's contents; it is therefore pipeline-able" (L583). "Each element in content of a Count Code group MUST be aligned on a 24-bit boundary. Thus the only elements allowed in the contents of a Count Code group are other primitives or groups" (L591).
+#### Domain-invariant count (invariant) {#domain-invariant-count}
+
+Because the count is in quadlets/triplets (both 24 bits), "the count value is invariant between 'T' and 'B' Domains... MUST be the number of Quadlets in the 'T' domain and the number of Triplets in the 'B' domain" (L581). This lets a parser "extract the number of characters/bytes in a group from the Stream without parsing the group's contents; it is therefore pipeline-able" (L583). "Each element in content of a Count Code group MUST be aligned on a 24-bit boundary. Thus the only elements allowed in the contents of a Count Code group are other primitives or groups" (L591).
 
 Nested selectors: the first selector is always `-`. The second character being a letter `[A-Z, a-z]` means a single-char count code (52 total); a numeral, `-`, or `_` selects a secondary table (L594). The small count table is `-` + type letter + 2 size chars = 4 chars, counting 0-4095 (CESR spec > Small Count Code table, L599). The large count table is `--` + 1 type + 5 size chars = 8 chars, 64 types, counting 0 to `64**5 - 1 = 1,073,741,823` — groups up to ~4.29e9 chars / 3.22e9 bytes (CESR spec > Large Count Code table, L605).
 
@@ -252,19 +268,19 @@ A milder version of the same pattern: typed-digest seals may now carry a nonce. 
 
 This is the piece outsiders most often miss: there is a code whose job is not to carry data or count anything, but to switch which code tables the parser uses. "A protocol genus and version code itself MUST NOT provide a count of the following Quadlets or triplets but MUST modify the protocol genus and Version of all the following Count Codes" (CESR spec > Protocol genus/version table, L609).
 
-### 8.1 Format `-_GGGVVV` {#genus-version-format}
+#### Format `-_GGGVVV` {#genus-version-format}
 
 Format `-_GGGVVV` (8 chars): `-_` selector, `GGG` = 3-char genus (`262,144` possible genera), `VVV` = version where the first `V` is major and the last two are minor. `CAA` = 2.00, `CAQ` = 2.16; up to 64 majors × 4096 minors (CESR spec > Protocol genus/version codes, L615). The KERI/ACDC genus codes are `-_AAABAA` (v1.00) and `-_AAACAA` (v2.00) (L865-866).
 
-### 8.2 Purpose is twofold {#genus-version-purpose}
+#### Purpose is twofold {#genus-version-purpose}
 
 Purpose is twofold (L611): (1) it lets one CESR encoding serve different protocols/stacks, each with its own code tables; (2) it versions the tables for a given protocol. "The only table that all protocols MUST share (i.e., has identical values) is the protocol genus and version table" — all small/large count tables must share the universal count codes, but everything else MAY vary by protocol.
 
-### 8.3 Scope/override rule (invariant) {#genus-version-override}
+#### Scope/override rule (invariant) {#genus-version-override}
 
 A genus/version code applies to the following count codes at top level until another genus/version code appears, or inside a special enclosing count-code group. Only three universal overrideable enclosing count codes permit an embedded genus/version override (L609). And the override fires only in the right position: "the parser MUST only treat the genus/version count code, especially as an override, when it appears as the first count code within the framed material of an overrideable universal count code. Otherwise, there MUST be no special override meaning" (CESR spec > Universal genus/version override, L816). Inside a list (universal but non-overrideable), a genus/version code as the first element has no override semantics (L818). keripy carries the genus/version awareness in `GenusCodex`/`GenDex` mapping genera to code tables (keripy core/counting.py, L24-40 @`b8f60166b`; raw/09 section 8) [K].
 
-### 8.4 Reviewer takeaway {#genus-version-takeaway}
+#### Reviewer takeaway {#genus-version-takeaway}
 
 The genus/version code is the crypto-agility and multi-protocol mechanism made explicit at the table level, above the per-code mechanism of [section 5](#code-tables). A new protocol or a table revision is not a new magic byte scattered through the stream — it is a single genus/version primitive whose scope is well-defined and whose override positions are tightly constrained. Ambiguity here is a downgrade/confusion surface, which is why the override position is normatively pinned.
 
@@ -274,21 +290,21 @@ The genus/version code is the crypto-agility and multi-protocol mechanism made e
 
 CESR must interleave with three non-native serializations, and here the framing device is not a count code but a Version String.
 
-### 9.1 Three interleaved non-CESR serializations {#interleaved-serializations}
+#### Three interleaved non-CESR serializations {#interleaved-serializations}
 
 A CESR parser MUST support three interleaved non-CESR serializations: JSON, CBOR, MGPK (CESR spec > Performant resynchronization, L388). For those, the framing device is a Version String as the first field, label `v` (lowercase) — the regex target that yields serialization type and total size (CESR spec > Version String field, L1123, L1125).
 
-### 9.2 v2 format `PPPPMmmGggKKKKBBBB.` {#v2-version-string}
+#### v2 format `PPPPMmmGggKKKKBBBB.` {#v2-version-string}
 
 v2 format `PPPPMmmGggKKKKBBBB.` — 19 chars, five parts (L1131): `PPPP` protocol (`KERI`, `ACDC`), `Mmm` protocol major/minor (base-64 numeric), `Ggg` CESR genus-table version, `KKKK` serialization kind (`JSON`|`CBOR`|`MGPK`|`CESR`), `BBBB` total length in Base64 (inclusive), then a `.` terminator. Max size `64**4 = 16,777,216` chars; larger payloads chain via SAIDs (L1150). The terminator's purpose is forward-compatibility: it lets a future version change the version-string size while keeping the field regex-extractable (L1152). Note the subtlety flagged in the spec: `Mmm`/`Ggg`/`BBBB` are "base 64 numerical notation" — "a number expressed as a base 64 number, not a string encoded in Base64", positionally weighted with `A`=0 and `_`=63 (L1146). Mis-reading that is a parsing bug.
 
-### 9.3 v1 legacy `PPPPvvKKKKllllll_` {#v1-version-string}
+#### v1 legacy `PPPPvvKKKKllllll_` {#v1-version-string}
 
 v1 legacy `PPPPvvKKKKllllll_` — 17 chars: `vv` two-char hex major/minor, `llllll` length in lowercase hex, `_` terminator. v2 implementations MUST support v1 to verify 1.XX events (CESR spec > Legacy Version 1.XX string field format, L1156-1174).
 
 keripy makes all of this concrete. The regexes are `VER2FULLSPAN = 19` / `VER1FULLSPAN = 17`, with `VEREX2` matching `[A-Z]{4}` protocol + version + `[A-Z]{4}` kind + size + `.` terminator, and `VEREX = VEREX2 | VEREX1` compiled into `Rever` (keripy kering.py, L39-61 @`b8f60166b`) [K]. The combined regex is why a single parser can sniff either version — it tries v2 first, falls back to v1.
 
-### 9.4 CESR-native field maps carry no version string {#native-maps-no-version}
+#### CESR-native field maps carry no version string {#native-maps-no-version}
 
 CESR-native field maps carry no embedded version string. They use `-G##`/`--G#####` count codes for map-ness and size; the unique start bits ([section 10](#cold-start)) mean no regex version string is needed. A native map instead has a protocol version field (protocol + version, not size/kind). In memory an implementation may inject a placeholder `v` with kind `CESR` so re-serialization knows to emit native CESR, but "there is no normative indication that the in-memory object was deserialized from a CESR native field map" (L1148). This is a real gotcha for round-trip fidelity across implementations.
 
@@ -296,7 +312,7 @@ CESR-native field maps carry no embedded version string. They use `-G##`/`--G###
 
 ## 10. Streaming, cold start, and the eight tritets {#cold-start}
 
-### 10.1 The cold-start problem {#cold-start-problem}
+#### The cold-start problem {#cold-start-problem}
 
 After a cold start, a parser looks for framing info; ambiguity leads to confusion and a forced re-cold-start (TCP: close/reopen; UDP: ack/nack). "Good cold start re-synchronization is essential to robust performant Stream processing" — the goal is to resync by skipping to the next well-defined boundary, not by flushing buffers (CESR spec > Cold start Stream parsing problem, L380-384).
 
@@ -315,11 +331,11 @@ The assignment is not arbitrary: JSON/CBOR/MGPK map objects consume tritets `011
 
 The reference implementation is a near-verbatim mirror. `ColdCodex` enumerates exactly these eight: `AnB64=0o0, CtB64=0o1, OpB64=0o2, JSON=0o3, MGPK1=0o4, CBOR=0o5, MGPK2=0o6, CtOpB2=0o7`, and `sniff(ims)` computes `tritet = ims[0] >> 5` and dispatches to `msg`/`txt`/`bny`/`ano` status (keripy kering.py, L239-322 @`b8f60166b`; `ColdCodex` at L239, `sniff` at L287, the shift at L317) [K]. The docstring even carries the worked example built on `x = bytearray([0x2d, 0x5f])` (keripy kering.py, L263).
 
-### 10.2 The parse formula {#parse-formula}
+#### The parse formula {#parse-formula}
 
 Examine the first tritet -> select one of the eight. If a count code, the rest of the code carries what is needed to parse the group. If JSON/CBOR/MGPK, "the mapping's first field MUST be a Version String" providing type and length for regex extraction (L438). The spec calls this "an extremely compact and elegant Stream parsing formula" (L442).
 
-### 10.3 Interleaving rule (invariant) {#interleaving-rule}
+#### Interleaving rule (invariant) {#interleaving-rule}
 
 Non-native serializations may be interleaved with native CESR only at the top level of a stream. "This is NOT true for non-native serializations nested inside CESR groups." When nested, "a non-native CESR serializations MUST be encoded as a CESR primitive and then enclosed in a special count code for non-native messages" (CESR spec > Interleaved non-CESR serializations, L374-376). Nesting raw JSON inside a count-code group without wrapping it is a wire defect.
 
@@ -355,11 +371,11 @@ The ranked list of desync/downgrade surfaces an adversarial reviewer should prob
 9. A count code with two meanings: v2 `-N`. Added 2026-10-03. keripy at `80f77b73b` defines `-N` as `NonceSealSingles` (keripy core/counting.py, L228) while both CESR branches define it as transferable receipt quadruples (CESR spec, L915 @`bad6edd84`, L923 @`65fd7518b`) — see [section 7.1](#receipts-retired). Because CESR is self-framing, a group whose code means different things to producer and consumer is parsed confidently and wrongly, not rejected. (uncited — flagged by verification 2026-10-03: no parser was run on such a group, and a spec parser reading nonce singles as `pre+snu+dig+sig` quadruples may instead reject on a code-type mismatch in the prefix or signature slot; treat "not rejected" as unverified.) It is latent at this pin, since no keripy code path is known to emit `-N` and keripy's parser has no `-N` handler [K] — narrowed 2026-10-03 (verification): previously "keripy wires `-N` into no CESR-native serializer or parser"; v2 `messagize` would frame a `SealNonce` bond as `-N` if handed one ([section 7.1](#receipts-retired)) — and it becomes live the moment either side emits it. This is the clearest instance this chapter has of the [section 1](#what-cesr-is) point that keripy's tests cannot catch a wire defect: ~~keripy is internally consistent here, and the inconsistency is with the spec~~ the main inconsistency is with the spec, and keripy is not wholly consistent with itself either, since its v2 attachment emitter can frame a group its own parser cannot read.
 10. Sequence numbers are hex strings, and an implementation got that wrong until 2026-09-16. Added 2026-10-03. signify-ts built the source-seal `Seqner` in `messagize` from `new Seqner({ sn: parseInt(seal[1].s) })` (signify-ts src/keri/core/eventing.ts, L432 @`ffba8406e`), reading the hex `s` field as decimal — wrong from sequence number `0xa` upward. At `5a174b545` it reads `new Seqner({ snh: seal[1].s }).qb64b` (signify-ts eventing.ts, L430), the hex constructor (signify-ts#417; raw/10 section 11c) [K]. The resulting attachment would have been well-framed while carrying the wrong sequence number, so nothing at the framing layer could flag it (an inference from the code, not a run). The lesson for a reviewer is the same as item 9 from the other side: a value that is syntactically valid CESR can still be semantically wrong, and nothing in the type system caught this one.
 
-### 12.1 Well-established versus contested {#established-vs-contested}
+#### Well-established versus contested {#established-vs-contested}
 
 Well-established and enforced in both spec and code: composability, the 24-bit alignment math, mid-padding, stable framing, count-codes-count-quadlets, the genus/version format and scope, the version-string formats, and the eight-tritet cold start. Uncertain or in-flux: the Op Code table is explicitly reserved/TBD (`_` selector, CESR L628, L948) — a whole stream-processing capability is gestured at but unspecified; and several large-variable/context tables are structurally defined but not exhaustively populated (raw/02 section Gaps). Superseded 2026-09-15: an earlier revision of this paragraph described the post-quantum code assignments as "being introduced in successive updates" with an open issue. That quoted phrase came from the unreachable `d35125e61` and appears on neither branch; it is cut ([section 5.7](#pq-in-practice)). The accurate statement is branch-dependent — no post-quantum code of any kind on `main` `bad6edd84`, and FN-DSA, ML-DSA and SLH-DSA populated with ML-KEM explicitly deferred on `v1.1` `65fd7518b`. The open issue is real and survives the retraction: `::: issue` "[Post-quantum cryptographic operations]", issue #14, sits at L559 on both branches unchanged, so the `v1.1` work did not close it. Minor source typos noted but non-doctrinal, both still present at `bad6edd84`: the `6A` table text says "pad size of 0" while the same paragraph ends with 2 lead bytes (L553), and a `-S#####` large count code is missing a leading `-` (L926) — both read as source typos, not design intent (raw/02 section Gaps).
 
-### 12.2 The load-bearing assumption {#load-bearing-assumption}
+#### The load-bearing assumption {#load-bearing-assumption}
 
 The crypto-agility guarantee ("old parsers frame the stream correctly around a code they do not know") holds only because sizing is a pure function of the code and because a new code occupies a genuinely unused slot whose size-class the old parser does not otherwise depend on. It is not an unconditional "any parser reads any stream" promise; it is "a disciplined additive extension that old parsers reject cleanly and new parsers accept," resting entirely on the sizing math being exactly right (CESR spec > Protocol genus/version codes, L618-622; 00-lens.md, claim 8 @`9489ac9bd`). That single dependency is why the sizing tables sit at the top of the risk list. The strongest evidence the corpus now has that the assumption holds in practice is the one described in [section 5.7](#pq-in-practice): a second, independently maintained implementation sizes primitives by table lookup on the code alone, and adding 33 post-quantum rows to it required no parser change whatever [P].
 
