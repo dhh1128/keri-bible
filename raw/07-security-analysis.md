@@ -1,6 +1,6 @@
 # 07 — Security Analysis: Survivability, Threat Model, and the Del Giudice Claim Bindings
 
-Raw doctrine-mining notes. **Sources:** `/home/daniel/code/keri-security-analysis/` — primarily `cr-ad-trust.md` (Cryptographic vs. Administrative Trust paper), `standard-analysis.md` (the analysis-method template), `background.md` (canonical background, "already digested" — used here only to anchor section/assumption/property numbers and exact quotes), and the six per-claim analyses `dg-c01-claude.md` … `dg-c06-claude.md`. Citations give file + section heading (or § / line). Quotes are ≤25 words, verbatim.
+Raw doctrine-mining notes. **Sources:** `/home/daniel/code/wot/keri-security-analysis/` (path corrected 2026-10-14; this line previously named `/home/daniel/code/keri-security-analysis/`, the pre-reorg location; pin 149fa6c35, the repo's only commit; second pass in §13) — primarily `cr-ad-trust.md` (Cryptographic vs. Administrative Trust paper), `standard-analysis.md` (the analysis-method template), `background.md` (canonical background, "already digested" — used here only to anchor section/assumption/property numbers and exact quotes), and the six per-claim analyses `dg-c01-claude.md` … `dg-c06-claude.md`. Citations give file + section heading (or § / line). Quotes are ≤25 words, verbatim.
 
 ---
 
@@ -250,3 +250,150 @@ These are the priors from PKI/IAM/blockchain that the corpus explicitly reframes
 - "Both systems make fraud provable rather than impossible. Both require monitoring, accountability, and human judgment." (`cr-ad-trust.md` §7).
 - KERI's constraints are "constraints of *immaturity*, not of *architecture*." PKI's are architectural — "baked into a standard that mandates certificate expiration, relies on administrators for continuity, and was designed before quantum computing was an engineering concern." (`cr-ad-trust.md` §6).
 - "No trust architecture escapes the burdens of monitoring and accountability." (`cr-ad-trust.md` §5).
+
+---
+
+## 13. Second pass, 2026-10-14: sections the first pass skipped
+
+### 13.0 Pin, scope and provenance of this pass
+
+Source: `/home/daniel/code/wot/keri-security-analysis` at 149fa6c35 (commit subject: first rounds of analysis), the repository's only commit and unchanged since the first pass. Mining date 2026-10-14. Every quote below was read at that commit. Quotes from `background.md` drop the source's markdown emphasis and backtick markers and join its hard-wrapped lines; the words and their order are unchanged. Line numbers are hints. The two PDFs and `prompt-standard-analysis.md` were not read for this pass.
+
+What this pass adds. A grep of `bible/` and `raw/` on 2026-10-14 found no citation of `background.md` §4.3, §4.4, §5.1-5.2, §6.7-6.9, §7.2, §7.3, §7.7, §8.1 or §8.4, and no citation of any `-chatgpt` or `-gemini` file. The bible's source list (`bible/01-foundations-and-worldview.md:197`) names the `background.md` ranges it drew on, and these sections fall outside them. Three partial overlaps exist and are not repeated here. The residual of §4.4.1, that pre-rotation compromise is catastrophic, is already carried at `bible/02-security-model-and-threat-posture.md:76`, via `00-lens.md` citing `background.md` §3.4-3.5. The A12 and A13 statements from §7.2 and §7.6 are already in the assumption table at `bible/02-security-model-and-threat-posture.md:105-106`, where A12 is cited only as "§7.x"; §13.5 below gives its section. The §7 CISO notes of the six Claude analyses were summarised in one paragraph at `bible/02-security-model-and-threat-posture.md:173` and in §11 above; §13.8 quotes them and says where they conflict with doctrine.
+
+Provenance. `background.md` is this project's own analytical model, not a specification. It says so: "This document is the canonical background for KERI security analysis in this project." (`background.md` header comment, L4). Its claims are the corpus's reading of KERI and belong in the bible as analysis, never at `[N]`. The `dg-c0X` files are per-claim analyses, and the filename suffix appears to name the model that produced each one; that is an inference, supported by the `-gemini` files ending in a chat assistant's offer, e.g. "Would you like me to analyze DG-C02, which addresses the Malicious Controller case?" (`dg-c01-gemini.md` L79). Their §7 sections describe themselves as non-normative.
+
+### 13.1 What agreement does and does not guarantee (`background.md` §4.3)
+
+The positive list is conditional on the §4.6 assumptions: "Given appropriate assumptions (enumerated below), sufficient agreement can provide:" (§4.3.1 L278). It names "Event durability: once sufficiently witnessed, an event cannot be retroactively removed" (L279), "Fork resistance under honest conditions: honest controllers cannot be forked by external attackers" (L280), and "Availability: witnesses can retransmit KERLs while controllers are offline" (L281).
+
+The negative list is stated against agreement alone. "Witness agreement alone does not guarantee:" (§4.3.2 L287) fork prevention by malicious controllers, global convergence, "Timely detection of duplicity" (L290), and "Agreement across disjoint validator populations" (L291). The section closes on the locality rule: "Agreement is local to a controller’s witness set." (L293). This is the same content as the KAWA non-properties P5-P8 in §4 of this note, stated before KAWA is introduced, which is why a chapter can use it as the one-paragraph version.
+
+### 13.2 Threat surfaces: threat, mitigation, residual (`background.md` §4.4)
+
+§4.4 is the corpus's only threat enumeration in threat-mitigation-residual form, and its shape is the point: two of the four surfaces have no protocol mitigation at all.
+
+Controller key compromise (§4.4.1). Threat: "Adversary obtains current signing keys" (L304). Mitigation: "Pre-rotation commitments" and "Recovery rotation" (L307-308). Residual: "Compromise of pre-rotation keys is catastrophic" (L311), already in the bible as noted in §13.0.
+
+Malicious controller (§4.4.2). Threat: "Controller intentionally produces multiple conflicting KELs" (L318). In place of a mitigation the section records an observation: "KERI does not attempt to prevent this" (L321) and "Security relies on detectability and consequences, not impossibility" (L322). The scope sentence reconciles two things the bible states separately: "This threat is in scope, but must be analyzed separately from honest-controller cases." (L324). The threat is in scope for analysis while protection against it is an explicit non-goal (§1.3, carried in §2.4 above and at `bible/02-security-model-and-threat-posture.md:54-64`). The word consequences matters too: it puts governance response inside the security claim, which the bible's §4 does not currently say.
+
+Witness misbehaviour (§4.4.3). Threats: "Signing conflicting events", "Withholding receipts", "Colluding with controller" (L331-333). Mitigation: "Thresholding" and "Assumptions on maximum faulty witnesses" (L336-337). Residual: "Witness sets are controller-chosen" and "No global witness reputation or enforcement" (L340-341). The second residual is not in the bible. It is the threat-model root of the witness-diversity and watcher-incentive material that the gap study assigns to an infrastructure chapter.
+
+Observer absence or degradation (§4.4.4). Threat: "Watchers/jurors/judges are absent, lazy, siloed, or non-overlapping" (L348). Impact: "Duplicity may remain undetected indefinitely" and "Validators may accept conflicting histories permanently" (L351-352). The section ends: "This threat is explicitly acknowledged and not mitigated by protocol mechanics alone." (L354). This is the surface on which the one surviving residual of the Del Giudice bindings lands (§8 above, meta-pattern).
+
+### 13.3 KAWA's purpose, inputs, outputs and state (`background.md` §5 preamble, §5.1-5.2)
+
+Framing: "KAWA is analyzed as a controller-scoped agreement mechanism, not as a global consensus protocol." (§5 L444-445). Its three functions are event durability, availability, and "Fault tolerance: tolerate some fraction of faulty or unavailable witnesses." (§5.1 L457). What it does not attempt: "Establish global agreement among validators", "Prevent intentional equivocation by controllers", "Enforce witness honesty beyond threshold assumptions" (L460-462). The third item is new to the bible, and it is the protocol-side statement of §4.4.3's residual.
+
+§5.2 gives KAWA a contract. Inputs for an event: "The event data (including prior event digest)", "Controller signature(s)", "Witness receipts" (L471-473). Outputs: "A sufficient agreement for E", "Inclusion of E in witnesses’ local copies of the KERL", "Retrievability of E + receipts by validators" (L477-479). Witness state is kept "per identifier" (L483): "A local copy of the KERL", "Receipt history", "Rules preventing disallowed equivocation" (L484-486). My reading, not the source's: because all witness state is per identifier, nothing in KAWA can relate two identifiers' histories, which is the mechanical reason agreement is witness-scoped.
+
+### 13.4 Observer failure modes, literature, implications (`background.md` §6.7-6.9)
+
+Failure modes (§6.7). Observer effectiveness degrades under "Sparse deployment", "Lazy or siloed observers", "Non-overlapping validator trust domains" and "Economic or governance disincentives" (L822-825). In the extreme case "Duplicity may persist indefinitely without detection." (L828), and the section classifies that outcome: "This is an acknowledged design tradeoff, not a protocol failure." (L830).
+
+A reading rule for the literature (§6.8). Claims that duplicity cannot be helped, that validators are unavoidably vulnerable, or that forks are unavoidable "must be evaluated relative to assumptions A8–A11." (L841). "Claims that omit observer mechanisms implicitly assume:" observer absence or observer irrelevance (L843-845), and "Such assumptions must be made explicit to avoid overstated conclusions." (L847). This is a shibboleth in reverse: a critique that never mentions observers has assumed them away.
+
+Implications (§6.9). "Observer mechanisms are core but optional" (L853); "Detection is probabilistic and time-dependent" (L855); "Absence of observers is a deployment choice, not an inevitability" (L856). The prescribed claim form is "Under observer assumptions A8–A11, property O# holds." (L859). The phrase core but optional is the one the bible lacks. It reconciles the protocol-level statement that the observer layer is enabled but not mandated (`bible/02-security-model-and-threat-posture.md:155`) with the deployment-level insistence that it is not an add-on (`bible/02-security-model-and-threat-posture.md:173`): optional to the protocol, core to the security outcome.
+
+### 13.5 Validator inputs and acceptance rules (`background.md` §7.2, §7.3)
+
+Inputs (§7.2). "A validator may rely on:" (L899) "Controller-provided KERLs", "Witness-provided KERLs", "Observer-provided evidence", "Cached or historical data" (L900-903). A12, "Validators may observe different subsets of the network and data sources." (L906), is defined here, so the "§7.x" at `bible/02-security-model-and-threat-posture.md:105` should read §7.2.
+
+Acceptance (§7.3). "Validators typically accept a KERL if:" (L912) "It is internally valid", "It has sufficient witness receipts", "It conforms to local policy" (L913-915). Local policy "may consider:" "Witness reputations", "Observer reports", "Governance rules", "Risk tolerance" (L917-921). Then: "There is no protocol-mandated acceptance rule." (L923).
+
+Tension with the specification, unresolved. That last sentence is stronger than the spec. The spec mandates validator behaviour on duplicity: an honest validator "MUST trust when there is no evidence of duplicity and MUST NOT trust when there is any evidence of duplicity" (KERI spec `spec/spec-body.md` L53 at `kswg-keri-specification` main 4df80aa, re-read for this pass; quoted at `bible/02-security-model-and-threat-posture.md:186`). `background.md` §7.3 is best read as saying that no rule chooses among valid histories or fixes the policy inputs, not that validators may accept anything. A chapter should carry the spec's rule as `[N]` and §7.3 beneath it as analysis. The same tension recurs in §13.6.
+
+### 13.6 Fork handling (§7.6) and the consensus-term translation (§7.7)
+
+Fork handling (§7.6). "When a validator encounters duplicity:" (L995) "It may reject the identifier", "It may select one branch", "It may await further evidence" (L996-998). The middle option sits uneasily with the spec's "MUST NOT trust when there is any evidence of duplicity unless and until the duplicity has been reconciled" (KERI spec L53, as above), unless selecting a branch is read as reconciliation under the spec's first-seen discretion ("It is at the validator’s discretion", KERI spec `spec/spec-body.md` L1842 at main 4df80aa). Neither source settles which reading is intended. Recorded as an open question; not resolved here.
+
+The translation table (§7.7). "Claims that use consensus language must be reframed:" (L1007)
+
+| Consensus Term | KERI Interpretation |
+|---|---|
+| Safety | Cryptographic validity |
+| Liveness | Controller progress |
+| Agreement | Witness-scoped |
+| Finality | Local durability |
+| Consistency | View-relative |
+
+(§7.7 L1009-1015, cells verbatim.) "Failure to perform this translation leads to category errors." (L1017). The bible already reframes safety and liveness in prose (`bible/02-security-model-and-threat-posture.md:184`) and addresses finality as a tell (`bible/07-shibboleths-and-anti-patterns.md:260-266`), but it has no term-for-term table, and the pairings Finality to Local durability and Consistency to View-relative appear nowhere in it.
+
+### 13.7 Del Giudice's declared scope and terminology (`background.md` §8.1, §8.4)
+
+Declared scope (§8.1). The thesis's modelling choices are listed: "Primary focus on KAWA (witness agreement for event generation)" (L1075), "Primary security posture: honest controllers under attack" (L1076), "Malicious controllers treated only insofar as they demonstrate limits" (L1077), "Delegation and multisignature controllers declared out of scope" (L1078), "Non-transferable identifiers assumed for witnesses" (L1079), and observers "described but not analyzed as primary security contributors" (L1080-1081). The verdict: "These choices are consistent internally, but they constrain the domain of validity for many claims." (L1083-1084). The consequence the bible does not yet state: no Del Giudice result can be cited for a delegated or multisig identifier, so the delegation doctrine at `bible/03-key-management-and-identifier-lifecycle.md:114-163` has no formal-analysis backing from this thesis.
+
+Terminology (§8.4). "Several terms used in the thesis correspond to more precise concepts in this document:" (L1292-1293)
+
+| Thesis Term | Model Mapping |
+|---|---|
+| Consistency | P2 (Section 5.6) |
+| Safety | Cryptographic validity (Section 7.5.1) |
+| Liveness | Controller progress (Section 7.5.2) |
+| Agreement | Witness-scoped agreement (Section 5) |
+| Eventual consistency | Eventual awareness (Section 7.4.3) |
+
+(§8.4 L1295-1301, cells verbatim.) "This mapping should be applied before comparative or critical analysis." (L1303). Two notes. The Consistency rows of §7.7 and §8.4 differ, View-relative against P2, and they are not in conflict: §7.7 translates generic consensus language, while §8.4 maps the thesis's specific use, which is the witness-level property P2. A chapter should not flatten them into one row. And the last row is the useful one for reviewers: a reviewer who calls KERI eventually consistent is claiming more than it provides, since eventual awareness "is possible, not guaranteed" (§7.4.3, at `bible/02-security-model-and-threat-posture.md:181`).
+
+### 13.8 The CISO notes, condensed (`dg-c01..c06-claude.md` §7)
+
+Status. These are one analyst's view, model-generated, and non-normative by their own labels: "This section is explicitly non-normative and does not assess protocol correctness." (`dg-c01-claude.md` §7 L187); "This section is explicitly non-normative and non-argumentative." (`dg-c04-claude.md` §7 L144). Where a note pulls against doctrine, doctrine wins, and the note is recorded as deployment opinion. None of the empirical-sounding claims (how often compromise is holistic, how deployments choose thresholds) cites evidence.
+
+Consistent with doctrine, and the substance an operations chapter could use:
+
+- Assume compromise. "Treat controller compromise as inevitable and design for graceful degradation." (`dg-c01-claude.md` §7 L195).
+- Witness diversity against common-mode failure: "if witnesses are all hosted by the same cloud provider or operated by the same organization, correlated failures become likely." (`dg-c01-claude.md` §7 L199).
+- Threshold defaults and validator policy: "Provide strong default thresholds in tooling." and validators "refusing to accept identifiers with weak thresholds" (`dg-c01-claude.md` §7 L211). Against this, "Real deployments may use minimal witness sets (e.g., 1-of-2 or 2-of-3) for cost or convenience" (`dg-c06-claude.md` §7 L124).
+- Observer infrastructure as a primary control: "Deploy watcher infrastructure as a first-class operational concern." (`dg-c01-claude.md` §7 L238).
+- Named watcher failure modes: "Inconsistent polling frequencies (watchers check weekly instead of continuously)", "Misconfiguration (watchers poll wrong witness sets, fail to aggregate evidence)", "Alert fatigue (evidence of duplicity exists but is not acted upon)" (`dg-c02-claude.md` §7 L132-134).
+- The incentive problem: "Running watchers has costs but diffuse benefits; free-rider problems likely" (`dg-c05-claude.md` §7 L175).
+- The tools-versus-deployment line: "The protocol provides the tools for detection; operational reality determines whether those tools are deployed." (`dg-c02-claude.md` §7 L151).
+- Fail-closed validator default: "Reject identifiers on detection of duplicity (fail-closed)" (`dg-c03-claude.md` §7 L238). This agrees with the spec's MUST NOT trust rule (`bible/02-security-model-and-threat-posture.md:186`).
+- Controller honesty as the common case: "most controllers are likely to be honest (they have no incentive to fork their own identities and invite detection)." (`dg-c06-claude.md` §7 L119).
+- User expectation: network disruption "may surprise users expecting instant finality." (`dg-c06-claude.md` §7 L134).
+- Custody of next keys. "Attackers who obtain current keys frequently have broader access (credential stores, backups, build pipelines), making pre-rotation key security questionable." (`dg-c04-claude.md` §7.1 L150). This is a tension rather than a conflict: the firewall assumes "The next key itself stays offline, in cold storage" (`bible/02-security-model-and-threat-posture.md:72`), and the note is a warning that operations can void that assumption. It belongs in an operations chapter as a custody requirement, not in chapter 02 as a weakening of the firewall.
+
+Where the notes conflict with doctrine. The first two are the clearest; the rest are this pass's reading and are marked as such.
+
+1. Recovery escrow. "Controllers registering recovery intentions with trusted third parties before compromise" (`dg-c04-claude.md` §7.4 L176). This contradicts the bible's account of why recovery rotation exists, that it gives "real-world recoverability without a trusted third party" (`bible/02-security-model-and-threat-posture.md:226`), and the root-of-trust doctrine that KERI "does not rely on any trusted third-party administrative process" (KERI spec `spec/spec-body.md` L89 at main 4df80aa; quoted at `bible/01-foundations-and-worldview.md:47`). Pre-rotation already is the sealed recovery commitment (§2.6 above). Do not carry escrow as a recommendation; if cited at all, cite it in chapter 07 as an example of the administrative-trust reflex.
+2. Authoritative KELs. "Publish authoritative KELs for high-stakes identifiers (e.g., root authorities)" (`dg-c03-claude.md` §7 L235). This conflicts with the invariant that witnesses and OOBIs are "sources of data, never sources of authority" (`bible/02-security-model-and-threat-posture.md:42`). A KEL's authority is its signatures; a publisher can make one available but cannot make it authoritative. Publishing KELs is fine; the adjective is the error.
+3. Governance as mandatory. "Governance is not optional" (`dg-c03-claude.md` §7 L259). This pulls against "Observer mechanisms are core but optional" (§13.4) and the bible's "enables but does not mandate" (`bible/02-security-model-and-threat-posture.md:155`). Reconcilable if read as a deployment requirement for high-stakes use, which is how a chapter should state it; not as a protocol requirement.
+4. Higher thresholds against malicious recovery. "Higher M values make recovery rotation harder to execute maliciously (but also harder to execute legitimately)" (`dg-c04-claude.md` §7.4 L175). My reading, not adjudicated by any source: the authority for a recovery rotation is the pre-committed keys, and a correct witness receipts a properly authorised event whatever the threshold (P1, §4 above; recovery rule, `background.md` §5.5), so raising M changes receipting fault tolerance, not who can rotate. Unsupported; do not carry without a source.
+5. Time-windowed recovery acceptance. "Validators only accepting recent recovery rotations with fresh evidence" (`dg-c04-claude.md` §7.4 L177). No time window appears in the recovery rules this corpus carries (`bible/03-key-management-and-identifier-lifecycle.md:155-163`). A validator could impose one as local policy (§13.5), at the cost of rejecting legitimate late recoveries. My reading; record as policy, not doctrine.
+6. The super watcher as fork resolver. dg-c04 expects validators to "defer to external governance" through GLEIF's super watcher "for fork resolution" (`dg-c04-claude.md` §7.3 L168). The note presents this as a centralisation risk, not a recommendation, so the conflict is terminological: fork resolution is judge work, and the bible records maintainer usage in which super names scope and attaches to all three roles (`bible/02-security-model-and-threat-posture.md:161`). A useful example of the role collapse that paragraph warns about.
+7. M = 1 and a single witness. "A controller with M = 1 can have its history forked by a single compromised witness." (`dg-c01-claude.md` §7 L209). My reading: a witness cannot author controller-signed events (P1), so a fork needs compromised or duplicitous controller keys as well; M = 1 removes the witness check, it does not by itself create the fork. The bible repeats the looser form as "M = 1 is trivially breakable" (`bible/02-security-model-and-threat-posture.md:214`, from `dg-c01-claude.md` §3). Open question: tighten that line, or find a source that supports it as written.
+
+### 13.9 Corroboration from the ChatGPT and Gemini variants (dg-c01, dg-c02)
+
+Cited as corroboration only. Neither file adds a doctrinal claim the Claude analyses lack, and both are lower-fidelity exports: `dg-c01-gemini.md` lost its inline mathematics ("quorum sizing ()", L9).
+
+Same verdicts, independently reached. On DG-C01: "Within its stated scope, the claim is faithful to KERI-as-specified." (`dg-c01-chatgpt.md` §2 L13); "The claim is faithful to KERI-as-specified regarding the local mechanics of witness agreement" (`dg-c01-gemini.md` §2 L25). On non-transferable witnesses, corroborating `background.md` §2.3 (§6 above): the backer-list choice "is normative in KERI-as-specified" (`dg-c01-chatgpt.md` §2 L21). On DG-C02: "a non-goal (preventing malicious controllers from equivocating) is treated as a shortcoming rather than as a scoped exclusion." (`dg-c02-chatgpt.md` §5 L68); the claim "borders on a category error by framing a deliberate non-goal (fork prevention)" as missing protection (`dg-c02-gemini.md` §5 L63). On operations: "Deployments that omit them will experience materially weaker security without violating the spec." (`dg-c01-chatgpt.md` §7 L84); "Even if duplicity is detected, the protocol doesn't tell you what to do." (`dg-c02-gemini.md` §7 L82), which restates O2's "Proof does not imply remediation" (`bible/02-security-model-and-threat-posture.md:167`).
+
+Where the variants go further, and should not be carried. ChatGPT says "KAWA’s guarantees are brittle under partial failure: they do not degrade gracefully" (`dg-c01-chatgpt.md` §7 L83). That is fair about the threshold proofs and misleading about the system, where detection takes over as consistency fails (§2.1, §2.4 above). Gemini cites "the Swiss e-ID case" (`dg-c02-gemini.md` §7 L81) with no source; uncorroborated.
+
+### 13.10 Routing
+
+Chapter 02, security model:
+
+- §13.1 agreement guarantees and §13.3 KAWA's purpose and contract feed §7 (KAWA), as the short statement before P1-P8.
+- §13.2's malicious-controller entry (§4.4.2: in scope for analysis, consequences as part of security) feeds §4.
+- §13.4's core-but-optional and the A8–A11 claim template feed §9.
+- §13.5 and §13.6's fork handling feed §10. The spec tension is an open question for that section, and the A12 citation at line 105 should become §7.2.
+- §13.7's declared scope feeds §11, with a sentence that the bindings say nothing about delegated or multisig identifiers.
+- §13.8 conflict 7 (M = 1) is a proposed correction to line 214.
+- §13.9 supplies corroboration footnotes for §11 only.
+
+Chapter 07, shibboleths:
+
+- §13.6's consensus-term table and §13.7's thesis-term table feed §7 and the quick-reference in §13.
+- §13.4's reading rule, that a critique omitting observers has assumed their absence, feeds §7.
+- §13.8 conflicts 1 and 2 (recovery escrow, authoritative KELs) are examples for §2, the administrative-trust tells. Conflict 6 belongs in §8, role confusion.
+
+Planned infrastructure and operations chapter, fed by `raw/18`:
+
+- §13.2's witness residuals (controller-chosen witness sets, no global witness reputation or enforcement) and the observer-degradation surface.
+- §13.4's failure-mode list (§6.7).
+- The consistent half of §13.8: witness diversity, threshold defaults, watcher failure modes and incentives, fail-closed defaults, and custody of next keys.
+- §13.8 conflicts 3 to 5, as policy options with their doctrinal limits stated.
+
+Open questions carried from this pass: whether `background.md` §7.3's "no protocol-mandated acceptance rule" and §7.6's "select one branch" can be squared with the spec's MUST NOT trust rule (§13.5, §13.6); and whether the M = 1 claim at `bible/02-security-model-and-threat-posture.md:214` has a source that supports it as written (§13.8 item 7).
