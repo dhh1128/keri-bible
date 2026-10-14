@@ -16,7 +16,7 @@ Titles of papers, talks and specifications are written plain, and linked where a
 
 ### Headings
 
-One H1 per chapter: `# NN — Title`, where NN is the two-digit chapter number. H2 is a numbered section, `## N. Title`. H3 is a numbered subsection, `### N.M Title`. H4 is unnumbered and used for the units that are currently bold-led paragraphs, such as a shibboleth's correction or a named finding. No level is skipped. Checked.
+One H1 per chapter: `# NN — Title`, where NN is the two-digit chapter number. H2 is a numbered section, `## N. Title`. H3 is a numbered subsection, `### N.M Title`. An unnumbered heading, used for the units that were bold-led paragraphs (a shibboleth's correction, a named finding), sits one level below its parent: H3 under a section with no numbered subsections, H4 under a numbered subsection. No level is skipped. Checked.
 
 Heading text contains no ampersand; write "and". An ampersand is mangled differently by different slug generators, table-of-contents builders and HTML escapers, so it breaks links in ways that vary by tool. This retitles chapters 04, 05, 06 and 08. Checked.
 
