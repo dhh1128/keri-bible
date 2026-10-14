@@ -11,8 +11,10 @@ These are the two halves of the **Signify/KERIA architecture**: a custodial clou
 | Source | Branch | Commit | Date | Status |
 |---|---|---|---|---|
 | KERIA | `upstream/main` (WebOfTrust/keria) | `7e685edaaeca408919f9adf6789a6626d9c5cf79` | 2026-09-11 | mined 2026-09-15 |
+| KERIA | `upstream/main` | `928ce26a4` | 2026-09-30 | **delta-mined 2026-10-03** — §11; only the changed files were read |
 | signify-ts | `upstream/development` (WebOfTrust/signify-ts) | `4c0072f62ede449d44136e8db87972ceb90bc760` | **2024-04-12** | **stale branch — see warning below** |
 | signify-ts | `upstream/main` (WebOfTrust/signify-ts) | `ffba8406ef5d0c148decefd6ecfb2f31c480a0ef` | 2026-09-10 | spot-checked 2026-09-15 |
+| signify-ts | `upstream/main` | `5a174b545` | 2026-09-16 | **delta-mined 2026-10-03** — one commit, one source file plus its test (*corrected 2026-10-03 (verification): was "one file"*); §11 |
 
 **Mining date: 2026-09-15.** Both sources previously carried `unknown` pins; this pass is the first anchoring, so every `[K]` claim below either gained a commit or is flagged as not re-read. What this pass covered: the KERIA auth path end-to-end (`core/authing.py`), the `endrole`/`locscheme` establishment-event sealing fix, the ESSR tunnel changes, the untargeted-ACDC fix, the custody claims at code level rather than README level, and a set of deliberate negative checks. What it did **not** cover is listed under "Not re-read in the 2026-09 pass".
 
@@ -378,6 +380,26 @@ A stream parser in `src/keri/core/parsing.ts` (746 lines), with `test/core/parsi
 
 **`s` means different things in different protocols, and the guard is on `proto`, not genus.** `ver.proto === 'KERI' && sad && typeof sad.s === 'string'` (`parsing.ts:parse`, L725), else `sn` is `null`. `s` is the sequence number under KERI and the **schema SAID** under ACDC — the same field name with unrelated meanings. Gating on the protocol field of the version string covers both v1 and v2 KERI and excludes ACDC under either. **This is a genuine interop hazard worth a chapter mention:** a parser that reads `s` as a sequence number unconditionally will report an ACDC's schema SAID as a sequence number, and will do so without erroring.
 
+## 11. The 2026-10 pass — what changed at `928ce26a4` (KERIA) and `5a174b545` (signify-ts)
+
+A delta pass. Only the files that changed between the 2026-09 pins and these were read; nothing in "Not re-read in the 2026-09 pass" below was re-opened, and those caveats stand.
+
+### 11a. KERIA runs on keripy's 1.2.x line, pinned exactly — so keripy `main`'s 2.x work does not reach it `[K]`
+
+KERIA's dependency tightened from a range to an exact pin: `"keri==1.2.14",` (`pyproject.toml:30` @`928ce26a4`), where `7e685edaa` had `"keri>=1.2.13,<1.3",` (`pyproject.toml:30` @`7e685edaa`). The project's own changelog states the lineage: "KERIA `0.4.0` pinned `keri==1.2.12`. This release first upgraded to `1.2.13` and then to the published `keri==1.2.14`" (`changelog.md` §0.4.1 *KERIpy dependency changes used by KERIA* @`928ce26a4`).
+
+This note had never recorded which keripy line KERIA consumes, and the answer matters for every chapter that cites keripy `main`. keripy `main` is on the 2.1.0-dev line (`raw/09`), where the 2026-09 and 2026-10 work landed — IPEX V2, `E1E` enforcement, the KRAM establishment-event rule, `dp`, presentation-registry checks. **None of that is in a `keri==1.2.14` dependency.** A claim of the form "keripy does X" at a `main` commit is therefore not evidence that a KERIA deployment does X. Where KERIA matches keripy `main`, it did so by reimplementing the behaviour in its own code — §10b's `endrole`/`locscheme` fix is the example — which this note already treats as independent evidence rather than inheritance. The chapters should carry the distinction.
+
+### 11b. KERIA agent scheduling became configurable — operational, recorded only for completeness
+
+Most of the KERIA diff is the new `src/keria/app/scheduling.py` and `tocks` configuration in `agenting.py`: per-task cadences under `tocks.signify`, legacy flat names retained with deprecation warnings, and the delegation `Anchorer`'s escrow loop taking its cadence from configuration rather than a hard-coded `yield 0.5` (`delegating.py` @`928ce26a4`). The changelog's summary: "Removed the fixed half-second delegation escrow delay" (`changelog.md` §0.4.1 *Configuration and scheduling*). This changes when escrows are processed, not what is accepted. No doctrinal claim moves.
+
+**Negative result at `928ce26a4`:** `src/keria/core/authing.py`, `core/keeping.py`, `app/aiding.py`, `app/ipexing.py` and `app/credentialing.py` are unchanged from `7e685edaa` (`git diff --stat` lists none of them), so §10a–§10d and the auth, custody and replay findings carry forward unchanged.
+
+### 11c. signify-ts fixed a hex/decimal violation of the sequence-number invariant `[K]`
+
+§7d records that both implementations "must agree" that `s` is a hex string. signify-ts's `messagize` violated it when attaching a `SealEvent` source seal: it built the `Seqner` from `new Seqner({ sn: parseInt(seal[1].s) })` (`src/keri/core/eventing.ts:432` @`ffba8406e`), which reads the hex string as decimal — wrong from sequence number `0xa` upward. At `5a174b545` it reads `new Seqner({ snh: seal[1].s }).qb64b` (`src/keri/core/eventing.ts:430`), the hex constructor (#417). Corroborative of §7d by counter-example: the invariant was live enough to be broken in production code until 2026-09-16, and nothing in the type system caught it.
+
 ---
 
 ## Negative results from the 2026-09 pass (searched for, not found — recorded as findings)
@@ -405,7 +427,7 @@ Under-claiming deliberately. The following were carried forward from the origina
 
 ## Open questions and unresolved tensions
 
-1. **The signify-ts pin names a dormant branch.** `upstream/development` has not moved since 2024-04-12 while `upstream/main` is current. Any `[K]` claim anchored at `4c0072f62` is a claim about April 2024. `refresh/sources.yaml` is a reviewed field and this pass did not change it; the retarget is proposed in the PR body. **Until it is retargeted, this note's signify-ts claims are pinned to `ffba8406e` and say so, which is a divergence between the note and the manifest that a reader should know about.**
+1. ~~**The signify-ts pin names a dormant branch.**~~ *Resolved 2026-09-15, recorded 2026-10-03:* the manifest was retargeted to `main` by hand on 2026-09-15 and the 2026-10 refresh scanned `main`. The text below is kept as the record of what was believed. **The signify-ts pin names a dormant branch.** `upstream/development` has not moved since 2024-04-12 while `upstream/main` is current. Any `[K]` claim anchored at `4c0072f62` is a claim about April 2024. `refresh/sources.yaml` is a reviewed field and this pass did not change it; the retarget is proposed in the PR body. **Until it is retargeted, this note's signify-ts claims are pinned to `ffba8406e` and say so, which is a divergence between the note and the manifest that a reader should know about.**
 2. **What tier do fork-branch implementations get?** §10e and §10f coin `[K-fork]` for "code at a named commit on an unmerged personal fork". The existing ladder has no rung for it: it is not `[K]` (no implementation anyone runs behaves this way), not `[P]` (it is code, not a proposal), and not `[N1.1]` (it is not a spec). The marker is provisional and needs a decision — either adopt it corpus-wide with a definition in the tier key, or rule that fork branches are not citable at all and cut §10e and §10f. **They must not be silently read as `[K]`.**
 3. **The variable-size rejection comment does not describe its own repo.** `parsing.ts:258-261` justifies the fix by asserting the Sizes tables "store that as null", but signify-ts's tables store `undefined` (`matter.ts:206`, `indexer.ts:202`); keripy's use `None`. Either the comment was written against keripy's tables and carried over, or there is a table entry not found. The code is defensible as defense-in-depth; the stated reason is not accurate for this codebase. Unresolved.
 4. **Does anything downstream depend on freshness that the protocol does not provide?** The timestamp is signed, carried, and never checked. A deployment that assumes the agent rejects stale requests would be wrong, but nothing in either codebase documents the assumption either way. Whether any deployed system relies on it is outside what code reading can settle.

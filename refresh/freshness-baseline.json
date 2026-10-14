@@ -1,9 +1,13 @@
 {
-  "generated": "2026-09-15",
+  "generated": "2026-10-03",
   "misses": {
     "0085631420c9": {
       "file": "12-origin-security.md",
       "quote": "partially dissociate[s] the authentication and authorization processes."
+    },
+    "0093466427cf": {
+      "file": "11-credentials.md",
+      "quote": "An `I2I` edge from `sedi-age` to `sedi-id` would hold only if the issuer of `sedi-age` equalled the issuee of `sedi-id` \u2026 So `sedi-age` carries no edge to the r"
     },
     "0093756277da": {
       "file": "04-cesr-and-the-wire.md",
@@ -17,6 +21,18 @@
       "file": "07-security-analysis.md",
       "quote": "** \u2192 KERI's root is mathematics: a self-certifying AID replayable offline,"
     },
+    "01300230de54": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-id/rules.json`, :3). The executable reference is still named:"
+    },
+    "01c890e5300f": {
+      "file": "11-credentials.md",
+      "quote": "rd disallowed, unregistered, not logged"
+    },
+    "024af905a833": {
+      "file": "16-presentation-registries.md",
+      "quote": "remove grantor requisite"
+    },
     "02ae99c7fd9e": {
       "file": "keri-doctrine.md",
       "quote": "A witness is a CA / a blockchain validator / a notary."
@@ -24,6 +40,18 @@
     "03307bfe09b5": {
       "file": "02-cesr-spec.md",
       "quote": "does not occur in the file, nor does"
+    },
+    "03352dd7cecb": {
+      "file": "11-credentials.md",
+      "quote": "a verifier MUST fail closed \u2026 but the credential as an embodied artifact does not have to enforce this"
+    },
+    "0379f3647ab4": {
+      "file": "11-credentials.md",
+      "quote": "(:43). bakobo now also carries `foreign-evidence`,"
+    },
+    "03bfbd220eae": {
+      "file": "11-credentials.md",
+      "quote": "(`this.i` `@eqbjfpq3`, :2246-2247). The discipline is"
     },
     "03eac50b80d2": {
       "file": "01-foundations-and-worldview.md",
@@ -33,17 +61,21 @@
       "file": "02-cesr-spec.md",
       "quote": "The actual use of Cryptographic Primitives happens in the 'R' domain using the raw binary element of the `(code, raw)` pair."
     },
+    "046f5f4b8dff": {
+      "file": "11-credentials.md",
+      "quote": "` (`gcd/examples/guardian-of-minor.json`:27), `"
+    },
     "0485c4de87c6": {
       "file": "03-acdc-spec.md",
       "quote": "securely attributed fragments of a globally distributed property graph\u2026 a global verifiable knowledge graph that crosses trust domains."
     },
-    "04abf2a07a77": {
-      "file": "11-credentials.md",
-      "quote": "parties are only identifiers; there is no 'man' to impersonate"
-    },
     "0507ace81e5d": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "the Schema, `s`, field itself is the type field,"
+    },
+    "0535558a28e7": {
+      "file": "16-presentation-registries.md",
+      "quote": "occurs throughout `src/keri/acdc/ipexing.py` and `regeventing.py` and the tests (\u00a77.7);"
     },
     "05496cae6d23": {
       "file": "08-keripy-kb.md",
@@ -57,10 +89,6 @@
       "file": "09-keripy-code.md",
       "quote": "(L184-186). This is a deliberate asymmetry \u2014 once a seal authenticates, a bad optional TSG is tolerated rather than fatal. Do not"
     },
-    "05b30f367b60": {
-      "file": "11-credentials.md",
-      "quote": "without the street line** protects at-risk voter classes (DV victims, LEOs). Naming is"
-    },
     "05c32c46ff25": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "All our observer is doing is it's keeping track of the registry state"
@@ -72,10 +100,6 @@
     "05ed906da71d": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Security = preventing forks."
-    },
-    "06d1ccee34f1": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "`). The corollary is a chaining trap worth internalizing:"
     },
     "070b1eb7a079": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -89,6 +113,10 @@
       "file": "10-presentation-registries.md",
       "quote": "(`:23`). Not-at-top-level:"
     },
+    "078d3ec3345a": {
+      "file": "11-credentials.md",
+      "quote": "names an ISSUANCE PATTERN, not a credential TYPE"
+    },
     "07f13a5eae31": {
       "file": "keri-doctrine.md",
       "quote": "figure is **contested by ENISA**, which argues a 256-bit output's quantum security"
@@ -101,6 +129,10 @@
       "file": "07-security-analysis.md",
       "quote": "Transparency logs / CT already solve this."
     },
+    "086df438ad02": {
+      "file": "11-credentials.md",
+      "quote": "(:15), and the advantage of E1E edges is that"
+    },
     "087417f44a8b": {
       "file": "13-keri-one-web.md",
       "quote": "Trust with KERI, X.509, and CT,"
@@ -108,6 +140,10 @@
     "08fd2dbf69fc": {
       "file": "07-security-analysis.md",
       "quote": "a **proof technique assumption**\u2026 not a KERI deployment assumption."
+    },
+    "090e89f2b78d": {
+      "file": "10-presentation-registries.md",
+      "quote": "On tooling, #1613 declines to build anything special:"
     },
     "091e685f3f53": {
       "file": "12-origin-security.md",
@@ -121,9 +157,21 @@
       "file": "04-cesr-and-the-wire.md",
       "quote": "breaks triplet/quadlet alignment and desyncs parsers silently"
     },
+    "09aea6e04251": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "would fail by construction"
+    },
     "09ef12114bae": {
       "file": "02-cesr-spec.md",
       "quote": "contract (L5\u20137) is that *any compliant implementation* must round-trip *any* set of concatenated primitives T\u2194B losslessly, en masse."
+    },
+    "0a05e0d594f9": {
+      "file": "11-credentials.md",
+      "quote": "(capital restored 2026-10-03; the first re-anchor had lower-cased it) and"
+    },
+    "0a1e2d47b0d2": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "version field exists precisely so that *humans* can tell a prose fix from a semantic one, but it ~~"
     },
     "0ac4ad4c4308": {
       "file": "16-presentation-registries.md",
@@ -141,6 +189,14 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "DIDs/SD-JWTs already do this."
     },
+    "0bb995efd5e7": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`this.i` `@lkfnoess`, :2130-2131). And the module docstring in Sam's fixture gives the reason for edging leaves to Core at all:"
+    },
+    "0bd2169e87af": {
+      "file": "02-security-model-and-threat-posture.md",
+      "quote": "It depends on observer presence, diligence, information overlap, and time. (`background.md` \u00a76.3) The spec ties this to the asymmetry it creates for the defende"
+    },
     "0c0759e00826": {
       "file": "01-keri-spec.md",
       "quote": "Conversely compromising only the delegator's signing keys can't force a delegated rotation without the Delegatee's pre-rotated keys."
@@ -148,6 +204,10 @@
     "0c6453d5748b": {
       "file": "09-kram-and-request-authentication.md",
       "quote": "This logic has yet to be worked out"
+    },
+    "0c6e529f54f4": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-present-age-portrait/index.md`, :5), and the schema pins it:"
     },
     "0c72c6438634": {
       "file": "01-keri-spec.md",
@@ -161,9 +221,9 @@
       "file": "01-keri-spec.md",
       "quote": "A Validator that receives a key event or non-key-event message that does not have attached at least one verifiable Controller signature MUST drop that message ("
     },
-    "0d3b914fb7bc": {
-      "file": "11-credentials.md",
-      "quote": "* (\u00a7The deciding question). The only thing the aggregate provides is that its blocks carry no outward labels, valuable in exactly two cases: (1)"
+    "0cf1b7ddd41e": {
+      "file": "16-presentation-registries.md",
+      "quote": "such as a signature (`ipexing.py:1155`; test `test_ipex_v2_rejects_hidden_issuer_registry_signature_fallback`, `tests/acdc/test_ipexing.py:3558`:"
     },
     "0d73f444db9e": {
       "file": "04-dossier-spec.md",
@@ -181,9 +241,13 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "(`sda.md \u00a76`); frequent rotation of a citation-signing AID independent of the long-lived issuer AID; and pools of AIDs for herd privacy (Dossier spec \u00a78 Privacy"
     },
-    "0de5d629cf4a": {
-      "file": "13-keri-one-web.md",
-      "quote": "(homepage \u2014 Best Practices/Security). This is the KERI worldview in one line: the security burden should be **self-contained to the controller's own key custody"
+    "0dd3a9eb9f4a": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`wtbo.md \u00a72`). Hardman's `sda.md` paper generalizes the rejection:"
+    },
+    "0dd820c644e4": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "a convenient way to centralize how state is *queried*"
     },
     "0df2cca7982e": {
       "file": "05-papers-priority.md",
@@ -193,9 +257,9 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "A UUID / plain `id` is fine."
     },
-    "0e61a8fd7498": {
+    "0e8b5ff1ac8d": {
       "file": "11-credentials.md",
-      "quote": "is indistinguishable from the real controller \u2026 Proof-of-control credentials don't distinguish these cases."
+      "quote": "edges remain the exemplar chaining mechanism, not the gate"
     },
     "0ebc618d1745": {
       "file": "02-cesr-spec.md",
@@ -209,9 +273,9 @@
       "file": "08-keripy-kb.md",
       "quote": "(`31-landmines.md` \u00a7intro, ~L7\u20139) The file's banner claims"
     },
-    "0fafa64ef12f": {
+    "0f5e545d98c6": {
       "file": "11-credentials.md",
-      "quote": "A genuine zero-knowledge alternative to a predicate proof \u2026 keeps the birth date out of the transaction entirely, with no special cryptography."
+      "quote": "(`gcd/index.md` \u00a7Purpose, :5). KERI cooperative delegation remains"
     },
     "0fbd78661e92": {
       "file": "07-security-analysis.md",
@@ -225,21 +289,29 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "a given identifier's data may be erased and truly forgotten"
     },
-    "10d9f7aff2fb": {
-      "file": "05-papers-priority.md",
-      "quote": "Where Trust Bottoms Out: X.509, CT, and KERI's DPKI Architecture"
+    "10bdf7ffa66f": {
+      "file": "16-presentation-registries.md",
+      "quote": "in a document created two weeks after #1095 coined"
     },
-    "1144405c5595": {
+    "10fb4e2f251f": {
       "file": "11-credentials.md",
-      "quote": "gives non-ACDC data the attributes needed to participate fully in an ACDC data graph \u2026 an efficient, tamper-evident envelope with predictable metadata."
+      "quote": "(:7). The LE vLEI comparison becomes"
     },
     "114afd53c2e2": {
       "file": "01-foundations-and-worldview.md",
       "quote": "(authenticity-vs-veracity.md). KERI/ACDC mechanizes authenticity and deliberately does *not* claim to mechanize veracity \u2014 a scope discipline the applied schema"
     },
+    "115fae948872": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "The watcher, judge, and jurors each play distinct important roles in the KERI security posture of a validator[;] they are not merely discovery mechanisms for KE"
+    },
     "1161c0a8c5ce": {
       "file": "08-keripy-kb.md",
       "quote": "Aligns with maintainer's minimal-surgery ethos \u2014"
+    },
+    "11844a454a51": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "** \u2192 Discovery is OOBIs, untrusted by design; watcher/juror/judge are three security roles held apart, and"
     },
     "119c6f16cc6d": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -249,17 +321,29 @@
       "file": "03-acdc-spec.md",
       "quote": "separating a 'stew' of 'ingredients' into its constituent ingredients without correlating them via the stew."
     },
+    "11fa2db1d9f6": {
+      "file": "11-credentials.md",
+      "quote": "(`tn-alloc/index.md` \u00a7Edge structure, :51). In `vvp-dossier` the operator `const`s of `8db57eb` (:106, :132, :158, :184, :209) also became `enum`s with a `defau"
+    },
     "12121e1e3868": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`cr-ad-trust.md` \u00a74) Critically, its consistency guarantee is *local to the witness set*, not global across validators, and it does not bind a malicious contro"
     },
-    "1228ddaa0d9e": {
+    "122933095950": {
+      "file": "09-keripy-code.md",
+      "quote": "refactored challenge so its a digest so can use existing SealDigest"
+    },
+    "1278098d657d": {
       "file": "16-presentation-registries.md",
-      "quote": "either the sender must anchor the grant or the Issuee or Issuer of the origin ACDC must anchor the grant"
+      "quote": "(`:1458`) \u2014 because hiding could conceal a requirement (\u00a72.3). A malformed `rd` or `i` fails it too. The comment at the point of collection states the semantics"
     },
     "130215634cb0": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "in the security model's own words, a category error"
+    },
+    "1372b0ec0650": {
+      "file": "10-presentation-registries.md",
+      "quote": "pre-normative, unbuilt, and now intended on the written record"
     },
     "140d4d2b3f15": {
       "file": "04-dossier-spec.md",
@@ -269,13 +353,21 @@
       "file": "keri-doctrine.md",
       "quote": "A watcher enforces / can distrust an identifier."
     },
+    "155ca406bd15": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "(`core/structing.py` L73\u201376). Both CESR branches still define `-N##` as"
+    },
+    "15b0d13f260a": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "as unverified.)* It is latent at this pin, since no keripy code path is known to emit `-N` and keripy's parser has no `-N` handler `[K]` \u2014 *narrowed 2026-10-03 "
+    },
     "15e372c044e3": {
       "file": "01-foundations-and-worldview.md",
       "quote": "(keri-primer.md \u00a73.5; keri.one homepage \u2014"
     },
-    "164c81462b49": {
-      "file": "07-shibboleths-and-anti-patterns.md",
-      "quote": "(dossier \u00a7Incorporating Evidence). Foreign VCs belong as"
+    "16446159caf6": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "was a compression presented as verbatim. The example has also aged: Sam's active Core uses its own labels (`givenName`, `familyName`, `birthDate`), which is par"
     },
     "166c6ad0aa5b": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -297,6 +389,10 @@
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "`clienting.ts:243`) and a missing delegation anchor ("
     },
+    "17b76b11e9b4": {
+      "file": "13-keri-one-web.md",
+      "quote": "How KERI Tackles the Problem of Trust"
+    },
     "17f03e5326ab": {
       "file": "04-dossier-spec.md",
       "quote": "Clerk issues a new version with an edge targeting the original SAID + `status:"
@@ -305,13 +401,29 @@
       "file": "04-dossier-spec.md",
       "quote": "Signatures are validated against key state as of their KEL anchor, defeating the retrograde attack"
     },
+    "186219d3fb1c": {
+      "file": "11-credentials.md",
+      "quote": "sedi-age carries NO edge to sedi-id: an I2I edge would hold only if age's issuer equalled sedi-id's issuee (the holder)"
+    },
     "187043c4ed8e": {
       "file": "07-security-analysis.md",
       "quote": "**Prevention**: making an attack impossible / **Detection**: making an attack observable."
     },
+    "1895ec8643f1": {
+      "file": "11-credentials.md",
+      "quote": "(:200) is issued by the state's agent to the replacement AID with the old AID named: `'i'` is"
+    },
     "18b21462db7a": {
       "file": "10-presentation-registries.md",
       "quote": "The second is the doctrine: **"
+    },
+    "19363fc84f90": {
+      "file": "13-keri-one-web.md",
+      "quote": "Dynamic Data Economy Webinar"
+    },
+    "1961931a5e95": {
+      "file": "10-presentation-registries.md",
+      "quote": "in comments and docstrings, with"
     },
     "198874b0bf42": {
       "file": "07-security-analysis.md",
@@ -333,6 +445,14 @@
       "file": "03-acdc-spec.md",
       "quote": "so that the result is pure Base64 and no character has to be expanded into a Base64 equivalent. A field label in an ACDC MUST NOT, therefore, contain the charac"
     },
+    "1a5b87b3c08c": {
+      "file": "11-credentials.md",
+      "quote": "` (`sedi-present-age-portrait/sedi-present-age-portrait.schema.json`, :152-153). The far schema is now Sam's Core, `"
+    },
+    "1a677fa0caca": {
+      "file": "16-presentation-registries.md",
+      "quote": "** (`raw/14` \u00a7, from an edited auto-caption). *Added 2026-10-03:* keripy at `80f77b73b` settles on"
+    },
     "1a69d212e2a8": {
       "file": "01-foundations-and-worldview.md",
       "quote": "whereas ACDC edges are native property-graph objects with `w`/`o`/`s`/`n` fields; (4) *use cases beyond credentials* \u2014 VCs assume the three-party issuer\u2192holder\u2192"
@@ -345,13 +465,21 @@
       "file": "keri-doctrine.md",
       "quote": "The edge `s` constraint is now enforced ("
     },
-    "1b6d413ee0ac": {
-      "file": "11-credentials.md",
-      "quote": "**Deliberately NOT registry-bound (`rd` disallowed via `additionalProperties: false`):"
+    "1acb69e4f153": {
+      "file": "15-kram.md",
+      "quote": "(`db/basing.py:1594-1595`) and"
     },
-    "1b75a464cb34": {
-      "file": "10-presentation-registries.md",
-      "quote": "A *usage registry* can be employed to track the usage of one or more ACDCs by the Issuee\u2026 This means that the registry does not leak specific usage of a given A"
+    "1b8ec5e4e6a4": {
+      "file": "13-keri-one-web.md",
+      "quote": "KERIdemilia DHT for Discovery"
+    },
+    "1ba86780b5ad": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "KERI COOPERATIVE-DELEGATION KEL binding"
+    },
+    "1bd82d07cf82": {
+      "file": "13-keri-one-web.md",
+      "quote": "the ecosystem framing surfaced alongside"
     },
     "1bf274eff7fa": {
       "file": "05-papers-priority.md",
@@ -369,9 +497,21 @@
       "file": "02-cesr-spec.md",
       "quote": "Each and every Primitive or Count Code group of primitives MUST satisfy the Concatenation Composability property."
     },
+    "1c93007f88d8": {
+      "file": "11-credentials.md",
+      "quote": "doctrine is no longer on the page but stands in `this.i` `@sdp3wk` (:1950-1952):"
+    },
     "1cc3484f196c": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "The overload is intentional and is never disambiguated by a qualifier, so"
+    },
+    "1cdd91a58067": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "framing survives only in Bakobo's decision record, and the statutory duty now lives in the governance artifact: a verifier"
+    },
+    "1ceff69d68e7": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`src/keri/recording.py:505`), and the presentation check refuses without it:"
     },
     "1d076a5b1ffc": {
       "file": "12-origin-security.md",
@@ -385,9 +525,17 @@
       "file": "05-papers-priority.md",
       "quote": "but independent of any container context, there's a provable association\u2026 because of an anchoring association in the KEL."
     },
+    "1d3c3282e7fb": {
+      "file": "11-credentials.md",
+      "quote": "transparent representation"
+    },
     "1d4098843498": {
       "file": "08-keripy-kb.md",
       "quote": "** (`SCOPE.md` \u00a7Tag legend, ~L38\u201340) and **"
+    },
+    "1d7f24e74f01": {
+      "file": "11-credentials.md",
+      "quote": "the compact SAID-string arm stays FIRST in every oneOf, which the most-compact-form SAID algorithm keys on"
     },
     "1d84b20bc213": {
       "file": "10-presentation-registries.md",
@@ -409,21 +557,29 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "at least one external observer, and"
     },
-    "1e9ba5afad93": {
-      "file": "11-credentials.md",
-      "quote": "** Two-layer factoring: **GCD for the generic relationship machinery, sedi-guardian for the legal specifics** (reachable via optional `scope` edge \u2192 a GCD with "
-    },
-    "1e9e06825184": {
-      "file": "11-credentials.md",
-      "quote": "The LE vLEI is essentially an org-vet credential at LoA 3."
-    },
     "1eb4e4ee872c": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "doesn't try to make duplicity impossible -- that would require global consensus"
     },
+    "1eba3954e6d9": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "The observer layer is KEL discovery / caching, and a 'super watcher' is a bigger cache."
+    },
     "1f1839db530b": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "validity logic is EGF-dependent"
+    },
+    "1f5579645330": {
+      "file": "11-credentials.md",
+      "quote": "sedi-id, sedi-guardian and sedi-present-age-portrait all move to the v2 envelope ('ri' -> 'rd', 't' pinned to acm)"
+    },
+    "1f6bae48e7ab": {
+      "file": "11-credentials.md",
+      "quote": "(:462). The composition rule for a list-valued `o` is that the delegative operators (I2I, NI2I, DI2I) conflict and the latest wins, while E1E constrains"
+    },
+    "1f8812cc9e38": {
+      "file": "09-keripy-code.md",
+      "quote": "(ACDC spec, Edge Section > Edge > Operator, `o` field)"
     },
     "1fb707f95241": {
       "file": "05-acdc-and-verifiable-data.md",
@@ -437,9 +593,21 @@
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "A same-message replay inside the window is either ignored or, for a multisig sender, contributes its signature to an escrow \u2014"
     },
+    "202db5ee6d0a": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "and verifiable-voice items such as"
+    },
     "2039437ebe36": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "peer disclosure messages get logged like credentials / like a VC exchange endpoint"
+    },
+    "20c0f72a976b": {
+      "file": "11-credentials.md",
+      "quote": "a verifier that gates on schema validation ALONE loses a free backstop"
+    },
+    "2106a06b3dec": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-ballot-receipt/index.md`, :25). Its issuee is"
     },
     "21392bee2299": {
       "file": "08-presentation-architectures-and-ipex.md",
@@ -453,10 +621,6 @@
       "file": "06-papers-di-drift.md",
       "quote": "A powerful orchestrator with empty act-surface is"
     },
-    "219bf19ede8c": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(`wtbo.md \u00a72`). Origin generalizes the rejection:"
-    },
     "21b2f8b068f6": {
       "file": "16-presentation-registries.md",
       "quote": "(#1627 comment, SmithSamuelM, 2026-09-02; the misspelling is his, and the sentence continues"
@@ -469,9 +633,9 @@
       "file": "05-papers-priority.md",
       "quote": "defending against a two-front war. The first front is the HNDL attack on confidentiality\u2026 The second is a 'surprise quantum attack' on control and authenticity."
     },
-    "2260051dce3c": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "but never realized until the conditions of the contingency is satisfied,"
+    "2237ad86572c": {
+      "file": "11-credentials.md",
+      "quote": "a medical-only guardian is not authority for a financial act"
     },
     "2276c6451e92": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -484,6 +648,14 @@
     "23150bd2d23c": {
       "file": "13-keri-one-web.md",
       "quote": "Provisional Authenticity & Functional Privacy."
+    },
+    "23342fe53e64": {
+      "file": "09-keripy-code.md",
+      "quote": "is the same-issuer case, where the preceding paragraphs want I1I (issuer equals issuer); I2I (near issuer equals far issuee) would not express that, and the sec"
+    },
+    "238dfdc051da": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`:1434`); the registry facade says"
     },
     "239bf1b707c9": {
       "file": "04-dossier-spec.md",
@@ -509,9 +681,9 @@
       "file": "04-dossier-spec.md",
       "quote": "Any metadata/timestamp difference makes signatures incompatible."
     },
-    "24ee63dd58e6": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(`bakobo/schema/KNOWLEDGE_TRANSFER.md`), and `registry.json` is"
+    "24cb4438fbe0": {
+      "file": "09-kram-and-request-authentication.md",
+      "quote": "(`db/basing.py` `Baser.clean`, :1594-1595) and"
     },
     "25276f809ce5": {
       "file": "09-kram-and-request-authentication.md",
@@ -520,6 +692,14 @@
     "258866e16699": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "whereas a selectively-disclosed block"
+    },
+    "258c6ff703c8": {
+      "file": "16-presentation-registries.md",
+      "quote": "recorded once the complete threshold is accepted, `kraming.py:1658-1661`). So a `grant` carrying any presentation-registry declaration is rejected unless KRAM f"
+    },
+    "25f683881b67": {
+      "file": "11-credentials.md",
+      "quote": "this adds an issuance-time identity relation, it does not replace the presentation-time one."
     },
     "25fbb5a1dc44": {
       "file": "07-security-analysis.md",
@@ -541,6 +721,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "** \u2192 No specified consequence on either branch; **[N1.1]**"
     },
+    "26d67b91539f": {
+      "file": "11-credentials.md",
+      "quote": "(:16-17). This is historical `sedi-id` prose, but nothing in the active family contradicts it: Sam's Core is likewise issued by the state to the citizen's AID \u2014"
+    },
     "26f4be9ac370": {
       "file": "04-dossier-spec.md",
       "quote": "do not have a single subject in the VC sense at all."
@@ -561,9 +745,21 @@
       "file": "09-kram-and-request-authentication.md",
       "quote": "is this timestamp fresh?"
     },
+    "27ba53854158": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "`-D`/`-N` TransReceiptIdxSigGroups"
+    },
+    "27bd89abecb5": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "Create State's three level delegation chain AIDs"
+    },
     "27ef1a844dad": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "Security means invulnerability; prevent all forks."
+    },
+    "27fae13a998f": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`:1524`). With no `kramTMSC` record carrying `rdt`, the `grant` fails. `rdt` is set only when KRAM accepts the complete message: for a multi-key sender a parti"
     },
     "2827446d6257": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -589,6 +785,10 @@
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`was.md` \u00a7Conclusion) An anchored signature is not the same as a paired signature (a `proof` block bundled"
     },
+    "2a32b3699366": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(Dossier spec \u00a73). This is the interop corollary of the lossless/lossy doctrine: keep the lossless ACDC authoritative and treat foreign VCs ~~"
+    },
     "2a6c62a3bc37": {
       "file": "12-origin-security.md",
       "quote": "embody a *perimeter mindset*."
@@ -613,9 +813,13 @@
       "file": "09-keripy-code.md",
       "quote": "So that attacker can't source remotely compromised but locally membered signatures to satisfy threshold."
     },
-    "2be3c9840533": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "and an availability chokepoint. `sedi-guardian` enforces the anti-impersonation invariant: the guardian holds the credential and the ward is named only by a `su"
+    "2ca9412790a4": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "where its context seems to call for"
+    },
+    "2cadc155377f": {
+      "file": "11-credentials.md",
+      "quote": "compare against the builder the protocol actually uses, not against a primitive that merely looks like it should agree."
     },
     "2cb932ed5a77": {
       "file": "09-keripy-code.md",
@@ -665,6 +869,10 @@
       "file": "02-cesr-spec.md",
       "quote": "being introduced in successive updates"
     },
+    "3106dd92933f": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "equivalence operators, and `DI1I` \u2014 and Sam then narrowed it to `E1E` alone:"
+    },
     "313832ed20ec": {
       "file": "03-acdc-spec.md",
       "quote": "validate the state\u2026 without exposing a point of validation (PoV)."
@@ -676,6 +884,10 @@
     "31a3214a2381": {
       "file": "01-foundations-and-worldview.md",
       "quote": "critique is that SD-JWT, W3C-VC, and most DID methods imported PKI/OAuth assumptions and thereby"
+    },
+    "31dfd63ddde7": {
+      "file": "11-credentials.md",
+      "quote": "so verifiers can be confident"
     },
     "3253bb3b473b": {
       "file": "10-keria-signify.md",
@@ -689,21 +901,17 @@
       "file": "04-cesr-and-the-wire.md",
       "quote": "(`core/routing.py:574`) `[K]`. The knowledge base is candid about why: its own plan defers the work outright \u2014"
     },
+    "32852f10d980": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "Sam's r object permits only d and l"
+    },
     "3297fa8bc1e8": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(raw/09 \u00a72) The controller declares the tally M in inception config, and"
     },
-    "32b3a087ea37": {
-      "file": "11-credentials.md",
-      "quote": "so verifiers can be confident that when one of the pre-defined constraints is absent, delegated authority is unconstrained in its corresponding dimension."
-    },
     "3317833879ae": {
       "file": "08-keripy-kb.md",
       "quote": "(`00-lens.md` claim 7, cites x509-prob"
-    },
-    "339b2b4e87b9": {
-      "file": "11-credentials.md",
-      "quote": "We don't really want identifiers to be controlled by RSA crypto, but it could be useful for orgs to announce \u2026 they are using an RSA key"
     },
     "33dfebad3f1c": {
       "file": "16-presentation-registries.md",
@@ -716,6 +924,10 @@
     "34345dd4e61d": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Identity means *sameness*: the thing that holds constant across contexts"
+    },
+    "3438cbb997cc": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(`acdc/ipexing.py` L291-292, `_sign` docstring), and anchorers are"
     },
     "345daf9c3253": {
       "file": "16-presentation-registries.md",
@@ -744,6 +956,14 @@
     "35eb17abff2b": {
       "file": "14-kericonf-2026.md",
       "quote": "what are you registries you have?"
+    },
+    "360a5216dd66": {
+      "file": "11-credentials.md",
+      "quote": "and stored in `art_digest` (:21)."
+    },
+    "361ed5aad5fd": {
+      "file": "16-presentation-registries.md",
+      "quote": "the Issuee does not need a redundant EXN endorsement."
     },
     "36240ff6865e": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -777,17 +997,25 @@
       "file": "06-papers-di-drift.md",
       "quote": "The draft third version was"
     },
+    "379a9acfb189": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`org-vet/index.md` \u00a7Governance framework, :30, bakobo `cfcbdcc7a`). Both push judgment further onto the verifier, which is the direction this section argues. T"
+    },
+    "37d791e7a4d2": {
+      "file": "10-presentation-registries.md",
+      "quote": "available rather than must be, but it treats the *possibility* of a presentation registry as something a cryptographic choice may not foreclose. The Issuee regi"
+    },
     "37dfe70cd0b1": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`cr-ad-trust.md` \u00a74) That last property -- offline, authority-free verifiability -- is the whole point: a verifier establishes who controls an AID"
     },
+    "38006adb36d9": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "calling it Sam-compatible would mislead issuers"
+    },
     "3811bf8e5943": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "a defect (not the invariant) that blocks indefinitely if a single witness is down and is the"
-    },
-    "389b2cb88bfa": {
-      "file": "10-presentation-registries.md",
-      "quote": "(KERIcon 2026, `raw/14-kericonf-2026.md`). This chapter uses"
     },
     "39234ff3186f": {
       "file": "06-papers-di-drift.md",
@@ -797,6 +1025,10 @@
       "file": "06-papers-di-drift.md",
       "quote": "against an adversary who has ground offline, and that the seeded commit-and-reveal walk is then obligatory. `oia.md` has not been revised to match, and still de"
     },
+    "39494982d8ed": {
+      "file": "13-keri-one-web.md",
+      "quote": "Enhancing Security in User-Centered Authentication Using KERI"
+    },
     "394e01f922d5": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "decorrelate the time of revocation"
@@ -804,6 +1036,10 @@
     "3999601308dc": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "a new algorithm is a minor version bump that old parsers can detect and reject cleanly, and new parsers can accept both."
+    },
+    "39ae7c8d652f": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(SmithSamuelM, opened 2026-07-17), is the origin:"
     },
     "39b152e27b2d": {
       "file": "keri-doctrine.md",
@@ -824,6 +1060,10 @@
     "3a49cc0ba5b2": {
       "file": "05-papers-priority.md",
       "quote": "may reuse the same keypair across CAs\u2026 nothing in the protocol makes this visible."
+    },
+    "3ae8fc289b3e": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "**[P]**. The opening post proposed a larger family \u2014 `I1I`, `I1E`, `E1I`, a"
     },
     "3b14c88937fd": {
       "file": "05-papers-priority.md",
@@ -853,14 +1093,6 @@
       "file": "02-security-model-and-threat-posture.md",
       "quote": "into per-identifier microledgers (the KELs), each rooted in its own identifier and held by witnesses and wallets. In KERI the event is **already recorded** by t"
     },
-    "3c55154bb618": {
-      "file": "11-credentials.md",
-      "quote": "runs as a gated IPEX exchange (`apply \u2192 offer \u2192 agree \u2192 grant \u2192 admit`): the verifier accepts the governance terms (a signed `agree` referencing the presentatio"
-    },
-    "3c5fef154576": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "live in `r`, not in `a.constraints`"
-    },
     "3cb06dd31a83": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "(`x509-prob.md`). The rise of trust registries in the W3C-VC world is read as"
@@ -885,6 +1117,10 @@
       "file": "15-kram.md",
       "quote": "implementing a solution that supports asynchronous networks at scale and eliminates 1/2 of the packets is a huge design win."
     },
+    "3dabed0a5bc9": {
+      "file": "13-keri-one-web.md",
+      "quote": "Open Verifiable Communications Alliance"
+    },
     "3e47b8dc0586": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "in \u00a74 means a node of the *subgraph* \u2014 a block within one ACDC \u2014 while"
@@ -905,6 +1141,10 @@
       "file": "16-presentation-registries.md",
       "quote": "walking `rip` \u2192 issuance \u2192 state \u2192 verification \u2192 revocation. The spec calls a `rip`"
     },
+    "3f038708b09f": {
+      "file": "11-credentials.md",
+      "quote": "AID Replacement, Organizational Unit and Issuing Agent schemas"
+    },
     "3f5940225d78": {
       "file": "keri-doctrine.md",
       "quote": "(`cr-ad-trust.md` \u00a74). Asking"
@@ -912,6 +1152,10 @@
     "3f5b861b6403": {
       "file": "07-security-analysis.md",
       "quote": "(`cr-ad-trust.md` \u00a75; DG-C05). Watch for **practical centralization pressure**: markets"
+    },
+    "3f6da68ed45b": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "sentence recurs verbatim across org-vet, citation and SEDI; it is now restated per family. Four quotations from the applied schema corpus \u2014 the GCD `gfw` descri"
     },
     "3f80a685d68b": {
       "file": "09-keripy-code.md",
@@ -929,17 +1173,29 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Sign the credential (paired signature)."
     },
+    "3ff42170a27f": {
+      "file": "11-credentials.md",
+      "quote": "What Sam's fixtures show"
+    },
     "40082ede2fa5": {
       "file": "10-keria-signify.md",
       "quote": "KERIA Service Architecture"
+    },
+    "401c1295c582": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "for these must name the fork. (5) The scorecard's SD-JWT/OIDC4VC column is sourced from KERI-partisan comparison papers; its technical claims check out, its eva"
+    },
+    "4035a6edada1": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "(dossier \u00a7Incorporating Evidence). ~~Foreign VCs belong as"
     },
     "40365865d739": {
       "file": "13-keri-one-web.md",
       "quote": "Comparing ACDC with SD-JWT"
     },
-    "4097e46fcd9c": {
-      "file": "11-credentials.md",
-      "quote": "As far as the semantics of these credentials are concerned, issuer and issuee are simply identifiers that resolve to cryptographic keys \u2026 **Because of this prim"
+    "4072332a50e5": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`regeventing.py:714`), and the presentation path passes the `a`-section `i` as the controller. The latest non-vacuous event must bind the `grant` SAID: `vetBin"
     },
     "40aa295f3e1e": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -985,6 +1241,14 @@
       "file": "07-security-analysis.md",
       "quote": "(`background.md` \u00a72.1 Controller, Trust assumptions). Controllers"
     },
+    "41ffe9bb88a9": {
+      "file": "11-credentials.md",
+      "quote": "moved the oracle to bakobo/keripy@a1f2f32b (keri 2.1.0-dev0), which stamps v2"
+    },
+    "42682a9954f3": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "`, and the grants passed verification before and after *(uncited \u2014 flagged by verification 2026-10-03: the tests were not run at either commit)*, because nothin"
+    },
     "429472a20045": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(`cr-ad-trust.md` \u00a75; DG-C05); the formal literature is thin (the strongest analysis is"
@@ -997,6 +1261,14 @@
       "file": "04-dossier-spec.md",
       "quote": "Holder attaches a digital signature or other proof to the presentation"
     },
+    "42dbffa1d108": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`acdc-vc-diff.md \u00a7Real-World Validation`). The ladder's schema pins were re-verified at public-schema `95a07e544`, where the `vLEI/` tree is unchanged since th"
+    },
+    "42e8361dc916": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(`e8d4776ef`, 2026-09-29) touched only `tests/sedi/test_ipex_sedi.py`, and what it changed is evidence for the finding rather than against it: the tests' `dp` p"
+    },
     "432e226a74e8": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "(`cr-ad-trust.md` \u00a75) The consequence:"
@@ -1005,9 +1277,9 @@
       "file": "08-keripy-kb.md",
       "quote": "** (`PLAN.md` \u00a79 Decisions to confirm at approval, ~L189\u2013190), and it defers the flagship entirely:"
     },
-    "437ffd6e1855": {
-      "file": "11-credentials.md",
-      "quote": "`. Two-sided braces and wildcards intentionally forbidden."
+    "437b74f945f2": {
+      "file": "16-presentation-registries.md",
+      "quote": "has no operational effect \u2014 any one suffices, which is what #1613's next sentence says anyway. And the comment states the boundary as policy:"
     },
     "43ab68fe75ec": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -1016,6 +1288,10 @@
     "43ce136b6734": {
       "file": "14-kericonf-2026.md",
       "quote": "Are they just extensions of witnesses and watchers?"
+    },
+    "43d7a7e815aa": {
+      "file": "13-keri-one-web.md",
+      "quote": "ACDC with Automated Reasoning for Reputation"
     },
     "43ff0c80b434": {
       "file": "01-keri-spec.md",
@@ -1045,21 +1321,45 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "A witness can serve a delegate's KEL, so it vouches for the delegation."
     },
+    "4559e9a8bcee": {
+      "file": "11-credentials.md",
+      "quote": "(:70). bakobo's own `sedi-core/index.md`:7 agrees that"
+    },
     "458c13cb6ade": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "when KERI is evaluated as survivability-oriented. Note the sharp point: divergence is a protocol property,"
+    },
+    "459a71007f89": {
+      "file": "10-presentation-registries.md",
+      "quote": "now returns six, all merged, the four added since 2026-09-15 all touching the feature; \u00a77 opening. Issues still return none.)* Re-searched 2026-09-15 across ker"
     },
     "45c95699b4e2": {
       "file": "01-foundations-and-worldview.md",
       "quote": "d and i MUST have the same value and same derivation code"
     },
+    "45e8381749db": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "all leaves must be reissued if core is reissued"
+    },
     "4609bd3df097": {
       "file": "16-presentation-registries.md",
       "quote": "The Issuer must be a *different party*, and Sam states the self-issued hole explicitly:"
     },
+    "477259651f49": {
+      "file": "16-presentation-registries.md",
+      "quote": "The sender factor and both Issuee TEL factors accept the Grant."
+    },
     "4774cb039b68": {
       "file": "10-keria-signify.md",
       "quote": "it is custodial only of *encrypted* blobs whose decryption keys it never possesses. signify-ts: *"
+    },
+    "47d07b7b0a5b": {
+      "file": "11-credentials.md",
+      "quote": "the classic impersonation/commingling failure"
+    },
+    "480552ff45a1": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`regeventing.py:750`). And the vetted registry must be the declared one; a valid registry cannot be substituted (`test_ipex_v2_rejects_substituted_presentation"
     },
     "48331c78dd46": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -1077,13 +1377,33 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "A registry / status endpoint is consulted at verification time."
     },
+    "49c1dc1cdf9e": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`recording.py:505`). For a multi-key sender it is set only once the signing threshold is met (`kraming.py:1658-1661`; `raw/15 \u00a74.8`). The presentation-registry"
+    },
+    "49cb36df1a44": {
+      "file": "11-credentials.md",
+      "quote": "every other threshold as a bare SAID"
+    },
+    "49fa2dc6d006": {
+      "file": "11-credentials.md",
+      "quote": "(`verifying.py`:459, under the heading comment"
+    },
     "4a0043c8bade": {
       "file": "05-papers-priority.md",
       "quote": "The security comes from the asymmetry in knowledge: the controller knows or has access to K2, while the world only sees its hash."
     },
+    "4a1d6644b104": {
+      "file": "11-credentials.md",
+      "quote": "(`this.i` `@lm37js6k`, :1987) and answers the old correlation worry:"
+    },
     "4a3a460c1dec": {
       "file": "06-papers-di-drift.md",
       "quote": "to a split reading: a summed ceiling of"
+    },
+    "4a75c24c6e52": {
+      "file": "11-credentials.md",
+      "quote": "(`proof-of-control/index.md` \u00a7Parties are only identifiers, :14). Combining with an identity credential"
     },
     "4abde0394252": {
       "file": "05-acdc-and-verifiable-data.md",
@@ -1101,6 +1421,14 @@
       "file": "06-papers-di-drift.md",
       "quote": "(same line). The abstract states it harder \u2014 the paper sets out to"
     },
+    "4b9a88c3dda1": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "Default IPEX policy deliberately stops at these three AIDs; credential-specific policy may impose a narrower requirement."
+    },
+    "4bf3f4efecd5": {
+      "file": "11-credentials.md",
+      "quote": "(`gcd/gcd.schema.json` `a.constraints`, :128). The SEDI pages say the same about graph checks:"
+    },
     "4cb955ed98dc": {
       "file": "15-kram.md",
       "quote": "This redesign of KRAM assumes v2 KERI"
@@ -1113,6 +1441,10 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "`[N]` (KERI spec \u00a7OOBI with MFA, L2838 at `fbdd4a615`) Acceptance is thresholded on agreement: the recipient resolves each URL, compares the returned target URL"
     },
+    "4d82d0b17eb4": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`regeventing.py:494`). `vetBinds` calls it only for an Issuer registry, and the presentation path gets a binding label instead:"
+    },
     "4dde63b48d65": {
       "file": "05-papers-priority.md",
       "quote": "framing is **stronger than the same author's own qualification in `wtbo.md` \u00a74**, which says the hash"
@@ -1124,6 +1456,10 @@
     "4df3f6f53de4": {
       "file": "10-presentation-registries.md",
       "quote": "When multiple ACDCs in the granted DAG each have a different presentation registry ID field value\u2026 the verifier must verify all of the anchors."
+    },
+    "4e10b05f03fa": {
+      "file": "16-presentation-registries.md",
+      "quote": "whoever incepted this registry"
     },
     "4e47d4339d47": {
       "file": "10-keria-signify.md",
@@ -1145,6 +1481,10 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "(thesis Ch.3, in `background.md` \u00a78.2), so witness thresholding alone does not bind an attacker who controls the witnesses. The honest-controller premise is"
     },
+    "50323db450af": {
+      "file": "11-credentials.md",
+      "quote": "(:31). Trust in a bridge is explicit and issuer-scoped."
+    },
     "505f337eb7a4": {
       "file": "06-papers-di-drift.md",
       "quote": "(affidavits, crime-scene evidence, journalism have no"
@@ -1161,17 +1501,9 @@
       "file": "04-dossier-spec.md",
       "quote": "An active 'no' MUST therefore be expressed as an anchored declination, never as a null or unanchored slot."
     },
-    "50c59592e81b": {
-      "file": "11-credentials.md",
-      "quote": "**enforceable constraints exist only inside the constraints container** \u2026 Nothing outside \u2026 constrains \u2026 and an unrecognized key inside the constraints containe"
-    },
     "50fea2f71b98": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "Unary Edge Operator Defaults"
-    },
-    "51016bee7fb2": {
-      "file": "11-credentials.md",
-      "quote": "**Registry-bound (`ri` mandatory):"
     },
     "5135a6041366": {
       "file": "08-keripy-kb.md",
@@ -1189,6 +1521,10 @@
       "file": "15-kram.md",
       "quote": "given one already has a KERI verified key state, using FIDO2/WebAuthn to authenticate replay requests would be going backwards."
     },
+    "519e8b99f357": {
+      "file": "11-credentials.md",
+      "quote": "(which GCD documents, no KEL anchoring required) from"
+    },
     "52326f39982e": {
       "file": "12-origin-security.md",
       "quote": "Client/agent AIDs are keria/signify internals \u2014"
@@ -1201,13 +1537,17 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Secure the pipe (VPN/TLS) and the data inside is safe."
     },
-    "527f869720be": {
+    "5262d89a421c": {
       "file": "11-credentials.md",
-      "quote": "Never restyle the ACDC envelope \u2026 fixed by ACDC. Their terseness earns its keep (universal, and in the compact form they are all that ships)."
+      "quote": "(same). The first pass's sources (`sedi-id`, the old `sedi-age`, `sedi-guardian` 2.0.0) are superseded; `sedi-id` is"
     },
     "529a9b8613f1": {
       "file": "keri-doctrine.md",
       "quote": "should this be recorded?"
+    },
+    "52bfd1433ded": {
+      "file": "11-credentials.md",
+      "quote": "(a stronger, optional fact)."
     },
     "52cf256f9a11": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -1237,10 +1577,6 @@
       "file": "03-acdc-spec.md",
       "quote": "all links from the node at the head\u2026 to the tail\u2026 MUST be valid in order for the node (head) to be valid."
     },
-    "541e0ca0d4ee": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "is possible without the street line \u2014 because"
-    },
     "543705b204d6": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`30-invariants.md` H1; `10-map.md`) The payoff is time-independent verification:"
@@ -1248,10 +1584,6 @@
     "5486d2254e20": {
       "file": "06-papers-di-drift.md",
       "quote": "is **separation of the identifier from the keys that control it**; the binding is"
-    },
-    "549503e4e9f4": {
-      "file": "11-credentials.md",
-      "quote": "(schema a.gfw.description)."
     },
     "549b99227396": {
       "file": "16-presentation-registries.md",
@@ -1261,6 +1593,10 @@
       "file": "12-origin-security.md",
       "quote": "(like AWS keypair UI), forcing the user to save the private key;"
     },
+    "558d23a1b22c": {
+      "file": "11-credentials.md",
+      "quote": "(:3). It is Sam Smith's Age schema at keripy `9a8b7aa7`,"
+    },
     "55ba2698ce80": {
       "file": "keri-doctrine.md",
       "quote": "A signature is enough \u2014 sign the request and you're done."
@@ -1268,6 +1604,10 @@
     "55d25bbdda17": {
       "file": "04-dossier-spec.md",
       "quote": "among what is in scope (`spec/dossier-spec-head.md` \u00a7"
+    },
+    "563ccd2fed82": {
+      "file": "09-kram-and-request-authentication.md",
+      "quote": "KRAM is disabled by default"
     },
     "565b4d6632cc": {
       "file": "03-acdc-spec.md",
@@ -1280,6 +1620,14 @@
     "56d6cbac4aff": {
       "file": "14-kericonf-2026.md",
       "quote": "technical mechanisms plus legal recourse"
+    },
+    "572e64b04fae": {
+      "file": "keri-doctrine.md",
+      "quote": "leg no longer holds, and the 2026-09-15 negative it rested on was scoped rather than removed.** At keripy `80f77b73b` every `/ipex/grant` runs"
+    },
+    "572f3a10a9d5": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`acdc-vc-diff.md`)~~ **Cut 2026-10-03 (verification): not found in `acdc-vc-diff.md` at papers `68a5e2f76`; the wording is `raw/04`'s own summary. The"
     },
     "57313051a48d": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -1317,6 +1665,10 @@
       "file": "13-keri-one-web.md",
       "quote": "Secure Privacy Authenticity Confidentiality"
     },
+    "5897262da154": {
+      "file": "11-credentials.md",
+      "quote": "(`citation/index.md` \u00a7Semantic precision, :27). A citation"
+    },
     "58baafb2f3d9": {
       "file": "09-kram-and-request-authentication.md",
       "quote": "is this timestamp fresh *and* strictly later than the last one I cached for this sender?"
@@ -1325,6 +1677,10 @@
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "notice that this models the witness watcher governance structure. So, we learned a lesson. We shouldn't have shared governance. So, we have witnesses that are c"
     },
+    "59450d5ec290": {
+      "file": "16-presentation-registries.md",
+      "quote": "MUST be anchored \u2026 when the Issuee is the Grantor of that IPEX"
+    },
     "59d140726421": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "only the public keys and blake3 hash of the next keys"
@@ -1332,6 +1688,10 @@
     "5a4ce70d321d": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Everyone converges on one truth."
+    },
+    "5a95f5a6b90c": {
+      "file": "11-credentials.md",
+      "quote": "` far-schema SAIDs (\u00a74). Read together with keripy's verifier, it is not a weakening of the graph: keripy's verifier comment says the edge `s`"
     },
     "5acd4bb707d8": {
       "file": "14-kericonf-2026.md",
@@ -1344,6 +1704,10 @@
     "5b6c129eeff0": {
       "file": "15-kram.md",
       "quote": "(`kraming.py:525-528`). `WebOfTrust/keripy` has no PR #1788 \u2014 `gh api repos/WebOfTrust/keripy/pulls/1788` returns 404 as of 2026-09-15, and the repo's PR number"
+    },
+    "5baddea42753": {
+      "file": "11-credentials.md",
+      "quote": "(:5); Core's schema carries that description (`sedi-core/sedi-core.schema.json` `a.rd`, :96). The decision node"
     },
     "5c06183f8783": {
       "file": "05-acdc-and-verifiable-data.md",
@@ -1377,6 +1741,14 @@
       "file": "07-security-analysis.md",
       "quote": "evidence [that] expires by design, not by necessity"
     },
+    "5d9a1c17a42a": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "equivalence class, and `DI1I` \u2014 and Sam narrowed it in discussion to `E1E` alone:"
+    },
+    "5d9d5ce01842": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`:2529`) \u2014 and that one binding also satisfies `ax`, since the holder is Core's Issuee and the sender. So in the SEDI pattern, one presentation registry on the"
+    },
     "5dcd240b0b32": {
       "file": "03-acdc-spec.md",
       "quote": "and finally revokes it (L4856-4859)."
@@ -1393,6 +1765,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "the driver's license bureau whose recover-from-breach plan required all current license holders to come back to the office"
     },
+    "5e539c0ae476": {
+      "file": "11-credentials.md",
+      "quote": "(:5), with `a` described as metadata that"
+    },
     "5e6a5f0c2b0a": {
       "file": "05-papers-priority.md",
       "quote": "a withdrawn paper whose citation we forgot to remove"
@@ -1400,10 +1776,6 @@
     "5e9931c67a5c": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "the highest-risk interop surface"
-    },
-    "5e9df3d490a7": {
-      "file": "11-credentials.md",
-      "quote": "(`README.md` \u00a7What's here). keri is the pinned"
     },
     "5ec22957656d": {
       "file": "05-papers-priority.md",
@@ -1445,9 +1817,9 @@
       "file": "08-keripy-kb.md",
       "quote": "Chained-credential validation checks each source credential's iss/rev state but does not apply the edge operator (`&&` = all sources valid, `||` = at least one)"
     },
-    "603c211f186d": {
-      "file": "09-keripy-code.md",
-      "quote": "(L38-39). `E1E` carries its own provenance caveat:"
+    "61627bee0a0e": {
+      "file": "11-credentials.md",
+      "quote": "an issued Core or its selectively disclosed form fails schema validation"
     },
     "616ec2c2c709": {
       "file": "07-security-analysis.md",
@@ -1457,17 +1829,13 @@
       "file": "10-keria-signify.md",
       "quote": "KERIA relies on the Signify protocol for all calls."
     },
+    "61b9631f896d": {
+      "file": "16-presentation-registries.md",
+      "quote": "when a later grant omits `ax` (`tests/acdc/test_ipexing.py:6232`) \u2014 and a presenter cannot hide the declaration by compacting the attribute section, because a r"
+    },
     "627d7491c328": {
       "file": "keri-doctrine.md",
       "quote": "(`background.md` \u00a74.5.1). Forks and equivocation by a malicious controller are"
-    },
-    "62a0b1ba18cc": {
-      "file": "11-credentials.md",
-      "quote": "legal signing authority \u2026 multisig signing committee \u2026 a ceremony where it is proved that there is **no MITM between any two members** of the signing committee,"
-    },
-    "62a95b417479": {
-      "file": "11-credentials.md",
-      "quote": "`, or one-sided brace enumeration `"
     },
     "62dd7e89ea07": {
       "file": "06-papers-di-drift.md",
@@ -1501,9 +1869,9 @@
       "file": "02-security-model-and-threat-posture.md",
       "quote": "and reads alone as unconditional. Specification text has independently arrived at the same concession -- on the forward branch, not the standardizing one, so it"
     },
-    "63f17c078ed5": {
-      "file": "11-credentials.md",
-      "quote": "** In a holder-issued presentation the holder is the *issuer* and is the issuee of both source credentials, so I2I edges to both are the same-holder proof. A no"
+    "63e670e53449": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(breaks both directions) \u2014 with far more minor room than major (4096 minor per major) deliberately (L620-622). This is the same mechanism as **crypto agility**:"
     },
     "642fc00596fd": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -1511,7 +1879,7 @@
     },
     "6440f2e30142": {
       "file": "13-keri-one-web.md",
-      "quote": "Decentralized key management infrastructure based on key change events."
+      "quote": "decentralized key management infrastructure based on key change events"
     },
     "644bd13d70f0": {
       "file": "02-cesr-spec.md",
@@ -1541,6 +1909,10 @@
       "file": "01-keri-spec.md",
       "quote": "the detection of potential ambiguity requires yet another bolt-on security overlay, such as the certificate transparency system."
     },
+    "653e3c85358e": {
+      "file": "10-presentation-registries.md",
+      "quote": "(\u00a7Registry Anchored Granted ACDCs). keripy applies it to every declaration in the granted DAG, whoever sends (\u00a77). The two agree when a holder presents its own "
+    },
     "6557dce0bed8": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(raw/09 \u00a72) The dual index is the enabling mechanism: keripy's `Siger` carries both `.index` (into current keys) and `.ondex` (into prior-next digests) (`eventi"
@@ -1553,6 +1925,10 @@
       "file": "04-dossier-spec.md",
       "quote": "edge `ruling_101` points to SAID of `exhibit_A` (v1) with `status:"
     },
+    "6607184d3ef4": {
+      "file": "11-credentials.md",
+      "quote": "(:19); gold requires a ceremony proving"
+    },
     "660eba14ac49": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Bearer token / session / API key."
@@ -1560,6 +1936,10 @@
     "667de30308b7": {
       "file": "keri-doctrine.md",
       "quote": "a blind store + relay, not a signer."
+    },
+    "66856d35bb11": {
+      "file": "16-presentation-registries.md",
+      "quote": "foreign TEL events (`tests/acdc/test_ipexing.py:6829`). #1674's"
     },
     "66abce9ec8c3": {
       "file": "13-keri-one-web.md",
@@ -1577,9 +1957,13 @@
       "file": "05-papers-priority.md",
       "quote": "(primer \u00a72.6). Watcher gets differing log-heads (Hash X vs Hash Y) from two witnesses \u2192 duplicity detected \u2192 broadcasts conflicting events as"
     },
-    "675cf46dd212": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(Dossier spec \u00a73), and the trust is explicit and issuer-scoped, never systemic: an FAA's `art_posture` records whether the issuer merely recorded a digest, witn"
+    "675339595e5b": {
+      "file": "11-credentials.md",
+      "quote": "don't force an edge whose operator semantics you can't satisfy; bind at presentation instead"
+    },
+    "676dd5f4b4d9": {
+      "file": "11-credentials.md",
+      "quote": "'` and the diff), not read. Not re-read at all: the OOR/QVI/iXBRL vLEI bodies beyond the edges cited, `attestation`, `award`, `ai-*`, `aegis-std-vetting`, `tcr-"
     },
     "678a375df902": {
       "file": "05-acdc-and-verifiable-data.md",
@@ -1609,9 +1993,21 @@
       "file": "06-papers-di-drift.md",
       "quote": "Production, global, cross-jurisdiction,"
     },
+    "696e23672ac6": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`registraring.py:413`); the SEDI schemas describe the field as"
+    },
     "69bb5182b07e": {
       "file": "09-kram-and-request-authentication.md",
       "quote": "It is desirable to know all who signed, not just the first who meet the threshold."
+    },
+    "6a02c565ed24": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "` today is silently dropped by `vdr/verifying.py` and is malformed to `acdc/ipexing.py` \u2014 the first axis above, which is exactly"
+    },
+    "6a080d95d167": {
+      "file": "13-keri-one-web.md",
+      "quote": "Simplifying legal entity identification in the digital age"
     },
     "6a5dc176ba96": {
       "file": "16-presentation-registries.md",
@@ -1619,7 +2015,7 @@
     },
     "6a5eb9c4e3fe": {
       "file": "13-keri-one-web.md",
-      "quote": "novel key rotation scheme."
+      "quote": "novel key rotation scheme"
     },
     "6a6e3a11234f": {
       "file": "03-acdc-spec.md",
@@ -1633,13 +2029,29 @@
       "file": "keri-doctrine.md",
       "quote": "Federation decentralizes."
     },
+    "6b95a593b5fd": {
+      "file": "11-credentials.md",
+      "quote": "(`a`, :54). Field changes: `assemble_dt` became `assembly_dt`, `class` became `cls`, and `dt` is no longer required in `a` (required is now only `d`, :62-64). T"
+    },
     "6ba7af766e27": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(GOC \u00a72). Authentication and authorization are *partially dissociated* into **Attribute-Based Authorization**:"
     },
+    "6bb08f493289": {
+      "file": "11-credentials.md",
+      "quote": "(:242). Pattern `^[0-9]+(\\.[0-9]+)? +\\S+$` (:244); examples"
+    },
+    "6bbc4e986541": {
+      "file": "16-presentation-registries.md",
+      "quote": "A registry supplements, but never replaces, a Grant endorsement."
+    },
     "6c15204dab7d": {
       "file": "01-foundations-and-worldview.md",
       "quote": "genuinely praised but half-finished); ACDC/KERI is 3.0,"
+    },
+    "6c2ad08c576e": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "Comments and docstrings only; no behavior change."
     },
     "6c4dc769ef55": {
       "file": "16-presentation-registries.md",
@@ -1653,17 +2065,21 @@
       "file": "04-dossier-spec.md",
       "quote": "State must be reconstructible at an arbitrary historical point"
     },
+    "6cf539deab1a": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "duty (`sedi-age/index.md`).~~ **Superseded 2026-10-03.** That was Bakobo's own profile, now archived as `sedi-age-3.0.0/`. The current `sedi-age` is Sam Smith's"
+    },
+    "6d4077009a56": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-age/index.md`, :3, bakobo/schema `cfcbdcc7a`), and Sam's fixture builds it that way, with `"
+    },
     "6d46fc5faa82": {
       "file": "keri-doctrine.md",
       "quote": "between keypairs that hold signing authority and keypairs that hold rotation authority"
     },
-    "6d88e7746e0e": {
+    "6e003a5f4fd4": {
       "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "have two different types, and no amount of cryptography reconciles them. The applied corpus is honest about this and shows the actual technique: **semantic inte"
-    },
-    "6dda93244dbd": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "in turn is the Discloser to the next,"
+      "quote": "no longer names one credential. public-schema deleted `org-vet/` at `95a07e544` and renamed its sibling `ovc-org-vet` to `org-identity`, which keeps the LoA tab"
     },
     "6e135ae9b87a": {
       "file": "02-security-model-and-threat-posture.md",
@@ -1681,6 +2097,10 @@
       "file": "03-acdc-spec.md",
       "quote": "degrees of confidence or likelihood\u2026 machine learning or reasoning under uncertainty."
     },
+    "6e821f0f1e4b": {
+      "file": "09-kram-and-request-authentication.md",
+      "quote": "(:1596-1597) \u2014 and the three stores copied, `"
+    },
     "6e9cfe5c68d0": {
       "file": "05-papers-priority.md",
       "quote": "Modern cryptographic hashes like SHA-256 are considered post-quantum safe; while Grover's algorithm provides a theoretical speedup\u2026 simply using a 256-bit hash "
@@ -1697,17 +2117,33 @@
       "file": "01-keri-spec.md",
       "quote": "at the validator's discretion."
     },
+    "7008b5c88ef4": {
+      "file": "11-credentials.md",
+      "quote": "without the street line protects"
+    },
+    "7014baebeb65": {
+      "file": "11-credentials.md",
+      "quote": "LIFTED by @lkfnoess (2026-09-15)"
+    },
+    "703ac5a0fb63": {
+      "file": "09-keripy-code.md",
+      "quote": "comment (`acdc/ipexing.py:1327`), and a `db/subing.py` docstring about a"
+    },
     "70473c00e2e9": {
       "file": "07-security-analysis.md",
       "quote": "(`dg-c04-claude.md`). Verbatim:"
     },
-    "70b547cc42c2": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "(`:38-39`). That is a design decision a reviewer should recognize as correct and should not let anyone"
-    },
     "70ded9e533b9": {
       "file": "01-foundations-and-worldview.md",
       "quote": "figure is contested by a body the corpus's own author cites.** `kspqs.md` carries the familiar claim that"
+    },
+    "70e328e813c8": {
+      "file": "11-credentials.md",
+      "quote": "is sound and is specifically about I2I"
+    },
+    "711a9816b8f8": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "them on 2026-10-01; both operators were already proposed in the discussion's opening post of 2026-07-17 ("
     },
     "7175c557a7a0": {
       "file": "05-papers-priority.md",
@@ -1721,17 +2157,37 @@
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "Where several AIDs endorse one grant,"
     },
+    "722d11c82ae4": {
+      "file": "02-security-model-and-threat-posture.md",
+      "quote": "Philip Feairheller concurred and supplied the concrete case:"
+    },
+    "7265a455b90a": {
+      "file": "09-keripy-code.md",
+      "quote": "2650\u20132653 \u2192 2623\u20132626; rotation sith 2657 \u2192 2630; witness cuts/adds set math 2696\u20132726 \u2192 2668\u20132699 (now in `deriveBacks`); remote-membered stripping"
+    },
     "72b0cc6e7f3a": {
       "file": "13-keri-one-web.md",
       "quote": "Hitchhiker's Guide to KERI"
+    },
+    "72bf5e43e5c5": {
+      "file": "10-presentation-registries.md",
+      "quote": "reserved for the IPEX-anchoring application. *2026-10-03: still open, and the reference implementation has picked the narrow name* (\u00a70):"
     },
     "72c5612a5756": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`eventing.py:2853-2863`). A rotation is therefore valid only if the newly revealed keys both hash to the previously committed digests *and* satisfy the prior n"
     },
+    "72caadaa7c2a": {
+      "file": "09-keripy-code.md",
+      "quote": "The same post proposes a family \u2014 `I1I`, `I1E`, `E1I`, the"
+    },
     "72e8999881ca": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "None of A8-A11 are enforced by KERI,"
+    },
+    "72ffadd7d659": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "and touches only `spec/spec-body.md`, with 70 lines removed and one added (`git show --stat 487fab7`). The PR body is one line \u2014"
     },
     "7344072e2c11": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -1744,6 +2200,10 @@
     "742cf15790ef": {
       "file": "05-papers-priority.md",
       "quote": "a verifiable, forward cryptographic commitment to the identity of the next in line\u2026 without revealing who that heir is."
+    },
+    "7431f76eea23": {
+      "file": "13-keri-one-web.md",
+      "quote": "Healthcare Data and the vLEI"
     },
     "746348492048": {
       "file": "05-papers-priority.md",
@@ -1761,6 +2221,10 @@
       "file": "05-papers-priority.md",
       "quote": "Nothing magic happens on Feb 8\u2026 Malfoy can keep generating new evidence that looks like it originated in the past, *forever*!"
     },
+    "74dd302b6268": {
+      "file": "11-credentials.md",
+      "quote": "means logged in the holder's KEL and nowhere a third party watches."
+    },
     "74f4343fe004": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "whereas a browser vendor distrusting a CA is"
@@ -1773,17 +2237,21 @@
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`eventing.py:3143-3145`) The superseding fork is the authoritative branch; the superseded events"
     },
+    "757e28280219": {
+      "file": "10-presentation-registries.md",
+      "quote": "as the follow-up work. *2026-10-03: half answered.* The Grantee checks it, against a TEL it must already hold locally; retrieval has not arrived, and the tests "
+    },
     "758dde0de934": {
       "file": "03-acdc-spec.md",
       "quote": "A chain of Issuer-To-Issuee-To-Issuer Targeted ACDCs\u2026 can be used to provide a chain-of-authority\u2026 a delegation chain for authorization."
     },
+    "7590c945f2d9": {
+      "file": "11-credentials.md",
+      "quote": "transparent representation, never impersonation"
+    },
     "75e19069befc": {
       "file": "09-keripy-code.md",
       "quote": "(L455-456), implemented at L461-463: `farIssuee = creder.iseaid` then `if farIssuee is None or issuee is None or issuee != farIssuee: return None`. The comment "
-    },
-    "75f87d377145": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "(`:455-456`). The code's own comment names the motivating case in this corpus's vocabulary:"
     },
     "765910bb68f3": {
       "file": "03-acdc-spec.md",
@@ -1793,13 +2261,17 @@
       "file": "04-dossier-spec.md",
       "quote": "transport or citation protocols for presenting dossiers at transaction time; storage and hosting requirements for dossier artifacts; the internal data formats o"
     },
+    "768923562ef1": {
+      "file": "11-credentials.md",
+      "quote": "holds in exactly the case I2I fails"
+    },
     "76a1b4d1fef6": {
       "file": "13-keri-one-web.md",
       "quote": "PKI is for machines and not humans \u2014 KERI"
     },
-    "76be3a174c1d": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "A consequence reviewers must note:"
+    "76c3c5f3fd17": {
+      "file": "09-keripy-code.md",
+      "quote": "still holds, and the month's"
     },
     "76fef38705e5": {
       "file": "12-origin-security.md",
@@ -1809,9 +2281,17 @@
       "file": "14-kericonf-2026.md",
       "quote": "observers can't collude between each others"
     },
+    "77799e9ce752": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(full sentence quoted at `b8f60166b` :455-456; its"
+    },
     "77b94c0d5277": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "Still, this asymmetry is a landmine"
+    },
+    "77d3b0d13fff": {
+      "file": "11-credentials.md",
+      "quote": "(`this.i` `@sdlg3n`, :2068). **Tested 2026-10-03:** the second presentation recipe arrived, and the base was still deferred because"
     },
     "77d4f5619e28": {
       "file": "03-acdc-spec.md",
@@ -1853,6 +2333,14 @@
       "file": "09-keripy-code.md",
       "quote": "(`vdr/verifying.py:40`) \u2014 and traces the idea to a discussion rather than a spec:"
     },
+    "78fbc9a59101": {
+      "file": "11-credentials.md",
+      "quote": "refuses edge-bearing ACDCs by name until a real consumer needs chains"
+    },
+    "79c4d64d0bbf": {
+      "file": "11-credentials.md",
+      "quote": "(`brand-owner/index.md`:79; `tn-alloc/index.md`:60 says"
+    },
     "79f8dd63b100": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "appear to be planning legislation that allows the same attack to be carried out by national governments"
@@ -1869,17 +2357,13 @@
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "work extends multisig toward"
     },
-    "7b8ba4f63259": {
-      "file": "11-credentials.md",
-      "quote": "** Doctrine on why it's a schema at all:"
-    },
     "7bcd3a4834c4": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`30-invariants.md` H1) This is what"
     },
-    "7beb46f8a000": {
-      "file": "10-presentation-registries.md",
-      "quote": "a third party\u2026 would be able to detect the same grant SAID in both the Grantor's KEL and the Grantee's KEL, thereby correlating the IPEX."
+    "7c2301e65e85": {
+      "file": "11-credentials.md",
+      "quote": "a schema that let rd be omitted would fail open on the discovery a verifier gates on."
     },
     "7c31a4f629bc": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -1901,17 +2385,25 @@
       "file": "06-papers-di-drift.md",
       "quote": "Single-key governance means"
     },
+    "7d53dd06ba79": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(opened 2026-07-17; opening post and all comments read 2026-10-03 via raw/09, including the 2026-07-18 narrowing to `E1E` and the 2026-10-01 `I1I`/`DI1I` use ca"
+    },
     "7d8e83996b33": {
       "file": "14-kericonf-2026.md",
       "quote": "Makes the presentation less ephemeral"
+    },
+    "7da34f464c14": {
+      "file": "11-credentials.md",
+      "quote": "A rules SAID in an issued credential is a permanent content address."
     },
     "7dbb36fe85b3": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "that verifies, signs receipts for, and keeps events; it is the controller of its own non-transferable AID and is"
     },
-    "7e5fdad59244": {
-      "file": "11-credentials.md",
-      "quote": "** Pattern: magnitude + space + unit (`"
+    "7de1a4d96eba": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`tests/sedi/test_ipex_sedi.py:2364`);"
     },
     "7ec82337ac26": {
       "file": "14-kericonf-2026.md",
@@ -1937,6 +2429,18 @@
       "file": "02-security-model-and-threat-posture.md",
       "quote": "an identity you cannot recover from compromise without involving a trusted third party -- which brings back exactly the administrative dependency KERI was desig"
     },
+    "8042e45092a6": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`regeventing.py:494`) \u2014 runs only for a top-level `rd`. The presentation path never passes the ACDC and passes `controller=issuee` instead, which `vetBinds` ch"
+    },
+    "80735c20ce14": {
+      "file": "11-credentials.md",
+      "quote": "it keeps the birth date out of the transaction with no exotic cryptography"
+    },
+    "807370c766c7": {
+      "file": "09-keripy-code.md",
+      "quote": "and nserder.israid != fserder.iseaid:` \u2192 unmatched (L793-794)~~ \u2014 at `80f77b73b`, `if matched and"
+    },
     "80764f4e7e9f": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "all CESR primitives MUST employ mid-padding as defined"
@@ -1948,6 +2452,14 @@
     "80d36560ed6e": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "keripy implements none of this,"
+    },
+    "811ef405b02e": {
+      "file": "10-presentation-registries.md",
+      "quote": "which implies a field addition to `exn` that #1613 does not account for. *2026-10-03: answered"
+    },
+    "81806a066d24": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`KNOWLEDGE_TRANSFER.md` \u00a7Hard facts, :88-90, bakobo `cfcbdcc7a`), and `registry.json` is"
     },
     "8198d6788651": {
       "file": "04-dossier-spec.md",
@@ -2009,10 +2521,6 @@
       "file": "02-cesr-spec.md",
       "quote": "Insertion order lets field presence/absence and priority carry meaning; lexicographic ordering"
     },
-    "83e8b0c3d23e": {
-      "file": "11-credentials.md",
-      "quote": "Because a block discloses atomically, a single residence block would force over-disclosure on every verifier who only needs jurisdiction, **making the statute's"
-    },
     "840deaba2af0": {
       "file": "14-kericonf-2026.md",
       "quote": "They depend on watchers, but they aren't watchers"
@@ -2021,9 +2529,9 @@
       "file": "04-cesr-and-the-wire.md",
       "quote": "(keripy-knowledge `00-lens.md` claim 5, L54-57 at `9489ac9bd`). **Corrected 2026-09-15:** earlier revisions dropped the"
     },
-    "8592462a228b": {
+    "8521382592ab": {
       "file": "11-credentials.md",
-      "quote": "This is what keeps guardianship *transparent* representation, never impersonation \u2026 **Collapsing the two (guardian-as-subject) is the classic impersonation/comm"
+      "quote": "same issuee, issuer unconstrained"
     },
     "85f7cd80332b": {
       "file": "06-papers-di-drift.md",
@@ -2044,6 +2552,10 @@
     "864e4ba8250a": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`eventing.py:3051-3057`) The code even strips remotely sourced signatures from locally-membered indices before counting the threshold,"
+    },
+    "8654f6512349": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(L1199-1200); or signatures (L1203-1263), kept only if they"
     },
     "866a1b7e11ed": {
       "file": "05-papers-priority.md",
@@ -2069,9 +2581,17 @@
       "file": "08-keripy-kb.md",
       "quote": "** (`SCOPE.md` \u00a7opening, ~L5\u20136) and that the rule is **"
     },
+    "8863c1cf5f7f": {
+      "file": "11-credentials.md",
+      "quote": "(`README.md` \u00a7Status, :65). The presentation, guardian, ward and authorization schemas"
+    },
     "8868ef83cf44": {
       "file": "05-papers-priority.md",
       "quote": "Witnesses make no assertion about identity \u2014 they don't claim 'this key belongs to this entity.'\u2026 That is a fundamentally different role than a CA."
+    },
+    "88742804db40": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "describes `b8f60166b`; at `80f77b73b` `verifyEvidence` is stricter about *which* subset it keeps."
     },
     "88761320c625": {
       "file": "07-security-analysis.md",
@@ -2097,6 +2617,10 @@
       "file": "05-papers-priority.md",
       "quote": "via Merkle-proof style, others shown as hash only. More flexible than SD-JWT,"
     },
+    "89a185d63c3a": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(:91-92). A schema evolution is therefore a new content-addressed object, and forward-compatibility across schema versions is handled at the edge layer, where a"
+    },
     "89ab094da10c": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "contributes no authority to the controller's events"
@@ -2105,21 +2629,49 @@
       "file": "02-security-model-and-threat-posture.md",
       "quote": "(`cr-ad-trust.md` \u00a75) Assumptions: none beyond the base model -- the fork occurs *even when all actors behave correctly*. Verdict: technically correct; it"
     },
+    "8a4820dbcfef": {
+      "file": "10-presentation-registries.md",
+      "quote": "Residence needs only issuer proof; Core owns the presentation proof."
+    },
+    "8a4ef4950a0d": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "(`core/eventing.py` L4874\u20134875). The doctrinal shift is small but real: in keripy,"
+    },
     "8aa1dc15eac1": {
       "file": "01-foundations-and-worldview.md",
       "quote": "(`background.md` \u00a76.4); observer presence"
+    },
+    "8aaa5fa4466f": {
+      "file": "keri-doctrine.md",
+      "quote": "not merely discovery mechanisms for KELs."
+    },
+    "8aef20bf8a1c": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-guardian-2.0.0/index.md`, :3). At `cfcbdcc7a`, `NI2I` appears on Sam's Age edge to Core (`sedi-age/example.json` `e.coreIdentity.o`, :90-93: `["
     },
     "8b1412d5c462": {
       "file": "01-foundations-and-worldview.md",
       "quote": "whereas KERI's non-intertwined microledgers let a user delete a specific KEL"
     },
-    "8b97cd4f2d74": {
-      "file": "11-credentials.md",
-      "quote": "Inlining raw bytes rejected as bloat. (\u00a7Image). **Anti-pattern flagged: a resolvable URL in a credential is"
+    "8b96fc2fcdf5": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-age/index.md`:3, true of the birth date but not of the other thresholds), bakobo's `prove-over-21` example, which"
+    },
+    "8b9901925a7a": {
+      "file": "12-origin-security.md",
+      "quote": "vs. cached passcodes** \u2014 both hold only if"
+    },
+    "8baec8d82b99": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-present-age-portrait/index.md`, :5) \u2014 and the schema pins it:"
     },
     "8bd2e71ff0e3": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "so that both the issuer and the user can detect if either one has been compromised and the verifier knows it."
+    },
+    "8bd82d773b0e": {
+      "file": "11-credentials.md",
+      "quote": "poor man's sparse Merkle tree"
     },
     "8c821b197b09": {
       "file": "13-keri-one-web.md",
@@ -2128,6 +2680,14 @@
     "8ccbfc952c7e": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "reject if a response to that prior already exists"
+    },
+    "8cd248726ab2": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "have two different types, and no amount of cryptography reconciles them. The applied corpus is honest about this and shows the actual technique: **semantic inte"
+    },
+    "8ce792c0cb2f": {
+      "file": "11-credentials.md",
+      "quote": "(`src/keri/vdr/verifying.py`:196)"
     },
     "8d3f018fcc81": {
       "file": "04-dossier-spec.md",
@@ -2145,10 +2705,6 @@
       "file": "07-security-analysis.md",
       "quote": "Identity credentials should expire like everything else."
     },
-    "8ebae624ca99": {
-      "file": "11-credentials.md",
-      "quote": "the state endorses only name, birth date, image, and Utah residence address \u2026 derived credentials assert only their stated claim."
-    },
     "8f06f36939bc": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "X.509, JWTs, OAuth2, OIDC, SD-JWTs, and current-key-state-only DIDs (did:web) all"
@@ -2160,6 +2716,10 @@
     "8f3a17ce00cc": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "to match keripy `BaseHab.sign` behaviour"
+    },
+    "8f8b6a5fab4a": {
+      "file": "11-credentials.md",
+      "quote": "'`; the only hits are rule texts and one `"
     },
     "8f953081fa5b": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2193,9 +2753,21 @@
       "file": "07-security-analysis.md",
       "quote": "Assumptions: A8\u2013A11. Verdict: **faithful and survivability-aligned** \u2014"
     },
+    "91b483a88875": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "NI2I is explicitly non-delegative and therefore adds no issuer-to-Issuee equality."
+    },
+    "91d03fbba1d6": {
+      "file": "16-presentation-registries.md",
+      "quote": "and justifies it by localized harm and aligned incentives. #1613 makes a second, distinct relaxation that the first pass did not record: the presentation regist"
+    },
     "91d8cd455655": {
       "file": "13-keri-one-web.md",
       "quote": "attestable key events and consensus based verification of key events."
+    },
+    "91ee6814693e": {
+      "file": "keri-doctrine.md",
+      "quote": "The observer layer is KEL discovery / caching; a 'super watcher' is a bigger cache."
     },
     "92160b4ed09b": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -2204,10 +2776,6 @@
     "92873e462eaf": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "is only possible via key compromise or the controller acting duplicitously (indistinguishable to a watcher)."
-    },
-    "92eec72f7189": {
-      "file": "07-shibboleths-and-anti-patterns.md",
-      "quote": "People often treat a signature as if it were a claim of authorship. That is sometimes true. But it is not what signatures *are* in general"
     },
     "92f7563ac3e0": {
       "file": "09-keripy-code.md",
@@ -2225,6 +2793,10 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "generations, and the mainstream took a wrong turn partway through. X.509/PKI is generation 1.0; DIDs and W3C Verifiable Credentials are 2.0 ("
     },
+    "9395df2c871f": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "The club's accepted shape and the holder's issued presentation are one schema viewed from two sides"
+    },
     "93d1d42fdfd6": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "says nothing about the issuer, so the common SEDI case -- both credentials issued by a third party to the same subject"
@@ -2236,6 +2808,14 @@
     "93ecd97e9ef2": {
       "file": "08-keripy-kb.md",
       "quote": "** (`10-map.md` \u00a7ACDC stack, ~L82\u201383), glossed as the retrograde-attack defense (H1). It then adds that"
+    },
+    "9405a998d487": {
+      "file": "11-credentials.md",
+      "quote": "our sedi-id differs in field placement, block shape, edge semantics, and rule shape, so calling it Sam-compatible would mislead issuers"
+    },
+    "94134f9e651a": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-core/index.md`, :3). Nonces are floored at 24 characters"
     },
     "944b1af05c72": {
       "file": "08-keripy-kb.md",
@@ -2269,9 +2849,17 @@
       "file": "05-papers-priority.md",
       "quote": "drift \u2014 the issuer-rotation hitch.** Indirection (issue to identifier not key) solves *holder* rotation,"
     },
+    "96817cb0bb4e": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "minimization enforced by a four-attribute schema"
+    },
     "96a5329b48e2": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "precisely because such a code"
+    },
+    "96ac7cb213e9": {
+      "file": "16-presentation-registries.md",
+      "quote": "occurs nowhere in the tree (\u00a77.7). The code also scopes the mechanism to its narrow use: the only registry an Issuee writes through the new facade binds a `gran"
     },
     "96e0a2336ab9": {
       "file": "07-security-analysis.md",
@@ -2313,13 +2901,37 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "KERI's position is that trust registries"
     },
+    "98fc6a18badc": {
+      "file": "16-presentation-registries.md",
+      "quote": "**: the usual name, in `ipexing.py` comments and docstrings (`:609`, `:1321`"
+    },
+    "990cdd6a43e7": {
+      "file": "11-credentials.md",
+      "quote": "(`src/keri/core/serdering.py`:2830), by `agg[1].get("
+    },
     "993995581f1e": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "name the objective function first,"
     },
+    "9985ec61590d": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "` (:3598-3605), and the agent issues each citizen's Core with a `utahAgent` edge, also `I2I`, to its Agent credential (:3997-4004). Leaves \u2014 Residence, Age \u2014 re"
+    },
+    "998de3ca9d99": {
+      "file": "11-credentials.md",
+      "quote": "unchanged, in `citation/index.md`:49, and face-to-face has its own variant (:35). The newer telco pages adopt the idea in their own words:"
+    },
+    "99d8adaae4da": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-age/index.md`:5), and the design doc's"
+    },
     "99f025c1ddfb": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "Edges are non-delegative (`NI2I` or `E1E`) since the issuee is constant. Simplest tooling; strongest normative structure for interop. Cost: the cascade \u2014"
+    },
+    "9a159a213903": {
+      "file": "11-credentials.md",
+      "quote": "THE E1E EDGE SUPERSEDES @sd5hjb."
     },
     "9a1e7956ce27": {
       "file": "keri-doctrine.md",
@@ -2341,6 +2953,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "A stolen header set can't be replayed against a different method/path, and there is no long-lived secret to exfiltrate from the server"
     },
+    "9a8884b7d074": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-id/index.md` \u00a7Purpose, :15). The subject is bound by the holder's own AID:"
+    },
     "9ab3deaf848e": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "A secure system prevents forks / equivocation."
@@ -2353,10 +2969,6 @@
       "file": "04-cesr-and-the-wire.md",
       "quote": "is used deliberately instead of"
     },
-    "9b25bf055828": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "decide what level of assurance will satisfy them, and accept any credential having an LoA >= their threshold"
-    },
     "9b2d71efd48b": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "a new thing that nobody else does"
@@ -2364,6 +2976,14 @@
     "9b7785c6b7df": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "SD-JWT gives you selective disclosure and issuer flexibility."
+    },
+    "9b95a5939e8e": {
+      "file": "10-presentation-registries.md",
+      "quote": "`; and the Issuees a registry authenticates are the `tethered` set (`ipexing.py:610`)."
+    },
+    "9bb1b87b7e10": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-guardian/sedi-guardian.schema.json` `e.citizen.o`, :316). `this.i` gives the semantics and its source:"
     },
     "9c26cfd6d8d2": {
       "file": "03-acdc-spec.md",
@@ -2381,6 +3001,10 @@
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "framing is about *rotation* authority, and the same author qualifies it sharply when writing about *signing* authority:"
     },
+    "9dd86673dfad": {
+      "file": "11-credentials.md",
+      "quote": "This avoids a cyclic pair of edges and allows the ward identity to be withheld independently."
+    },
     "9dfe1ff7a2a9": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "does not mean validators agree on a single history"
@@ -2393,9 +3017,25 @@
       "file": "08-keripy-kb.md",
       "quote": "Add a code only to `MatterCodex`+`Sizes` \u2192 round-trips as primitive but invisible to SAID derivation / prefix validation \u2192"
     },
+    "9e4fab9f9270": {
+      "file": "09-kram-and-request-authentication.md",
+      "quote": "(`kraming.py:1658-1659`) \u2014 and when accumulated partials later satisfy threshold the cache is re-pinned with `cache.rdt = helping.nowIso8601()` (`kraming.py:146"
+    },
     "9e6068dc6a9c": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "A KERI watcher that detects duplicity is making an observation -- surfacing cryptographic evidence that the relying party confirms independently."
+    },
+    "9e816408e5c4": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-present-age-portrait/index.md`).~~ **Superseded wording, 2026-10-03:** that passage is no longer anywhere in bakobo/schema at `cfcbdcc7a` (it was read in"
+    },
+    "9ea06fb874ec": {
+      "file": "09-keripy-code.md",
+      "quote": "(Discussion quotes in this note keep Sam's typos as written.) After Daniel Hardman argued for adopting E1E alone (comment 2026-07-18T00:01:13Z), Sam narrowed th"
+    },
+    "9ed30522c971": {
+      "file": "09-keripy-code.md",
+      "quote": "constrain the near ACDC's issuer relative to the far node's issuee, so they are mutually exclusive"
     },
     "9f23e4a0a1b7": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2417,6 +3057,10 @@
       "file": "05-papers-priority.md",
       "quote": "Two forms: in-process local resolver (default/recommended) or shared remote service; archival variant = **"
     },
+    "a043c1c0f4bb": {
+      "file": "16-presentation-registries.md",
+      "quote": "Validate Core a.rd when its Residence origin does not declare one."
+    },
     "a05771250255": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "and a registry anchor additionally carries lifecycle state. The composition rule is absorption:"
@@ -2429,21 +3073,45 @@
       "file": "03-acdc-spec.md",
       "quote": "verifiable but decorrelatable extensibility to KEL semantics\u2026 The seals need no semantics beyond their secure attributability."
     },
+    "a0a6eea78677": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`ipexing.py:1419`) and the ACDC fails verification; the Issuer-authentication code is explicit that this form"
+    },
     "a117dda58f66": {
       "file": "01-foundations-and-worldview.md",
       "quote": "(`standard-analysis.md` \u00a70); it"
+    },
+    "a11fc1a4a154": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-guardian/sedi-guardian.schema.json`, :81) \u2014 but the quoted phrasing ~~"
     },
     "a149813788c2": {
       "file": "01-foundations-and-worldview.md",
       "quote": "(A5, `background.md` \u00a74.6)."
     },
+    "a1ca70c76161": {
+      "file": "09-keripy-code.md",
+      "quote": "(L1414\u20131415). An inner `rd` with no top-level `rd` is likewise refused as"
+    },
     "a26a2cbabf42": {
       "file": "04-dossier-spec.md",
       "quote": "in every disposition.** A slot points via `n` to an endorsement ACDC, names the schema that endorsement must satisfy via `s`, assigns a weight via `w`, and iden"
     },
+    "a2a37b7678ed": {
+      "file": "10-presentation-registries.md",
+      "quote": "Every declared node-local presentation registry must bind the grant."
+    },
     "a338b8e10e47": {
       "file": "01-foundations-and-worldview.md",
       "quote": "and, in the same paragraph, that European certification guidance's draft revision"
+    },
+    "a3b09cfd588a": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "The declaration is the issuer's signal that this Issuee must authenticate the grant through this node-local registry."
+    },
+    "a3bafb5c86cb": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "grew by another ~900 lines"
     },
     "a3f0081e123f": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -2453,9 +3121,21 @@
       "file": "08-keripy-kb.md",
       "quote": "(`30-invariants.md` E1; termdefs *first-seen*, *duplicity*)"
     },
+    "a468adec2787": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "The opening post proposed a whole family \u2014 `I1I`, `I1E`, `E1I`, the"
+    },
     "a48c44db904f": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`eventing.py:3048-3049`): each witness only accepts local events, making"
+    },
+    "a4942a4f5e51": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "` (`vvp-dossier/vvp-dossier.schema.json`:180), and no edge in the current telco schemas carries a SAID-valued `const`. The intent is written down for one edge: "
+    },
+    "a4c32a4e0f14": {
+      "file": "09-keripy-code.md",
+      "quote": "updated test_sedi example to use SealNonce"
     },
     "a4cf9b4f4134": {
       "file": "keri-doctrine.md",
@@ -2468,6 +3148,10 @@
     "a61115c3f68b": {
       "file": "04-dossier-spec.md",
       "quote": "L13-14 and `spec/dossier-spec-head.md` \u00a7"
+    },
+    "a6602102aa57": {
+      "file": "13-keri-one-web.md",
+      "quote": "vLEIs for Cross-Border Payments"
     },
     "a6627bde4eb6": {
       "file": "07-security-analysis.md",
@@ -2489,9 +3173,21 @@
       "file": "05-papers-priority.md",
       "quote": "lets Alice cheat/repudiate her own actions, can't reach all stakeholders (Christie's Basquiat-auction example); (3)"
     },
+    "a71d0e4e9273": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`ipexing.py:1415`; the test of the same point is at `test_ipexing.py:6246`). The multi-ACDC rule is `[K]` in its strict form: `_verifyPresentationAuthGraph` co"
+    },
     "a7932229a33c": {
       "file": "09-kram-and-request-authentication.md",
       "quote": "` (:294, :299) while `intake` uses `md.startswith(d)` (:1031). So a cache-type configured for `/end` does *not* govern a message routed `/end/role`, though a de"
+    },
+    "a7a2e3c92f86": {
+      "file": "11-credentials.md",
+      "quote": "a supporter assists but cannot decide FOR the principal"
+    },
+    "a820c14c7a3f": {
+      "file": "09-keripy-code.md",
+      "quote": "equivalence operators `I3I`/`E3E`, and `DI1I`, under which"
     },
     "a820f53c3938": {
       "file": "02-security-model-and-threat-posture.md",
@@ -2513,9 +3209,9 @@
       "file": "13-keri-one-web.md",
       "quote": "Any log may be verified anywhere at anytime by anybody."
     },
-    "a99e93ed88fb": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(Dossier spec \u00a73). This is the interop corollary of the lossless/lossy doctrine: keep the lossless ACDC authoritative and treat foreign VCs"
+    "a90f90503f3e": {
+      "file": "16-presentation-registries.md",
+      "quote": "occurs nowhere in `src/` or `tests/` (\u00a77.7). The written discussions still use both names, and #1098 \u2014 edited 2026-09-26 \u2014 uses"
     },
     "a9a4ec57bbe3": {
       "file": "04-dossier-spec.md",
@@ -2533,17 +3229,29 @@
       "file": "08-keripy-kb.md",
       "quote": "claim still true?** It was verified at keripy `60ab9e08` and is 493 commits stale (\u00a70). L16/L17 are now known to be wrong (F-08H), which is one counterexample t"
     },
+    "aa3f96e12eac": {
+      "file": "16-presentation-registries.md",
+      "quote": "presentation registry without an Issuer state registry"
+    },
     "aa6b4e40e8ba": {
       "file": "14-kericonf-2026.md",
       "quote": "There's two other pieces of infrastructure that are new; that we're building this year: Registrar and Observer. And the reason these are important is that they "
     },
-    "aa8f665ef77f": {
+    "aaa62012606d": {
       "file": "11-credentials.md",
-      "quote": "review each delegation on a cadence appropriate to its stakes, and revoke or narrow it promptly once the conditions that justified the grant no longer hold. **T"
+      "quote": "(`sedi-core/sedi-core.schema.json`, :293) \u2014 a commitment, not a locator. The portrait"
+    },
+    "aac15d339984": {
+      "file": "09-keripy-code.md",
+      "quote": "removed TransReceiptIdxSigGroups -D from v1 count code tables"
     },
     "aac6a00f457a": {
       "file": "06-papers-di-drift.md",
       "quote": "(data); KERI handles the"
+    },
+    "ab8695d2a792": {
+      "file": "11-credentials.md",
+      "quote": "(:7), which pairs with Core's `primary` flag,"
     },
     "ab93024ea469": {
       "file": "12-origin-security.md",
@@ -2557,9 +3265,9 @@
       "file": "04-dossier-spec.md",
       "quote": "This lets members contribute signatures or seals to a dossier at different times and via different channels without immediate impact on a shared KEL."
     },
-    "ac65dddf9e58": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "else all(results)`, with an empty group treated as malformed (`:899-900`). `NAND`, `NOR`, `AVG` and `WAVG` still have no code path anywhere. So"
+    "abfefa70aab9": {
+      "file": "16-presentation-registries.md",
+      "quote": "`b7c170f93` removed, analysed in \u00a72.6. At `80f77b73b` the Grantor claims in \u00a72.2\u2013\u00a72.6 stand as follows. The Issuee must control the registry: confirmed `[K]`. T"
     },
     "ac688abb3db4": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -2581,9 +3289,17 @@
       "file": "15-kram.md",
       "quote": "`, chosen so it sorts last in LMDB, where the whitepaper says"
     },
+    "ad2dd7ed6fa7": {
+      "file": "11-credentials.md",
+      "quote": "a one-time presentation is not logged, which is what keeps the state (and anyone else) from correlating where and when the holder presents."
+    },
     "adc80bd821fa": {
       "file": "07-security-analysis.md",
       "quote": "Policy-driven / Non-universal / May disagree across validators."
+    },
+    "adfe8b05a470": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`sda.md \u00a77`; *corrected 2026-10-03* \u2014 this sentence previously attributed the paper to Origin, which it is not). The SEDI portrait is committed by digest with "
     },
     "ae208ff19b40": {
       "file": "04-dossier-spec.md",
@@ -2601,6 +3317,10 @@
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "giving the graph Merkle-tree-like properties. Typically only the issuer or issuee of the *origin* needs a fresh authentication factor. Delegation is native. For"
     },
+    "aec73d509ac0": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(`sedi-id/index.md` \u00a7Image, :89-91, bakobo `cfcbdcc7a`). *Corrected 2026-10-03:* this sentence previously quoted the page as saying"
+    },
     "af295e1433aa": {
       "file": "03-acdc-spec.md",
       "quote": "A selectively-disclosed block"
@@ -2612,6 +3332,10 @@
     "af8ac5e32c62": {
       "file": "keri-doctrine.md",
       "quote": "(`keri-primer.md` \u00a73.3). KERI's answer is anchored signatures: an anchored signature or credential is validated against"
+    },
+    "af8aef86820e": {
+      "file": "16-presentation-registries.md",
+      "quote": "with credential-specific policy free to narrow it (`ipexing.py:645-646`), which is #1613's"
     },
     "afbd1ecdd91f": {
       "file": "09-kram-and-request-authentication.md",
@@ -2633,6 +3357,18 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(was.md \u00a7Mitigation 3). All three intuitive mitigations fail: contextual clues are unreliable, retroactive revocation is"
     },
+    "b09d83f7ecbc": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-id/index.md` \u00a7Image, :87-89)."
+    },
+    "b0e9dd05632f": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "which is not on the page at the pin; the meaning is the same. The active Core keeps the mechanism, describing its image block as"
+    },
+    "b0fc548999bd": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(same). It is still the aggregate's natural case \u2014 a homogeneous vector disclosed in subset \u2014 and Sam reached the attribute-versus-aggregate choice independentl"
+    },
     "b12f6468cb5f": {
       "file": "10-keria-signify.md",
       "quote": "Signify - KERI Signing at the Edge"
@@ -2640,10 +3376,6 @@
     "b19d154f623f": {
       "file": "13-keri-one-web.md",
       "quote": "A reputation is meaningless without an underlying identity and an identity is valueless without a credible reputation."
-    },
-    "b20c1813aa65": {
-      "file": "07-shibboleths-and-anti-patterns.md",
-      "quote": "A signature means the signer authored / asserts the content."
     },
     "b217795f0943": {
       "file": "01-keri-spec.md",
@@ -2665,6 +3397,10 @@
       "file": "14-kericonf-2026.md",
       "quote": "They monitor a different thing. Those monitor your credentials."
     },
+    "b29e2cf67609": {
+      "file": "09-keripy-code.md",
+      "quote": "(Daniel Hardman, 2026-07-18T00:01:13Z) \u2014 and his reply did not dispute the mechanism:"
+    },
     "b2a7d0cb4168": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`30-invariants.md` B5) This is the primer's"
@@ -2672,6 +3408,14 @@
     "b2bb5cd4040c": {
       "file": "03-acdc-spec.md",
       "quote": "will have everything it needs to make a successful disclosure."
+    },
+    "b2e7dbed8a4f": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`src/keri/acdc/registraring.py:413`) \u2014 and `Registrar.vacate` (`:419`) delegate to the registry event engine's `present`, which validates the target as a SAID "
+    },
+    "b30d07a73ee3": {
+      "file": "keri-doctrine.md",
+      "quote": "(`acdc/ipexing.py:609`): each `(i, rd)` declared in a disclosed `a` or `A` must name a registry the Issuee incepted \u2014"
     },
     "b32f5eafa8e9": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2685,9 +3429,13 @@
       "file": "05-papers-priority.md",
       "quote": "not 'can duplicity occur?' \u2014 it can \u2014 but 'how quickly is it detected, and what happens when it is?'\u2026 a deployment question, not a protocol question."
     },
-    "b3d6c1c3e82e": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "added to match KERIpy BaseHab.sign behaviour"
+    "b3b358ef7111": {
+      "file": "13-keri-one-web.md",
+      "quote": "OVC Goes Live with Microsoft"
+    },
+    "b3c9d828a969": {
+      "file": "11-credentials.md",
+      "quote": "` at `tn-alloc/tn-alloc.schema.json`:218). The intent is written down for one edge: tn-alloc's `issuer` edge is"
     },
     "b406283805ec": {
       "file": "06-papers-di-drift.md",
@@ -2696,6 +3444,10 @@
     "b425edf9c75b": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "A provided but unrecognized operator fails closed instead of being treated like an omitted one"
+    },
+    "b425ee8aca98": {
+      "file": "10-presentation-registries.md",
+      "quote": "one anchor proves the whole DAG"
     },
     "b472c833f01f": {
       "file": "05-papers-priority.md",
@@ -2721,6 +3473,10 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "(kspqs.md \u00a7The Pre-Rotation Mechanism, L72 at `181569b64`). The answer offered is an agility argument rather than a defence of the number \u2014"
     },
+    "b5915200b889": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "(#1515, 2026-07-18; notes 09 \u00a711 item 2) **[P]**. On 2026-10-01 he gave a concrete SEDI use case for `I1I` ("
+    },
     "b5d0c92b7dc3": {
       "file": "01-keri-spec.md",
       "quote": "could well be one of the main reasons that other key assignment methods, such as PGP's web-of-trust failed."
@@ -2729,17 +3485,29 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "The consequence is a prohibition, not a preference:"
     },
-    "b5fd739071a1": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "A schema evolution is therefore a new content-addressed object, and forward-compatibility across schema versions is handled at the edge layer, where an edge's `"
+    "b5f5524bf9af": {
+      "file": "09-keripy-code.md",
+      "quote": "(`db/basing.py` L591\u2013592; `self.eidx = subing.CesrIoSetSuber(db=self, subkey="
+    },
+    "b69d4ba6b99f": {
+      "file": "16-presentation-registries.md",
+      "quote": "is attached in #1098 to Issuer-side detectability; the Issuee-side sentence follows with"
     },
     "b6a56cb38e92": {
       "file": "09-keripy-code.md",
       "quote": "terminates at the far-node hop ``\\"
     },
     "b6b77a19ec6c": {
-      "file": "08-presentation-architectures-and-ipex.md",
-      "quote": "DI2I and NOT are recognized but unimplemented: they are listed so they fail closed diagnosably instead of being dropped and silently defaulting"
+      "file": "09-keripy-code.md",
+      "quote": "DI2I and NOT are recognized but unimplemented: they are listed so they fail closed diagnosably instead of being dropped and silently defaulting."
+    },
+    "b6eb0dc6066e": {
+      "file": "11-credentials.md",
+      "quote": "the AGID is not pinned at index 0 and the issuee block is not required at index 1, which lets a holder withhold element 1 and present a targeted credential as a"
+    },
+    "b72b1edf2322": {
+      "file": "10-presentation-registries.md",
+      "quote": "Sender authentication plus the Issuee's presentation TEL is"
     },
     "b75109cb4c11": {
       "file": "02-security-model-and-threat-posture.md",
@@ -2749,6 +3517,10 @@
       "file": "15-kram.md",
       "quote": "` in `specs.json:26`). The whole of it is one sentence \u2014 *"
     },
+    "b78de397a871": {
+      "file": "11-credentials.md",
+      "quote": "(`@yivcussv`), driven by"
+    },
     "b7b1ffffbccc": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "coexist and must not be confused: the `$id` SAID is"
@@ -2756,6 +3528,10 @@
     "b7b6a3afd869": {
       "file": "01-keri-spec.md",
       "quote": "control authority is split between keypairs that hold signing authority and keypairs that hold rotation authority."
+    },
+    "b7f2fac53e5e": {
+      "file": "09-keripy-code.md",
+      "quote": "where the context seems to call for"
     },
     "b8b288785412": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2769,6 +3545,10 @@
       "file": "07-security-analysis.md",
       "quote": "make no assertion about identity\u2026 a fundamentally different role than a CA."
     },
+    "b974f437320f": {
+      "file": "10-presentation-registries.md",
+      "quote": "when a later `grant` omits `ax` (`tests/acdc/test_ipexing.py:6232`). A presenter cannot hide the declaration by compacting the attribute section, because a regi"
+    },
     "b9bcab10fc8d": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "all exchanges (both issuance and presentation) MAY be modeled as the disclosure of information by a Discloser to a Disclosee. The difference between exchange ty"
@@ -2781,6 +3561,18 @@
       "file": "02-cesr-spec.md",
       "quote": "as better.** Over-provisioning strength"
     },
+    "ba671cbe9956": {
+      "file": "11-credentials.md",
+      "quote": "under archive paths (`test_sedi_pins.py`, :59), because"
+    },
+    "ba718bdcedf0": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`ipexing.py:1458`) \u2014 and on an inner `rd` without a top-level one (\u00a74). A `grant` without completed KRAM acceptance fails (\u00a76). The TEL must be held locally \u2014"
+    },
+    "ba7c842c939a": {
+      "file": "11-credentials.md",
+      "quote": "(:5). And the division of labour between sections is a rule:"
+    },
     "bab8083dc57e": {
       "file": "15-kram.md",
       "quote": "Interactive vs. Non-interactive"
@@ -2789,17 +3581,25 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "(wtbo.md \u00a75). The corpus frames this honestly as"
     },
+    "bae224ea1def": {
+      "file": "09-keripy-code.md",
+      "quote": "(L291\u2013292); anchorers are"
+    },
+    "bb0e457af15e": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`ipexing.py:1524`). It then cuts the registry history off at that time \u2014"
+    },
     "bb8f5087baa4": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`keri-primer.md` \u00a72.4) Multisig is optional but declaring and following the policy is required:"
     },
-    "bb9328b16668": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "(`sedi-present-age-portrait/index.md`). In a holder-issued presentation the holder is the issuer and is the issuee of both source credentials, so I2I edges to b"
-    },
     "bc2719d777bd": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "for the far-side, deepest node \u2014"
+    },
+    "bc3053d0901d": {
+      "file": "10-presentation-registries.md",
+      "quote": "(#1095). #1613 sharpens it into a liability claim: a verifier accepting an unanchored grant"
     },
     "bc547b6ec380": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2809,13 +3609,17 @@
       "file": "02-cesr-spec.md",
       "quote": "will happily anchor a claim to a commit nobody else can fetch. The reachability check \u2014 `git branch -a --contains <sha>`, or `git for-each-ref --contains <sha>`"
     },
-    "bda1b61b04f6": {
+    "bdbc248a96a0": {
       "file": "11-credentials.md",
-      "quote": "This allows verifiers to decide what level of assurance will satisfy them, and accept any credential having an LoA \u2265 their threshold."
+      "quote": "(:20). Duplicity detection-and-recovery, MITM-freeness, and external observers are the LoA-3 primitives. ~~"
     },
     "bdfcbf86891c": {
       "file": "01-foundations-and-worldview.md",
       "quote": "archival pattern gives broad coverage but"
+    },
+    "bdfd74c97e23": {
+      "file": "09-keripy-code.md",
+      "quote": "Need new edge operator. I1I  for Issuer must be Issuer  DI1I for E1E edges so know to test for same Issuer"
     },
     "be0ec8474d3f": {
       "file": "09-kram-and-request-authentication.md",
@@ -2836,6 +3640,10 @@
     "beab11bbbcfb": {
       "file": "10-keria-signify.md",
       "quote": "Signify-TS splits off two, key generation and event signing into a TypeScript library to provide 'signing at the edge'."
+    },
+    "beb102436caf": {
+      "file": "05-papers-priority.md",
+      "quote": "(*title corrected to the frontmatter 2026-10-03 (verification); the note had"
     },
     "bed933e3cdbb": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2881,10 +3689,6 @@
       "file": "14-kericonf-2026.md",
       "quote": "Every time you do anything, if you want to make it so that it's not statistically correlatable, you have to do it in a bulk or herd privacy protected way. You c"
     },
-    "c1170e9850c7": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "version field exists precisely so that *humans* can tell a prose fix from a semantic one, but it"
-    },
     "c125b7844ca5": {
       "file": "10-keria-signify.md",
       "quote": "Fixes #452 crash on untargeted ACDC or missing issuee"
@@ -2905,6 +3709,10 @@
       "file": "10-presentation-registries.md",
       "quote": "(KERIcon 2026, `raw/14`). A presentation registry adds an Issuee-controlled Registrar to that picture \u2014 the Holder, previously the one party in the triangle run"
     },
+    "c1cb99cb61ba": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "and `assuranceIsPointInTime`"
+    },
     "c20b3ff14767": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "An attacker must therefore compromise"
@@ -2916,10 +3724,6 @@
     "c27659cab995": {
       "file": "08-keripy-kb.md",
       "quote": "is wrong in the direction that matters most.** DI2I and NOT are not dropped \u2014 they **fail closed**, deliberately and with a diagnosable error, and the source sa"
-    },
-    "c2ba5896e620": {
-      "file": "11-credentials.md",
-      "quote": "can prove that an issuer remains committed to a citation \u2014 but only the interaction context \u2026 plus governance, plus possible validation external to the world of"
     },
     "c2e3348ce893": {
       "file": "04-dossier-spec.md",
@@ -2949,6 +3753,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "**External contract?** (wire codes, sizes, field order, SAID derivation, version strings are external contracts \u2014 a change that passes keripy's own tests but di"
     },
+    "c3e370f8c7c6": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "(2026-10-01), Sam argues that a SEDI leaf credential's edge to the core identity credential should be"
+    },
     "c3f6a09d2009": {
       "file": "07-security-analysis.md",
       "quote": "(`dg-c03-claude.md` \u00a72, \u00a73, \u00a76). Verbatim:"
@@ -2961,6 +3769,14 @@
       "file": "12-origin-security.md",
       "quote": "portability (Req 2.4) and zero KERI-knowledge dependency. Explicitly reversible:"
     },
+    "c43979bfe759": {
+      "file": "11-credentials.md",
+      "quote": "remove the const schema SAID constraints from the vvp-dossier schema"
+    },
+    "c46171cc81e6": {
+      "file": "10-presentation-registries.md",
+      "quote": "is **not** enforced. The Issuee need not sign or anchor the `grant`; the registry alone authenticates it (\u00a76, open question 11). The Issuee's side is built too:"
+    },
     "c49a2f120450": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "(Dossier spec \u00a73; `faa/index.md`). This"
@@ -2968,6 +3784,14 @@
     "c4fcf126f9b7": {
       "file": "07-security-analysis.md",
       "quote": "Many analyses, including Del Giudice's KAWA analysis, implicitly rely on A3."
+    },
+    "c51d60530273": {
+      "file": "11-credentials.md",
+      "quote": "provisional pending Sam's #1098 mechanism"
+    },
+    "c5833ba72859": {
+      "file": "11-credentials.md",
+      "quote": "(schema `a.constraints`, :128). `gcd/index.md` (\u00a7Custom constraints, :102) states the consequence as doctrine:"
     },
     "c59ef3512e60": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -2997,6 +3821,26 @@
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "(`docs/choosing-attribute-vs-aggregate.md`). This gives **selective disclosure**: field labels *and* positions are hidden, so `anyOf` ordering"
     },
+    "c702585de2e9": {
+      "file": "11-credentials.md",
+      "quote": "(`sedi-present-county/index.md`, :5), following"
+    },
+    "c71944f1272c": {
+      "file": "11-credentials.md",
+      "quote": "computed each nested block's SAID over the block with its own child blocks still expanded"
+    },
+    "c78ad622e4b0": {
+      "file": "11-credentials.md",
+      "quote": "(:20). It names the cost too:"
+    },
+    "c7e9b28ecf5c": {
+      "file": "11-credentials.md",
+      "quote": "while the `vetting` edge sets `"
+    },
+    "c80be78657bb": {
+      "file": "13-keri-one-web.md",
+      "quote": "needed authentic content so that it could not be spoofed or gamified or hacked"
+    },
     "c89f033580db": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "subtly imports an invulnerability bias. (`dg-c03-claude.md` \u00a72, \u00a75) A blockchain-background reader is especially prone to hear"
@@ -3017,13 +3861,17 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Code of Hammurabi law 7, Deuteronomy 19:15, double-entry accounting"
     },
+    "c95f25f59d60": {
+      "file": "09-kram-and-request-authentication.md",
+      "quote": "(`acdc/ipexing.py:1524`) \u2014 and then cuts off registry history at the acceptance time:"
+    },
     "c97945ac4dda": {
       "file": "09-keripy-code.md",
       "quote": "(L243-244), enforced by `if segments[-1] !="
     },
-    "c97bcb6307d2": {
-      "file": "keri-doctrine.md",
-      "quote": "A witness serving a delegate's KEL vouches for the delegation."
+    "ca883cd8cb38": {
+      "file": "02-security-model-and-threat-posture.md",
+      "quote": "names scope, not a feature set, and it attaches to all three roles.** Where this corpus has said"
     },
     "caa87164c41d": {
       "file": "16-presentation-registries.md",
@@ -3037,9 +3885,21 @@
       "file": "05-papers-priority.md",
       "quote": "(personal communication, Sam Smith, Oct 7 2025). Avoids"
     },
+    "caca1a8f7453": {
+      "file": "11-credentials.md",
+      "quote": "is now the EXEMPLAR, not the gate"
+    },
+    "caee36b9efa6": {
+      "file": "11-credentials.md",
+      "quote": "(:25). `art_posture` and `rev_latency` (:30-31): a non-zero `rev_latency`"
+    },
     "cb38559382d6": {
       "file": "05-papers-priority.md",
       "quote": "Witness and watcher discipline is still maturing; tooling is young; legal and regulatory recognition\u2026 still developing\u2026 constraints of *youth*, not of *architec"
+    },
+    "cb7b5559c301": {
+      "file": "09-keripy-code.md",
+      "quote": "rule is replaced by `vetBinds`'s requirement, recorded in `raw/16`'s territory, that"
     },
     "cb8cbb820aa0": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -3048,6 +3908,10 @@
     "cc22d8fb54bc": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "holds only encrypted key material it cannot decrypt and never signs on the controller's behalf. The custodian is a blind store + relay, not a signer."
+    },
+    "cc4e4e5a0727": {
+      "file": "11-credentials.md",
+      "quote": "(:244, :247), and the fixture replaces the ward Wyn's AID with Ryn's (`"
     },
     "ccef827cd3dc": {
       "file": "06-governance-ecosystems-and-interop.md",
@@ -3065,9 +3929,9 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "and JSON-LD term redefinition means"
     },
-    "ce258412c0ca": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "SEDI's `sedi-age` is the aggregate done right \u2014 a homogeneous boolean vector `ageOver13/16/18/21/55/65` with element 0 as the AGID,"
+    "cdaf8583c184": {
+      "file": "11-credentials.md",
+      "quote": "(:38). It also floats an operator that does not exist yet ("
     },
     "ce82ca5d96b4": {
       "file": "14-kericonf-2026.md",
@@ -3081,6 +3945,10 @@
       "file": "16-presentation-registries.md",
       "quote": "That is real infrastructure, and it is why the last sentence of the section reads:"
     },
+    "ce96474e8f68": {
+      "file": "11-credentials.md",
+      "quote": "by that group (`sedi-ward-core/index.md`, :3). `sedi-guardian/index.md`:3 still says the ward's own Ward Core"
+    },
     "cedf6a826db4": {
       "file": "04-dossier-spec.md",
       "quote": "For single-issuer dossiers, the collector issues the fully assembled dossier ACDC **by anchoring it**"
@@ -3088,6 +3956,14 @@
     "cef2c3203687": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "graph = fast structure; disk artifacts = ground truth; use both, trust accordingly."
+    },
+    "cf0b1a23f085": {
+      "file": "09-keripy-code.md",
+      "quote": "(`_evaluateLeafEdge` docstring, L879\u2013880). Every element must be recognized (L921\u2013922). There is no delegative subset any more: the E1E check (L932\u2013936) and the"
+    },
+    "cf30f17e71d9": {
+      "file": "09-keripy-code.md",
+      "quote": "changed v2 -N code freed up from deprecating TransReceiptIdxSigGroup for NonceSealSingles"
     },
     "cfeab3153e34": {
       "file": "07-shibboleths-and-anti-patterns.md",
@@ -3105,29 +3981,13 @@
       "file": "05-papers-priority.md",
       "quote": "obliges every European Digital Identity Wallet provider to use only the mechanisms referred to in Annex Ia, and Annex Ia is a single undated link to the documen"
     },
-    "d0ed3d8beff5": {
-      "file": "11-credentials.md",
-      "quote": "fail-loud conflict resolution: \u2026 ties escalate rather than being silently dropped."
-    },
     "d10f82246cb9": {
       "file": "03-acdc-spec.md",
       "quote": "no top-level field types exist in an ACDC\u2026 the Schema, `s`, field itself is the type field."
     },
-    "d14b15f7b66e": {
-      "file": "02-security-model-and-threat-posture.md",
-      "quote": "The watcher can broadcast both events as cryptographic proof of fraud. That proof doesn't require trusting any authority's interpretation -- only the mathematic"
-    },
     "d176fc69758d": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "is a SAID naming a supplemental rules block,"
-    },
-    "d179fea41562": {
-      "file": "11-credentials.md",
-      "quote": "assimilate, aggregate, correlate, sell, or otherwise combine disclosed attributes \u2026 for any purpose beyond the disclosed purpose. **This binds each downstream r"
-    },
-    "d1fadb2e7ba3": {
-      "file": "11-credentials.md",
-      "quote": "Issuers should make reasonable efforts to ensure that certain assumptions hold \u2026 Verifiers should judge their confidence \u2026 with these assumptions in mind."
     },
     "d242cf3cea68": {
       "file": "08-presentation-architectures-and-ipex.md",
@@ -3153,6 +4013,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "and lets the signer repudiate their own acts, and"
     },
+    "d33258c2f623": {
+      "file": "15-kram.md",
+      "quote": "(`ipexing.py:1543`) `[K]`. `raw/16` carries the IPEX side. For this note the consequence is structural: **at `80f77b73b` KRAM is no longer only a replay filter "
+    },
     "d333e7b9a153": {
       "file": "02-security-model-and-threat-posture.md",
       "quote": "Watchers cannot unilaterally 'distrust' an identifier the way a browser root program can distrust a CA. The worst a dishonest watcher can do is stay silent abou"
@@ -3160,10 +4024,6 @@
     "d3381531db2b": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "any exploiter that merely compromises only the delegate's authoritative keys may not capture the control authority"
-    },
-    "d38596e63fb1": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(`faa/index.md`). Two caveats are called out: trust depends on the bridging party's reputation/policies, and"
     },
     "d39b6e731273": {
       "file": "07-security-analysis.md",
@@ -3189,6 +4049,10 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "(`citation/index.md`). This is why the doctrine insists a human keeps the final trust judgment:"
     },
+    "d430234f44c9": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "(breaks only new-sender\u2192old-receiver); a **major** bump ="
+    },
     "d433bd793669": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`was.md` \u00a7Mitigation 3), and SD-JWT/OAuth tokens inherit the same limitation because they"
@@ -3197,13 +4061,17 @@
       "file": "08-keripy-kb.md",
       "quote": "No observable check that edge chains are acyclic / well-formed; NI2I (non-issuer-to-issuee) operator usage isn't fully validated."
     },
-    "d4f54314bebc": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "The `acts` grid crosses five effects (observe/create/modify/preserve/destroy) with six state-kinds (info/record/commitment/authority/resource/relationship):"
+    "d554fec95798": {
+      "file": "11-credentials.md",
+      "quote": "Root AID -> Org Unit (division/department/program) -> Issuing Agent"
     },
-    "d53eef0f7378": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(`managing-aliases.md \u00a71`), correcting the surveillance-economy anti-pattern where"
+    "d56929f06c9f": {
+      "file": "11-credentials.md",
+      "quote": "(`org-identity/index.md` \u00a7Levels of assurance, :18) \u2014 but the credential is reframed as an identifier binding: it"
+    },
+    "d5a9a38a2c23": {
+      "file": "11-credentials.md",
+      "quote": "make them DISTINCT schemas, never one schema with a discriminator flag"
     },
     "d5ac1927ff24": {
       "file": "04-dossier-spec.md",
@@ -3212,6 +4080,10 @@
     "d5b680a6c902": {
       "file": "03-acdc-spec.md",
       "quote": "Recourse via Full Disclosure of PII is latent\u2026 but never realized until the conditions of the contingency is satisfied."
+    },
+    "d6121ec6a803": {
+      "file": "11-credentials.md",
+      "quote": "requiring `d`, `u`, `o` and `first` (:802-806), with an"
     },
     "d66f2210c9f4": {
       "file": "01-foundations-and-worldview.md",
@@ -3237,25 +4109,41 @@
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "What it does *not* supersede is `ME` itself \u2014"
     },
+    "d7d57751b09c": {
+      "file": "10-presentation-registries.md",
+      "quote": "occurs nowhere in keripy's `src/` or `tests/`. So a code search needs"
+    },
     "d83dc414bf08": {
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "still needing governance"
+    },
+    "d853864488d5": {
+      "file": "09-keripy-code.md",
+      "quote": "(L1199\u20131200). Factor 3 is signatures (L1203\u20131263), and only *current* ones: explicit groups are kept only if they"
+    },
+    "d871d6df7c39": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "the open-vs-closed choice tracks descriptive-vs-gating."
     },
     "d890889edb80": {
       "file": "09-kram-and-request-authentication.md",
       "quote": "we added a lot of flexibility to allow resource tuning that may be overkill\u2026 in hindsight, I think single-key and multi-key controlled identifiers are sufficien"
     },
+    "d8c15a8c5fb6": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`sedi-age/index.md`, :3, bakobo/schema `cfcbdcc7a`): an issuee block, issued and expiration date blocks, and"
+    },
     "d8d0ec3bbae8": {
       "file": "06-papers-di-drift.md",
       "quote": "of a blockchain (`sdjwt-acdc.md \u00a72.3`). Resemble"
     },
+    "d8ec2006e281": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "(`acdc/ipexing.py`:1458-1460) \u2014 and the code gives the reason:"
+    },
     "d900874cea21": {
       "file": "07-security-analysis.md",
       "quote": "All validators converge on one truth (finality)."
-    },
-    "d911d81b4f07": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "with the section's top-level SAID `d` providing the digest that"
     },
     "d95d0f5b6ef6": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -3299,7 +4187,7 @@
     },
     "dbafe7bb7d2e": {
       "file": "13-keri-one-web.md",
-      "quote": "Solves the hard problem of key management, that is key rotation."
+      "quote": "solves the hard problem of key management, that is key rotation"
     },
     "dbdae2bd80e6": {
       "file": "10-keria-signify.md",
@@ -3321,6 +4209,14 @@
       "file": "15-kram.md",
       "quote": "a transaction may not advance until a message is authenticated"
     },
+    "dd0983e22db7": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "matching KERIpy `BaseHab.sign` behaviour"
+    },
+    "dd42bd2d8b5a": {
+      "file": "10-presentation-registries.md",
+      "quote": "as well as the discussion terms. #1098 (\u00a71) also says"
+    },
     "dd992fa3e6e0": {
       "file": "05-papers-priority.md",
       "quote": "Does the hash of this newly revealed key K2 match the commitment `n` recorded in the previous event?"
@@ -3332,6 +4228,14 @@
     "de06cfd059d2": {
       "file": "06-papers-di-drift.md",
       "quote": "praised but half-finished); ACDC/KERI = 3.0, in production since Dec 2022 (`x509-prob.md`). The"
+    },
+    "de116ed52458": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "remains an emergent property of the recursive edge walk, not of any operator that re-derives delegated authority \u2014 unchanged across all three pins, and the sing"
+    },
+    "de20d3a6b7d2": {
+      "file": "15-kram.md",
+      "quote": "(`:1596-1597`). The three stores copied are `"
     },
     "de27694c3947": {
       "file": "01-foundations-and-worldview.md",
@@ -3348,6 +4252,14 @@
     "ded708a2b952": {
       "file": "04-dossier-spec.md",
       "quote": "in joint issuance **MUST** be an *anchored* declination. **Superseded 2026-09-15 by `b97c2f2`:** ~~"
+    },
+    "dee3067f3951": {
+      "file": "11-credentials.md",
+      "quote": "(:89-91). The active Core agrees in mechanism: its image block is"
+    },
+    "df4f74ecddcb": {
+      "file": "13-keri-one-web.md",
+      "quote": "Utah SEDI Identity Proofing"
     },
     "df7257747f2b": {
       "file": "13-keri-one-web.md",
@@ -3369,10 +4281,6 @@
       "file": "05-papers-priority.md",
       "quote": "schema A, SAID X; edges \u2192 mine's legal-identity credential + RMI ethical-source certification) \u2192 Refiner (TH, ACDC2"
     },
-    "e10cc36d4b9a": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "(`sda.md \u00a77`), and the SEDI portrait is committed by digest with bytes holder-carried precisely because"
-    },
     "e185b5c35a32": {
       "file": "13-keri-one-web.md",
       "quote": "Universal Identifier Theory with KERI"
@@ -3380,6 +4288,10 @@
     "e1f5e3ce4012": {
       "file": "03-key-management-and-identifier-lifecycle.md",
       "quote": "(`keri-primer.md` \u00a72.6) The trust model toward witnesses is adversarial:"
+    },
+    "e272016e699e": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "edge operators are read but unused"
     },
     "e294f827b54a": {
       "file": "08-keripy-kb.md",
@@ -3393,10 +4305,6 @@
       "file": "05-papers-priority.md",
       "quote": "(identity evidence 2.0); ACDCs ="
     },
-    "e349ed53c780": {
-      "file": "11-credentials.md",
-      "quote": "X509 certs, W3C VCs, SD-JWTs, AnonCreds, ISO mDOC/mDL, remote attestations \u2026, various flavors of signed PDF"
-    },
     "e381709a22eb": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "(keripy `core/coring.py:1284-1290` at `b8f60166b`). `Matter._rawSize` recovers raw length as `(((fs - cs) * 3 // 4) - ls)`, under the comment"
@@ -3405,9 +4313,17 @@
       "file": "01-foundations-and-worldview.md",
       "quote": "(same line) \u2014 and that is Hardman's assessment, not a surveyed result. The regulatory move alongside it is a demotion and explicitly not a ban: the EU catalog's"
     },
+    "e3beb5fd1da2": {
+      "file": "11-credentials.md",
+      "quote": "accepts only expanded objects for its named attribute blocks and utahAgent edge"
+    },
     "e3cfc9065248": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(keripy-knowledge invariant H1; primer \u00a73.3). NIST SP 800-102 is the grounding: a signed message"
+    },
+    "e3db83ab207e": {
+      "file": "11-credentials.md",
+      "quote": "so scope must be explicit and machine-checkable"
     },
     "e4231f8092df": {
       "file": "04-dossier-spec.md",
@@ -3417,6 +4333,10 @@
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(`sedi-present-age-portrait/index.md`) \u2014 but multi-hop authority is assembled by the recursive edge walk, not by any one operator. `E1E` sharpens the point rath"
     },
+    "e4960b5fa2a1": {
+      "file": "11-credentials.md",
+      "quote": "(:16). Assumption-relative:"
+    },
     "e5734b124c25": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "is not knowable or verifiable by the public"
@@ -3424,6 +4344,10 @@
     "e5a3cb334c28": {
       "file": "14-kericonf-2026.md",
       "quote": "we haven't gone down that road yet."
+    },
+    "e5a932498250": {
+      "file": "10-presentation-registries.md",
+      "quote": "(`registraring.py:413`), builds a blinded update with state `"
     },
     "e5b7367a62fe": {
       "file": "14-kericonf-2026.md",
@@ -3449,6 +4373,10 @@
       "file": "07-security-analysis.md",
       "quote": "you MUST restate the claim verbatim\u2026 If you cannot do so, stop and ask."
     },
+    "e7089da8dfcd": {
+      "file": "11-credentials.md",
+      "quote": "(`verifying.py`:38). E1E is implemented as the issuee identity the bakobo record describes: the near ACDC's issuee"
+    },
     "e74780f140ce": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "that satisfies a statutory"
@@ -3461,6 +4389,18 @@
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "And the practical case: presenting several DAGs in parallel in one exchange beats a series of IPEXes, since"
     },
+    "e7e1acc33507": {
+      "file": "11-credentials.md",
+      "quote": "(`this.i` `@2vqmhxai`, :2235). The first-pass SAID `EA5O9z0TB932sm8kJIVdAIpwLpEWRWC5--VNS5r69frn` is the archived revision at `sedi-id-2.0.0/rules.json`, which"
+    },
+    "e80e5a38b2bd": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "half rests on that paper's lossless-original/lossy-derivative argument; the"
+    },
+    "e819ee956705": {
+      "file": "09-keripy-code.md",
+      "quote": "(`grant` docstring, L1948\u20131950). On the verifying side, `verifyEvidence` keeps only endorsements tied to the endorser's *current* establishment event \u2014"
+    },
     "e8401d6cd497": {
       "file": "02-cesr-spec.md",
       "quote": "A primary design goal of CESR is to select an encoding approach that provides high usability, readability, or human friendliness in the 'T' domain. This type of"
@@ -3468,6 +4408,14 @@
     "e872f9c95d8e": {
       "file": "03-acdc-spec.md",
       "quote": "a party that knows only the Schema cannot generate a total ordering\u2026 The ordering then has gaps. In that case the prefix of every element after the zeroth MUST "
+    },
+    "e8e86a3209d4": {
+      "file": "10-presentation-registries.md",
+      "quote": "(KERIcon 2026, `raw/14-kericonf-2026.md`). **The code has picked its own vocabulary, and it is the narrow one** (keripy `80f77b73b`, `raw/16 \u00a77.7`). `ipexing.py"
+    },
+    "e9077353485b": {
+      "file": "11-credentials.md",
+      "quote": "so it cannot be mistaken for statutory scope"
     },
     "e9476218eb83": {
       "file": "06-papers-di-drift.md",
@@ -3489,6 +4437,14 @@
       "file": "04-dossier-spec.md",
       "quote": "of artifacts, focus on completeness/provenance; Phase 2 (Adjudication) = state changes (Marked/Offered/Admitted/Stricken) via Annotation Edges. To"
     },
+    "e9da5f7f596b": {
+      "file": "11-credentials.md",
+      "quote": "a presentation made offline without one is no longer expressible under these patterns."
+    },
+    "ea55c4066e46": {
+      "file": "11-credentials.md",
+      "quote": "fix the example in bakobo/keripy, raise a PR there, then contribute it back to WebOfTrust/keripy"
+    },
     "ea5dd6a4727d": {
       "file": "05-acdc-and-verifiable-data.md",
       "quote": "if you want to make it so that it's not statistically correlatable, you have to do it in a bulk or herd privacy protected way."
@@ -3505,6 +4461,22 @@
       "file": "02-cesr-spec.md",
       "quote": "The 'B' domain's purpose is merely to provide convenient compactness at scale."
     },
+    "eac3d4033764": {
+      "file": "16-presentation-registries.md",
+      "quote": "** (`ipexing.py:1410`) and"
+    },
+    "eb11a7116972": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`ipexing.py:1524`). The registry history is then cut off at that time \u2014 `vetBinds` drops updates whose `dt` is later and rejects a registry whose `rip` is late"
+    },
+    "eb8123c5717f": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "is a chain of credentials, not KERI delegation.** Sam's fixture heads it"
+    },
+    "eb853836aac9": {
+      "file": "11-credentials.md",
+      "quote": "is an INDEPENDENT role AID \u2026 NOT a cooperative-delegate of the authorizer"
+    },
     "eb8dcb12c1b9": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "(keripy-knowledge invariant H1). Then"
@@ -3517,9 +4489,21 @@
       "file": "07-security-analysis.md",
       "quote": "You need blockchain / global consensus / global total ordering."
     },
+    "ec907aad139c": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`src/keri/acdc/registraring.py:413`). So the sentence"
+    },
+    "ecbe9806b0ce": {
+      "file": "16-presentation-registries.md",
+      "quote": "(`:1419`), which fails the node (\u00a72.4). A compact `a` or `A`, or any undisclosed aggregate entry, returns `None` and fails the `grant` \u2014"
+    },
     "ecdbee12daa0": {
       "file": "05-papers-priority.md",
       "quote": "(primer \u00a72). Three event types: **inception (`icp`)**, **rotation (`rot`)**, **interaction (`ixn`)** (anchors data/seals without changing keys)."
+    },
+    "ecff33012078": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "Sam named in July. One sentence in the comment says"
     },
     "ed2ef859f4f0": {
       "file": "03-acdc-spec.md",
@@ -3557,6 +4541,10 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "`[N1.1]` (CESR spec \u00a7Code table entry policy, L785 at `65fd7518b`) \u2014 fifty-two codes in the one-character table, sixty-four in the two-character, against 262,14"
     },
+    "ef03fdc0bb79": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "` (`vvp-dossier/vvp-dossier.schema.json`:180), and no edge in `org-identity`, `brand-owner`, `tn-alloc`, `a2p-campaign`, `vvp-dossier` or `dossier-base` at that"
+    },
     "ef1378486388": {
       "file": "03-acdc-spec.md",
       "quote": "Makes ACDC usable as a **Verifiable Credential** ("
@@ -3572,6 +4560,10 @@
     "efc0eed3d3b3": {
       "file": "keri-doctrine.md",
       "quote": "so historical actions are unprovable; SD-JWT signs a key not an identifier and needs issuer registries. | A transferable AID resolves to key state at any point "
+    },
+    "efda2199ee48": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "and answers the correlation worry by keeping the registry"
     },
     "efed4653c8f6": {
       "file": "04-dossier-spec.md",
@@ -3605,13 +4597,17 @@
       "file": "16-presentation-registries.md",
       "quote": "returns exactly two pull requests, both merged, and **neither implements one**: `#1505` *Worked example of contractually-protected disclosure* (dhh1128, merged "
     },
+    "f16e77aabd37": {
+      "file": "04-cesr-and-the-wire.md",
+      "quote": "Add post-quantum signature primitives (FN-DSA, ML-DSA, SLH-DSA)"
+    },
+    "f1d0fc0f371a": {
+      "file": "11-credentials.md",
+      "quote": "the club's accepted-shape and the holder's issued presentation conform to that ONE schema viewed from two sides"
+    },
     "f1f34b68c946": {
       "file": "04-dossier-spec.md",
       "quote": "are all absent at `b9227753c`. What survives from this contributor at the pin is the Contributors credit:"
-    },
-    "f200d1c8463f": {
-      "file": "05-acdc-and-verifiable-data.md",
-      "quote": "The image is committed by digest with holder-carried bytes; a download URL was rejected as"
     },
     "f21f7da06837": {
       "file": "03-key-management-and-identifier-lifecycle.md",
@@ -3625,6 +4621,10 @@
       "file": "keri-doctrine.md",
       "quote": "A dossier is not a signed document\u2026 The signature exists on the anchoring key event, not on the dossier."
     },
+    "f2b4728841aa": {
+      "file": "08-presentation-architectures-and-ipex.md",
+      "quote": "` and relative field paths such as `"
+    },
     "f2b8dda98dc0": {
       "file": "05-papers-priority.md",
       "quote": "regulatory expectation in one major jurisdiction."
@@ -3632,10 +4632,6 @@
     "f35ff962a0da": {
       "file": "12-origin-security.md",
       "quote": "Verify by converting AID \u2192 public key via trivial transformation. **"
-    },
-    "f36a8a4536b0": {
-      "file": "11-credentials.md",
-      "quote": "Duties are disclosure and accountability \u2014 **a stranger-verifier does not gate on them** \u2014 so they live here in `r`, not in `a.constraints`."
     },
     "f378ca4d0375": {
       "file": "14-kericonf-2026.md",
@@ -3665,9 +4661,17 @@
       "file": "08-keripy-kb.md",
       "quote": "** (`SCOPE.md` \u00a7opening, ~L3\u20134). It adds that it **"
     },
+    "f5464b1247eb": {
+      "file": "09-keripy-code.md",
+      "quote": "`) and relative field paths with a trailing separator (`["
+    },
     "f56c99b646e4": {
       "file": "07-shibboleths-and-anti-patterns.md",
       "quote": "Bundle all the claims into one big credential, then selectively disclose."
+    },
+    "f5ac2f2113d2": {
+      "file": "13-keri-one-web.md",
+      "quote": "KERI Innovation vs Legacy"
     },
     "f5c94ba76164": {
       "file": "16-presentation-registries.md",
@@ -3676,6 +4680,14 @@
     "f5d15994a9a8": {
       "file": "16-presentation-registries.md",
       "quote": "appear nowhere in `src/keri` at `b8f60166b`. The only occurrence anywhere in the tree is a prose comment in `tests/acdc/test_cp_disclosure.py:1298`, saying that"
+    },
+    "f5e1ef1b6623": {
+      "file": "09-keripy-code.md",
+      "quote": "(L40\u201341). This is the implementation's own claim about the ACDC spec, and its provenance matters: both comment changes landed in commit `d9ba3d9da` (2026-09-11,"
+    },
+    "f69afa91d2a7": {
+      "file": "06-governance-ecosystems-and-interop.md",
+      "quote": "half is now unsupported.**;"
     },
     "f6a823a6f588": {
       "file": "05-papers-priority.md",
@@ -3721,13 +4733,13 @@
       "file": "06-governance-ecosystems-and-interop.md",
       "quote": "and her other facets are"
     },
+    "f83895058d67": {
+      "file": "11-credentials.md",
+      "quote": "SUPERSEDED IN PART by @lkfnoess (2026-09-15)"
+    },
     "f84651fe6f9e": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "occurs exactly once, in the older entry-policy paragraph, as a candidate \u2014"
-    },
-    "f918918ec1cb": {
-      "file": "11-credentials.md",
-      "quote": "(`sedi-id/index.md` \u00a7Purpose). Mechanics: the issuer field names the State, but"
     },
     "f932f387cf67": {
       "file": "13-keri-one-web.md",
@@ -3736,6 +4748,10 @@
     "f95a4b348c40": {
       "file": "09-keripy-code.md",
       "quote": "(L1129-1131), with numeric components selecting"
+    },
+    "f99ab16cc1ab": {
+      "file": "09-keripy-code.md",
+      "quote": "stands, with that scoping. \u00a74 and \u00a76b cite `vdr/verifying.py`, which was re-read whole at `80f77b73b`; their claims hold, with current hints: revoked root saved"
     },
     "f9d8af836a2e": {
       "file": "02-cesr-spec.md",
@@ -3761,6 +4777,10 @@
       "file": "10-keria-signify.md",
       "quote": "`**: `inputs.filter(input => input.name == 'signify')` (TS) / `[i for i in inputs if i.name =="
     },
+    "faf94ed5ad0a": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "else all(results)`, with an empty group treated as malformed (`:899-900`) \u2014 quotes and hints as of `b8f60166b`. By `80f77b73b` 913 lines of the file had changed"
+    },
     "fafdc878ebe2": {
       "file": "04-dossier-spec.md",
       "quote": "Issuer anchors the dossier's SAID in a KEL; nothing is attached to the container itself"
@@ -3772,10 +4792,6 @@
     "fb487117cc08": {
       "file": "13-keri-one-web.md",
       "quote": "digital signing and automated verification of corporate caller IDs."
-    },
-    "fb9d208b638b": {
-      "file": "06-governance-ecosystems-and-interop.md",
-      "quote": "generates its request/response types directly from KERIA's OpenAPI (`npm run generate:types`),"
     },
     "fc2c3d14b5fc": {
       "file": "05-acdc-and-verifiable-data.md",
@@ -3797,6 +4813,10 @@
       "file": "02-cesr-spec.md",
       "quote": "compact identifier for a large key"
     },
+    "fcca80809849": {
+      "file": "09-keripy-code.md",
+      "quote": "At `80f77b73b` that comment reads"
+    },
     "fcd6e294e733": {
       "file": "04-cesr-and-the-wire.md",
       "quote": "(`30-invariants.md` \u00a7A heading, L29 at `9489ac9bd`) and states the failure mode directly:"
@@ -3804,6 +4824,14 @@
     "fd1e1e370e62": {
       "file": "08-presentation-architectures-and-ipex.md",
       "quote": "This is worth flagging against \u00a73's claim that a bespoke origin"
+    },
+    "fd823fa71540": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "limiting PII exposure to a"
+    },
+    "fde29530ac61": {
+      "file": "09-keripy-code.md",
+      "quote": "(`peer/exchanging.py` L616\u2013617). `Baser.clean` copies `eidx` only for accepted exchanges (`if name =="
     },
     "fe176d19a3a0": {
       "file": "03-acdc-spec.md",
@@ -3813,9 +4841,25 @@
       "file": "03-acdc-spec.md",
       "quote": "disclose only the minimum amount of information\u2026 needed to facilitate a transaction, and no more."
     },
+    "fe3941fc760a": {
+      "file": "11-credentials.md",
+      "quote": "(:811) and four member edges each carrying an"
+    },
+    "fe567754839f": {
+      "file": "07-shibboleths-and-anti-patterns.md",
+      "quote": "** \u2192 **[P]** Sam's argument: unlinkability defeats detectability of Issuer signing-infrastructure compromise and, via a presentation registry, of Issuee key com"
+    },
+    "fe689ee196e4": {
+      "file": "11-credentials.md",
+      "quote": "` on the `s` of the `alloc`, `tnalloc` and `delsig` edges; at `95a07e544` the `tnalloc` edge's `s` is only `"
+    },
     "fe8650c5d346": {
       "file": "14-kericonf-2026.md",
       "quote": "4 million birth certificates"
+    },
+    "fefef6977ed0": {
+      "file": "09-keripy-code.md",
+      "quote": "(L293\u2013294) and are attached as explicit source triples \u2014"
     },
     "ff7c24e5df4c": {
       "file": "04-dossier-spec.md",
@@ -3824,6 +4868,10 @@
     "ff86452afec5": {
       "file": "10-keria-signify.md",
       "quote": "The agent adds trust / vouches for the controller"
+    },
+    "ff8704235754": {
+      "file": "05-acdc-and-verifiable-data.md",
+      "quote": "classic impersonation/commingling failure"
     },
     "ffc858efdcb7": {
       "file": "09-kram-and-request-authentication.md",
@@ -3834,5 +4882,5 @@
       "quote": "SCOPE: 1.x KB (1.2.13) is now built at ../keripy-1x-knowledge"
     }
   },
-  "note": "Quotes that do not resolve against the tracked refs, so a run can report what is NEWLY broken instead of re-reporting a standing backlog. RE-TAKEN 2026-09-15, after the first refresh added ~500 quotes and after the checker changed twice: it now reads tracked refs rather than working trees, and it skips citation glue (a span the regex captured between one quote's closing mark and the next one's opening mark). A baseline entry is NOT absolution. Most of these are illustrative quotes that were never citations, quoted commit subjects, or sources with no local checkout \u2014 but real un-re-anchored drift is in here too, and working it down is a job for a future refresh. Update with refresh/freshness.py --update-baseline, and only after looking."
+  "note": "Quotes known not to resolve against the live sources, so that a run can report what is NEWLY broken instead of re-reporting a standing backlog. A baseline entry is not absolution \u2014 most of these are class 1 or 2, but some are real drift nobody has re-anchored yet. Refresh with refresh/freshness.py --update-baseline, and only after you have looked."
 }

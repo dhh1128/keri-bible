@@ -2,11 +2,15 @@
 
 ## Pin and provenance
 
-Source corpus: Daniel Hardman's "Codecraft Papers", repo `~/code/me/papers` (the note previously recorded this as `/home/daniel/code/papers`, which is not where the repo lives; corrected 2026-09-15). **Pinned at `181569b64`** on `main`, mined 2026-09-15. Previous pin `f94f50f`, mined 2026-07-17.
+Source corpus: Daniel Hardman's "Codecraft Papers", repo `~/code/me/papers` (the note previously recorded this as `/home/daniel/code/papers`, which is not where the repo lives; corrected 2026-09-15). **Pinned at `68a5e2f76`** on `main`, delta-mined 2026-10-03 (see the 2026-10 paragraph below). Previous pins `181569b64` (mined 2026-09-15, the last full read) and `f94f50f` (mined 2026-07-17).
 
 **Provenance class: none of the tier markers apply.** These are *authored positions, not normative text*. The manifest marks this source `[N]`, and that marker is wrong here in the specification sense; `refresh/sources.yaml` says so in its own caveat and the field is unused. Every claim below is Daniel Hardman's framing of KERI/ACDC and of the things he compares it to, and chapters must cite it as such. Where a paper states a comparative verdict — that SD-JWTs will need centralized issuer registries, that most DID methods cannot answer historical questions — that is the author's assessment, not a surveyed result, and the corpus repeats it as one.
 
 Primary sources read in full at `181569b64`: `keri-primer.md`, `was.md`, `x509-prob.md`, `sdjwt-acdc.md`, `acdc-vc-diff.md`, `acdc-and-mtc.md`, `oia.md`, `who-sign.md`, `sign-author.md`, `authenticity-vs-veracity.md`, `bes.md`, `sda.md`. Read this pass for comparative material the note had not previously carried: `wtbo.md`, `amp-diff.md`, `m-glance.md`, `active-discovery.md` §1, `crna.md` §Conclusion.
+
+## What the 2026-10-03 pass covered, and what it did not
+
+**A delta pass, not a re-read.** Of the papers this note quotes, three changed between `181569b64` and `68a5e2f76`, and each changed hunk was read at `68a5e2f76`. `was.md` (now v1.1) changed one word of body text, the typo "verballing" → "verbally" in the auction analogy under §Mitigation 3 (L54), which no quote here uses. `x509-prob.md` (now v1.4) gained one sentence (*corrected 2026-10-03 (verification): the note had "two sentences"*) in §Path to post-quantum is slow (L93) about Apple's root-program testing; `raw/05` carries that claim. `acdc-and-mtc.md` (now v1.1) gained one sentence in §7.2 *Merkle Tree Certificates*: "In September 2026, Apple's root program moved past experimentation, publishing a draft MTC policy with a concrete operator-onboarding timeline" (`acdc-and-mtc.md §7.2`, L190 @`68a5e2f76`), plus reference [15]. That sentence is a status update on MTC's adoption, not a change to the paper's comparison of proof obligations, so nothing in §4.5 moves. Every edited hunk is line-count-neutral above each file's references, so **all `L<n>` hints in this note remain valid at `68a5e2f76`**. `freshness.py` over this note on 2026-10-03: zero new misses. Nothing superseded, nothing cut. The other papers the note quotes did not change.
 
 ## What the 2026-09-15 pass covered, and what it did not
 

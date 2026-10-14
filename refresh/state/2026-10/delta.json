@@ -1,0 +1,1007 @@
+{
+  "generated": "2026-10-03T05:23:03+00:00",
+  "tiers": [
+    "cold",
+    "hot",
+    "warm"
+  ],
+  "previous_run": "2026-09",
+  "sources": [
+    {
+      "id": "keri-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/01-keri-spec.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "06",
+        "07",
+        "09"
+      ],
+      "caveat": "Both lines mined 2026-09-15 and the note now carries its own pins. The branches have DIVERGED \u2014 neither commit is an ancestor of the other \u2014 so a citation here must name its branch. Note also that spec-head.md reads \"Specification Status: v1.1\" on BOTH branches, so this corpus's [N]/[N1.1] split tracks the git line, not the document's own version label.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "fbdd4a615",
+          "to": "fbdd4a615",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "3753f3797",
+          "to": "3753f3797",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false,
+      "crossdiff_size": 1115
+    },
+    {
+      "id": "cesr-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/02-cesr-spec.md"
+      ],
+      "chapters": [
+        "04",
+        "07"
+      ],
+      "caveat": "The previous pin d35125e is UNREACHABLE from every ref in the repo \u2014 `git branch -a --contains` returns nothing \u2014 so the 2026-07-17 citations rested on a commit that no longer exists on any branch. Both lines re-mined 2026-09-15. A pin that cannot be resolved is worse than no pin, because it reads as provenance; check reachability when recording one.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "bad6edd84",
+          "to": "bad6edd84",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "65fd7518b",
+          "to": "65fd7518b",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "revert-165-pq",
+          "date": "2026-09-22"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true,
+      "crossdiff_size": 103
+    },
+    {
+      "id": "acdc-spec",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/03-acdc-spec.md"
+      ],
+      "chapters": [
+        "05",
+        "07",
+        "08",
+        "10"
+      ],
+      "caveat": "Fully re-mined 2026-09-15 on both lines; the 2026-09-01 partial re-anchor is superseded. f0bd097de is the long form of the old f0bd097 pin \u2014 main has not moved since 2026-08-28 \u2014 while v1.1 is ahead by 346 insertions / 145 deletions in spec-body.md.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "f0bd097de",
+          "to": "f0bd097de",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        },
+        {
+          "name": "v1.1",
+          "role": "forward",
+          "marker": "[N1.1]",
+          "from": "2362e48a1",
+          "to": "2362e48a1",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false,
+      "crossdiff_size": 1504
+    },
+    {
+      "id": "dossier-spec",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/04-dossier-spec.md"
+      ],
+      "chapters": [
+        "05",
+        "06",
+        "08"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "b9227753c",
+          "to": "3ff1b3202",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false
+    },
+    {
+      "id": "keripy-code",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/09-keripy-code.md",
+        "raw/15-kram.md",
+        "raw/16-presentation-registries.md"
+      ],
+      "chapters": [
+        "03",
+        "04",
+        "05",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "Mined 2026-09-15 at b8f60166b, but PARTIALLY, and raw/09 says which parts: vdr/verifying.py, acdc/ipexing.py, core/mapping.py and core/kraming.py were re-read at that commit; core/coring.py, core/eventing.py, core/counting.py and vdr/eventing.py were NOT, and the claims resting on them still stand at 3a8e01ae (2026-07-17) with line hints valid only there. The version also moved: every [K] claim written before this pass was tagged against 2.0.0-dev6, and the line is now 2.1.0-dev1.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "b8f60166b",
+          "to": "80f77b73b",
+          "stat": " 25 files changed, 1339 insertions(+), 696 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "b7c170f93",
+              "author": "Keanu",
+              "date": "2026-09-25",
+              "subject": "remove grantor requisite"
+            },
+            {
+              "sha": "a71ea5f35",
+              "author": "Keanu",
+              "date": "2026-09-22",
+              "subject": "adapt unary op for test_sedi examples, revert issuerStates and presentationStates"
+            },
+            {
+              "sha": "b10b3e4e5",
+              "author": "Daniel Hardman",
+              "date": "2026-09-21",
+              "subject": "Fix dead KEL likely-duplicitous escrow (escrowLDEvent AttributeError)"
+            },
+            {
+              "sha": "d9ba3d9da",
+              "author": "Daniel Hardman",
+              "date": "2026-09-11",
+              "subject": "Cite the ACDC spec by section rather than by line number"
+            },
+            {
+              "sha": "790797bcd",
+              "author": "Keanu",
+              "date": "2026-09-21",
+              "subject": "add multiply endorse support, add presentation registry support"
+            },
+            {
+              "sha": "56c43fd2b",
+              "author": "Evan Asakawa",
+              "date": "2026-09-17",
+              "subject": "Rebuild KRAM cache policy after database clean"
+            },
+            {
+              "sha": "32effb27b",
+              "author": "Evan Asakawa",
+              "date": "2026-09-16",
+              "subject": "clarify mailbox forwarding versions and framing"
+            },
+            {
+              "sha": "ced845e91",
+              "author": "Evan Asakawa",
+              "date": "2026-09-14",
+              "subject": "fix V2 mailbox forwarding"
+            },
+            {
+              "sha": "6f5912186",
+              "author": "Samuel M Smith",
+              "date": "2026-09-16",
+              "subject": "added CESR streamable attachments"
+            },
+            {
+              "sha": "606b7092e",
+              "author": "Samuel M Smith",
+              "date": "2026-09-15",
+              "subject": "added sealing interaction events to guy and gal for SEDI example"
+            },
+            {
+              "sha": "87ba6a56d",
+              "author": "Evan Asakawa",
+              "date": "2026-09-15",
+              "subject": "preserve KRAM caches during database clean"
+            },
+            {
+              "sha": "e6a038586",
+              "author": "Daniel Hardman",
+              "date": "2026-08-04",
+              "subject": "Render bulk-issuance derivation-path indices in hex, not decimal"
+            },
+            {
+              "sha": "da82a6422",
+              "author": "Samuel M Smith",
+              "date": "2026-09-15",
+              "subject": "updated test_sedi example to use SealNonce"
+            },
+            {
+              "sha": "d8bb23308",
+              "author": "Samuel M Smith",
+              "date": "2026-09-14",
+              "subject": "changed v2 -N code freed up from deprecating TransReceiptIdxSigGroup for NonceSealSingles"
+            },
+            {
+              "sha": "e24ade8c7",
+              "author": "Samuel M Smith",
+              "date": "2026-09-14",
+              "subject": "removed TransReceiptIdxSigGroups -D from v1 count code tables"
+            },
+            {
+              "sha": "9762d6bb4",
+              "author": "Samuel M Smith",
+              "date": "2026-09-14",
+              "subject": "retire use of TransReceiptIdxSigGroups group code"
+            },
+            {
+              "sha": "a4d69a028",
+              "author": "Daniel Hardman",
+              "date": "2026-09-14",
+              "subject": "Make the revocation path aggregate-aware when resolving the issuee"
+            },
+            {
+              "sha": "bb74f3995",
+              "author": "Daniel Hardman",
+              "date": "2026-09-14",
+              "subject": "Make the grant path aggregate-aware when resolving the issuee"
+            },
+            {
+              "sha": "4d5535717",
+              "author": "Samuel M Smith",
+              "date": "2026-09-14",
+              "subject": "Changed cast type of SealKind structor d field to be Noncer not Diger"
+            },
+            {
+              "sha": "8a4f3f0c4",
+              "author": "Samuel M Smith",
+              "date": "2026-09-14",
+              "subject": "changed TDCS to be Noncer from Diger to support other types of \"digests\" as generated salty nonces etc for different derivations not simply for content addresses"
+            },
+            {
+              "sha": "370a656a8",
+              "author": "Samuel M Smith",
+              "date": "2026-09-12",
+              "subject": "refactored challenge so its a digest so can use existing SealDigest"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "webbaser",
+          "date": "2026-09-16"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-knowledge",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/08-keripy-kb.md"
+      ],
+      "chapters": [
+        "03",
+        "04",
+        "07"
+      ],
+      "caveat": "A git worktree of dhh1128/keripy on branch `knowledge`, not a separate repo. Already-distilled doctrine \u2014 its own scope tags ([protocol] vs [2.0-code]/[2.0-wire]) must survive mining, since a 2.0 code detail is not an eternal protocol truth. Re-mined 2026-09-15 at 9489ac9bd, whose tip is dated 2026-07-02. The previously recorded mining date of 2026-06-05 cannot have been right; raw/08 records why.",
+      "branches": [
+        {
+          "name": "knowledge",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "9489ac9bd",
+          "to": "9489ac9bd",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "feat-indep-registry-bulk-issuance",
+          "date": "2026-09-23"
+        },
+        {
+          "branch": "patch-1",
+          "date": "2026-09-21"
+        },
+        {
+          "branch": "fix-stale-spec-refs",
+          "date": "2026-09-21"
+        },
+        {
+          "branch": "feat-edge-operators-status-axis",
+          "date": "2026-09-16"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keria",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/10-keria-signify.md"
+      ],
+      "chapters": [
+        "03",
+        "06"
+      ],
+      "caveat": "First anchoring, 2026-09-15; the pin was `unknown` before. Upstream renamed `development` to `main`, which is why a bare `git fetch upstream` failed here until the refspec was made explicit.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "7e685edaa",
+          "to": "928ce26a4",
+          "stat": " 6 files changed, 338 insertions(+), 57 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "2703b32",
+              "author": "Kent Bull",
+              "date": "2026-09-29",
+              "subject": "Prepare KERIA 0.4.1 release notes and publishing metadata"
+            },
+            {
+              "sha": "06ca59b",
+              "author": "Kent Bull",
+              "date": "2026-09-21",
+              "subject": "Remove unnecessary Anchorer local default"
+            },
+            {
+              "sha": "73fb151",
+              "author": "Kent Bull",
+              "date": "2026-09-17",
+              "subject": "clean up agenting tocks tests"
+            },
+            {
+              "sha": "f6b4bb0",
+              "author": "Kent Bull",
+              "date": "2026-09-15",
+              "subject": "feat: configure KERIA Agent tocks with legacy compatibility"
+            },
+            {
+              "sha": "8945173",
+              "author": "Kent Bull",
+              "date": "2026-09-14",
+              "subject": "build: upgrade KERIpy to the published 1.2.14 release"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "signify-ts",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/10-keria-signify.md"
+      ],
+      "chapters": [
+        "03",
+        "06"
+      ],
+      "caveat": "RETARGETED 2026-09-15, development -> main, by hand after the refresh flagged it. `development` is a real branch and genuinely the head of that name, but it has not moved since 2024-04-12; the project develops on `main` (ffba8406e, 2026-09-10). A pin on a dormant branch is the failure this manifest exists to prevent, wearing a valid commit hash. ffba8406e was SPOT-CHECKED, not fully re-read \u2014 raw/10 says which claims that covers. Note also that the CESR post-quantum and stream-parser work is NOT upstream: those commits live only on feat/cesr-pq-codes and feat/cesr-stream-parser* in Daniel's fork.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "ffba8406e",
+          "to": "5a174b545",
+          "stat": " 1 file changed, 1 insertion(+), 4 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "5a174b5",
+              "author": "Patrick Vu",
+              "date": "2026-09-16",
+              "subject": "fix: parse seal sequence number as hex in messagize (#417)"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "papers",
+      "kind": "git",
+      "tier": "hot",
+      "feeds": [
+        "raw/05-papers-priority.md",
+        "raw/06-papers-di-drift.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07"
+      ],
+      "caveat": "Daniel's own framing. Marker [N] is wrong here in the specification sense \u2014 these are authored positions, not normative text. Chapters cite them as the author's framing and should keep doing so; the marker field is unused for this source.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "181569b64",
+          "to": "68a5e2f76",
+          "stat": " 4 files changed, 44 insertions(+), 40 deletions(-)",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": [
+            {
+              "sha": "68a5e2f",
+              "author": "Daniel Hardman",
+              "date": "2026-09-28",
+              "subject": "Revise \"Why Anchored Signatures?\" to 1.1"
+            },
+            {
+              "sha": "bc4a743",
+              "author": "Daniel Hardman",
+              "date": "2026-09-28",
+              "subject": "Fix typo in was.md: verballing -> verbally"
+            },
+            {
+              "sha": "4eb495c",
+              "author": "Daniel Hardman",
+              "date": "2026-09-22",
+              "subject": "Cite Apple's MTC PQC announcement in wtbo, acdc-and-mtc, x509-prob"
+            }
+          ]
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keri-security-analysis",
+      "kind": "git",
+      "tier": "warm",
+      "feeds": [
+        "raw/07-security-analysis.md"
+      ],
+      "chapters": [
+        "01",
+        "02",
+        "07"
+      ],
+      "caveat": "Carries the assumption catalog A1-A13 and the survivability framing that keri-doctrine.md's load-bearing claims 2, 3 and 5 rest on. A change here moves doctrine, not just a chapter. The `unknown` pin was RESOLVED rather than re-mined on 2026-09-15: the repo has exactly one commit, 149fa6c35 (2026-04-23), so the content read on 2026-07-17 is necessarily that commit. last_mined keeps the original reading date because no re-reading happened.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[N]",
+          "from": "149fa6c35",
+          "to": "149fa6c35",
+          "stat": "",
+          "diverged_from_pin": false,
+          "full_reanchor": false,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false
+    },
+    {
+      "id": "smithsamuelm-papers",
+      "kind": "gh-repo",
+      "tier": "warm",
+      "feeds": [
+        "raw/15-kram.md"
+      ],
+      "chapters": [
+        "09"
+      ],
+      "caveat": "KRAM whitepaper v0.7.6. Not cloned locally; read via the GitHub API. WebOfTrust/kram's README is an earlier, shorter subset \u2014 superseded, cite the Papers version.",
+      "branches": [],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false
+    },
+    {
+      "id": "keripy-discussions",
+      "kind": "gh-discussions",
+      "tier": "hot",
+      "feeds": [
+        "raw/15-kram.md",
+        "raw/16-presentation-registries.md",
+        "raw/08-keripy-kb.md"
+      ],
+      "chapters": [
+        "07",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "The most doctrinally live source in the corpus and the one least visible to any local check. Sam edits posts in place \u2014 #1095 and #1613 both show \"last edited\" \u2014 so a quote can drift with no commit anywhere. Snapshotting (refresh/snapshot-discussions.py) is what makes those quotes re-verifiable. Watch BOTH vocabularies for a topic: \"presentation registry\" misses #1095, which invents the idea under the name \"issuee usage registry\".",
+      "branches": [],
+      "items": [
+        {
+          "number": 1515,
+          "title": "New Unary Edge Operators to Support SEDI",
+          "url": "https://github.com/WebOfTrust/keripy/discussions/1515",
+          "updated": "2026-10-01",
+          "created": "2026-07-17",
+          "edited": "2026-07-21",
+          "author": "SmithSamuelM",
+          "category": "Ideas",
+          "comments": 6,
+          "primary": true
+        },
+        {
+          "number": 1098,
+          "title": "ACDC with Static Age Predicate Proof SMT",
+          "url": "https://github.com/WebOfTrust/keripy/discussions/1098",
+          "updated": "2026-09-26",
+          "created": "2025-10-27",
+          "edited": "2026-09-26",
+          "author": "SmithSamuelM",
+          "category": "Ideas",
+          "comments": 0,
+          "primary": true
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keripy-prs",
+      "kind": "gh-prs",
+      "tier": "hot",
+      "feeds": [],
+      "chapters": [
+        "03",
+        "04",
+        "05",
+        "08",
+        "09",
+        "10"
+      ],
+      "caveat": "Merged PRs are the tier-movement signal for [P] \u2192 [K]. They feed triage rather than a note of their own; the note that moves is whichever one carries the design they implement.",
+      "branches": [],
+      "items": [
+        {
+          "number": 1705,
+          "title": "Flesh out examples more fully. Revise core schema to inlcude optional guaridan edges for wards",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1705",
+          "author": "SmithSamuelM",
+          "merged": "2026-10-02"
+        },
+        {
+          "number": 1700,
+          "title": "Added working test example for AID Replacement SEDI ACDC",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1700",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-30"
+        },
+        {
+          "number": 1697,
+          "title": "Removed population of presentation registry for linked ACDCs in SEDI examples. Fixed some typos.",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1697",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-29"
+        },
+        {
+          "number": 1696,
+          "title": "Added SEDI ACDCs:  Age, Delegation Chain Organizational Unit and Issuing Agent",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1696",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-28"
+        },
+        {
+          "number": 1695,
+          "title": "Add tests for SEDI credentials through IPEX",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1695",
+          "author": "KeaxD",
+          "merged": "2026-09-30"
+        },
+        {
+          "number": 1694,
+          "title": "Fixed typos, bugs in SEDI examples.  Added oneOf so attribute field schema so can partial disclose",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1694",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-24"
+        },
+        {
+          "number": 1693,
+          "title": "Add multiply endorsed IPEX Grants and presentation registry authentication",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1693",
+          "author": "KeaxD",
+          "merged": "2026-09-28"
+        },
+        {
+          "number": 1692,
+          "title": "Fix dead KEL likely-duplicitous escrow (escrowLDEvent AttributeError)",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1692",
+          "author": "dhh1128",
+          "merged": "2026-09-25"
+        },
+        {
+          "number": 1691,
+          "title": "Suggest security policy with reporting guidelines",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1691",
+          "author": "dhh1128",
+          "merged": "2026-09-22"
+        },
+        {
+          "number": 1689,
+          "title": "added support for issuee presentation registries to SEDI ACDCs",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1689",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-18"
+        },
+        {
+          "number": 1687,
+          "title": "working example of residence ACDCs for guy and gal",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1687",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-18"
+        },
+        {
+          "number": 1686,
+          "title": "Sedi test example now has support for the Core SEDI ACDC for both Guy and Gal (parents)",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1686",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-18"
+        },
+        {
+          "number": 1684,
+          "title": "Preserve KRAM caches during database clean",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1684",
+          "author": "evanja57",
+          "merged": "2026-09-22"
+        },
+        {
+          "number": 1683,
+          "title": "Finished refactor to remove now reduandant TransReceiptIdxSigGroup usage.  Replace with NonceSealSingles",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1683",
+          "author": "SmithSamuelM",
+          "merged": "2026-09-15"
+        },
+        {
+          "number": 1680,
+          "title": "fix V2 mailbox forwarding",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1680",
+          "author": "evanja57",
+          "merged": "2026-09-16"
+        },
+        {
+          "number": 1678,
+          "title": "Improve aggregate support when resolving an ACDC's issuee",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1678",
+          "author": "dhh1128",
+          "merged": "2026-09-16"
+        },
+        {
+          "number": 1676,
+          "title": "Cite the ACDC spec by section rather than by line number",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1676",
+          "author": "dhh1128",
+          "merged": "2026-09-21"
+        },
+        {
+          "number": 1673,
+          "title": "Update webbaser from main for Python 3.14 and Pyodide 314",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1673",
+          "author": "evanja57",
+          "merged": "2026-09-16"
+        },
+        {
+          "number": 1576,
+          "title": "add the independent-registry bulk-issuance worked examples: co-created and pre-created (SEDI)",
+          "url": "https://github.com/WebOfTrust/keripy/pull/1576",
+          "author": "dhh1128",
+          "merged": "2026-09-25"
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "conf26-subtitles",
+      "kind": "gh-repo",
+      "tier": "cold",
+      "feeds": [
+        "raw/14-kericonf-2026.md"
+      ],
+      "chapters": [
+        "06",
+        "08",
+        "10"
+      ],
+      "caveat": "Edited auto-captions of spoken talks. A WEAK provenance class: near-wording only, never exact. See raw/14 \u00a70 before any quote reaches a chapter. A conference corpus is near-static, hence cold.",
+      "branches": [],
+      "items": [],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false
+    },
+    {
+      "id": "bakobo-schema",
+      "kind": "git",
+      "tier": "cold",
+      "feeds": [
+        "raw/11-credentials.md"
+      ],
+      "chapters": [
+        "05",
+        "06"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "cfcbdcc7a",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "sedi-repin-guardians",
+          "date": "2026-10-02"
+        },
+        {
+          "branch": "gcd-targets",
+          "date": "2026-10-02"
+        },
+        {
+          "branch": "tick",
+          "date": "2026-10-02"
+        },
+        {
+          "branch": "sedi-guardian-no-gcd",
+          "date": "2026-08-05"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "public-schema",
+      "kind": "git",
+      "tier": "cold",
+      "feeds": [
+        "raw/11-credentials.md"
+      ],
+      "chapters": [
+        "05",
+        "06"
+      ],
+      "caveat": "",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "95a07e544",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "brand-owner",
+          "date": "2024-12-30"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "origin-platform",
+      "kind": "git",
+      "tier": "cold",
+      "feeds": [
+        "raw/12-origin-security.md"
+      ],
+      "chapters": [
+        "02",
+        "06"
+      ],
+      "caveat": "Provenant client work, read locally and never quoted outward from here. Doctrine-in-practice: useful as evidence of how the worldview survives a shipping deployment, not as normative text.",
+      "branches": [
+        {
+          "name": "main",
+          "role": "standardizing",
+          "marker": "[K]",
+          "from": "unknown",
+          "to": "cb758b1b5",
+          "stat": null,
+          "diverged_from_pin": false,
+          "full_reanchor": true,
+          "commits": []
+        }
+      ],
+      "items": [],
+      "new_branches": [
+        {
+          "branch": "chore/rename-review-panel-to-origin-review-panel",
+          "date": "2026-07-11"
+        },
+        {
+          "branch": "tick",
+          "date": "2026-06-17"
+        },
+        {
+          "branch": "feat-archiving-github-repos",
+          "date": "2026-06-10"
+        },
+        {
+          "branch": "fix/review-panel-verify-null-crash",
+          "date": "2026-06-08"
+        }
+      ],
+      "tier_upgrades": [],
+      "material": true
+    },
+    {
+      "id": "keri-one",
+      "kind": "web",
+      "tier": "cold",
+      "feeds": [
+        "raw/13-keri-one-web.md"
+      ],
+      "chapters": [
+        "01",
+        "06"
+      ],
+      "caveat": "Thin original content on the homepage and About page; the rest is an outbound-link directory. Detected by content hash, since there is no commit to diff. Mined 2026-07-17.",
+      "branches": [],
+      "items": [
+        {
+          "url": "https://keri.one/",
+          "was": null,
+          "now": "7cae5f92ed96de10"
+        },
+        {
+          "url": "https://keri.one/keri-resources/",
+          "was": null,
+          "now": "e20b997ea8d4f1f6"
+        },
+        {
+          "url": "https://keri.one/131-2/",
+          "was": null,
+          "now": "9ee9070c39f93630"
+        }
+      ],
+      "new_branches": [],
+      "tier_upgrades": [],
+      "material": false,
+      "hashes": {
+        "https://keri.one/": "7cae5f92ed96de10",
+        "https://keri.one/keri-resources/": "e20b997ea8d4f1f6",
+        "https://keri.one/131-2/": "9ee9070c39f93630"
+      }
+    }
+  ],
+  "errors": [],
+  "freshness": {
+    "status": "ok",
+    "live": 1929,
+    "missing": 1026,
+    "total": 2955,
+    "new": 11,
+    "new_misses": [
+      "[02-security-model-and-threat-posture.md] names scope, not a feature set, and it attaches to all three roles.** Where this corpus has said",
+      "[02-security-model-and-threat-posture.md] Philip Feairheller concurred and supplied the concrete case:",
+      "[02-security-model-and-threat-posture.md] It depends on observer presence, diligence, information overlap, and time. (`background.md` \u00a76.3) The spec ties this to the asymmetry it creates for the defender:",
+      "[05-acdc-and-verifiable-data.md] The club's accepted shape and the holder's issued presentation are one schema viewed from two sides",
+      "[07-shibboleths-and-anti-patterns.md] The observer layer is KEL discovery / caching, and a 'super watcher' is a bigger cache.",
+      "[07-shibboleths-and-anti-patterns.md] a convenient way to centralize how state is *queried*",
+      "[07-shibboleths-and-anti-patterns.md] The watcher, judge, and jurors each play distinct important roles in the KERI security posture of a validator[;] they are not merely discovery mechanisms for KELs[,] so having amnesia about why their roles are distinct is going to be problematic",
+      "[07-shibboleths-and-anti-patterns.md] ** \u2192 Discovery is OOBIs, untrusted by design; watcher/juror/judge are three security roles held apart, and",
+      "[11-credentials.md] The club's accepted shape and the holder's issued presentation are **one schema viewed from two sides**",
+      "[keri-doctrine.md] The observer layer is KEL discovery / caching; a 'super watcher' is a bigger cache.",
+      "[keri-doctrine.md] not merely discovery mechanisms for KELs."
+    ]
+  },
+  "material": true
+}

@@ -1,6 +1,10 @@
 # 12 — Origin Security: KERI/ACDC/CESR Doctrine in a Real Zero-Trust Deployment
 
-**Sources** (all under `/home/daniel/code/origin-platform/docs/`):
+**Pin: `provenant/origin-platform` `main` @ `cb758b1b5` (2026-08-26), path `docs/`. Re-anchored 2026-10-03.** The repo lives at `/home/daniel/code/provenant/origin-platform` (the path below was the pre-reorg location; corrected 2026-10-03).
+
+**What this committed version is, and what it is not (2026-10-03).** The 2026-10 refresh re-read the seven docs below in full at `cb758b1b5`, read ten more, and produced a fully re-anchored version of this note with line hints, corrected quotes and about 68 new quotations. **That version is not committed**, because origin-platform is a private client repository and this repo is public; it is held locally at `.ignored/refresh-2026-10/raw-12-origin-security.reanchored.md` pending Daniel's decision. What is committed here is the pre-existing note, with the pin above and the corrections in §9 that need no new quotation. The source text these quotes came from is still present at `cb758b1b5` (no Origin doc lost content since 2026-05), but several quotes below are **not verbatim** — §9 item 9 — and line hints were not added. Until the held-out version is reviewed, re-check any quote here at the pin before relying on it.
+
+**Sources** (all under `docs/`):
 - `origin-security.md` (OS) — threat model + zero-trust philosophy
 - `general-origin-characteristics.md` (GOC) — platform-wide auth/authz patterns
 - `authorizing-services-and-automation-users.md` (ASAAU) — AU model, RFC 9421, sponsorship, encryption
@@ -31,7 +35,7 @@ This is *doctrine-in-practice*: how a production platform (Provenant/Origin) app
 - Federation is explicitly a symptom, not a cure: "centralization provides a locus for abuse, and creates silos. This is typically solved by aggressive federation (centralization hierarchies)." (OS §1) — outsider-tell: KERI people see federation as compounding centralization, not decentralizing.
 
 ### Zero-trust as the KERI-correct reframing
-- **"assume everything — outside OR inside the perimeter — is unsafe until proven otherwise."** (OS §4 / GOC §1) The single load-bearing zero-trust axiom.
+- **"assume everything — outside OR inside the perimeter — is unsafe until proven otherwise."** (OS §1 — *location corrected 2026-10-03; previously cited as OS §4 / GOC §1*) The single load-bearing zero-trust axiom.
 - Not perimeter-abandonment; perimeter-plus: "Provenant *does* make meaningful investments in secure perimeters. However, we *also* think outside the box (perimeter)." (OS §1) They "only relax this posture in a handful of cases where a careful analysis of costs and benefits... shows us that a risk is not worth its countermeasures." (OS §1)
 - Zero-trust's effect on risk (the treasure metaphor): instead of one guarded room, "what if the treasure were distributed in a thousand places... active rather than passive... intelligent rather than dumb... could attack a thief or teleport... including after it had been stolen?" (OS §4)
 - Verify, don't gate: **"We achieve high security by making everything verifiable by anyone (and actually doing that verification), not just by adding more and better-defended, centralized perimeters."** (ASAAU §2.2)
@@ -144,13 +148,13 @@ This is the deployment's strongest applied-KERI doctrine, elaborated at length i
 - **Client AID** (signify/wallet) vs **agent AID** (keria/cloud agent): keria/signify constructs; agent signs to client with agent AID keys, client signs to agent with client AID keys; normally 1-to-1 but "NOT automatically true." (IFU)
 - **Alias:** "a friendly name for an AID" e.g. "Cecilia as CEO at Acme." Not unique, mutable, never an identifier. (MA §2, HWGA)
 - **Three defining properties of an AID (= the three alias questions):** **who** (whose self is partially identified), **role** (responsibility/posture/behavior pattern), **context/scope** (in what scope the who+role are relevant). A new AID is created for any new combination. (HWGA §Method, MA §4)
-- **BADA-RUN semantics** (Sam Smith): "Best Available Data Acceptance – Read Update Nonce"-style — signed requests carry a nonce making them idempotent/replay-safe; resending the same request with the same nonce yields the same result. (ASAAU items 2, 5, §3.4 test 5; GOC §2)
+- ~~**BADA-RUN semantics** (Sam Smith): "Best Available Data Acceptance – Read Update Nonce"-style~~ **Struck 2026-10-03: the expansion is unsourced and wrong** — KERI's BADA-RUN is Read, Update, Nullify (`raw/01`), and Origin's use of the term is not KERI's BADA (§9). Original text follows for the record: — signed requests carry a nonce making them idempotent/replay-safe; resending the same request with the same nonce yields the same result. (ASAAU items 2, 5, §3.4 test 5; GOC §2)
 - **Nonce:** time-based within ±2 seconds (in `signify-timestamp` header), OR fetched from `/nonce` endpoint valid for ±10 seconds (for clients with clock skew). (ASAAU §3.4, GOC §2)
 - **RFC 9421** (HTTP Message Signatures): `Signature-Input` (which elements: `@method`, `@path`, named headers), `Signature` (Ed25519 over signing base + nonce), a named header carrying the AID (`Signify-Resource` or `AU-AID`). (GOC §2)
 - **Native service pattern:** each service type owns specific DB schema/tables; foreign services call its API, never touch its tables. (GOC §4)
 - **Audience classifications** (GOC §3): **Allic** (actively publicized to everyone — revocations, QVI AIDs); **Anyic** (public but not proactively publicized — legal-entity AIDs); **Selfic** (only the owner — passphrases, wallet data); **Relatic** (tightly-defined relationships only — pairwise AIDs); **Haptic** (anyone with business need + roles/permissions — invoices, employee AIDs); **Boundic** (owner-defined boundaries excluding specific parties — NDAs, competitor restrictions).
 - **Cells / clerk / data movement:** root cells publish to Kafka; branch cells subscribe via **Clerk** service. Movement: **direct-to-center** (branch→root) → **outward** (root→branches); **allic** items also move **extraward** (to witnesses/external parties). (GOC §4)
-- **GCD credential:** grant/capability-delegation credential (public-schema `gcd`) whose `c_goal` authorizes a delegated AID to act (e.g., onboard AUs). (ASAAU §3.4)
+- **GCD credential:** ~~grant/capability-delegation credential~~ (*expansion struck 2026-10-03: unsourced*) (public-schema `gcd`) whose `c_goal` authorizes a delegated AID to act (e.g., onboard AUs). (ASAAU §3.4)
 
 ---
 
@@ -260,3 +264,16 @@ Origin auto-introduces AID+aliases within an org where collaboration is predicta
 - Cache-invalidation mechanism is an open TBD in the primary doc (SSE vs Kafka vs polling) — not resolved.
 - The relationship between the `wallet_aid` field and the "X-as-Origin-user" alias for *human* users vs AUs is flagged as uncertain even by the author (ASAAU footnote 3).
 - No coverage of actual cryptographic threat quantification, PQ specifics, or how prerotation is operationalized for transferable (non-AU) AIDs — the docs assert prerotation as a benefit but don't work an example.
+
+## 9. Corrections and tensions from the 2026-10-03 re-anchor (no new quotations)
+
+1. **Zero-trust axiom location** — OS §1, not OS §4 / GOC §1. Corrected in place.
+2. **AU-AID derivation is stated inconsistently across Origin's own docs.** ASAAU describes making the AU-AID by hashing the public key; other passages in ASAAU and the auth-libraries doc treat the AID as the CESR-encoded public key itself, which matches KERI's basic-prefix derivation. This note's "direct-mode" characterization should not be repeated without that caveat.
+3. **GOC contradicts itself on tokens** (one section calls them short-lived and verifiable, another rejects tokens as the auth mechanism). GOC is written to be read by AI agents, so the contradiction propagates.
+4. **BADA-RUN** — both the expansion previously recorded here and Origin's own usage (nonce/onboarding idempotency) differ from KERI's BADA. Struck in place.
+5. **The clerk service is required (by the ecosystem governance framework) to hold a *delegated* AID**, while AU-AIDs are direct-mode with no KEL. Either the clerk is an undocumented exception or one doc is stale.
+6. **"Never shared with any Provenant code" vs. cached passcodes** — both hold only if "Provenant code" means server-side code.
+7. **Witness and multisig posture exists in the docs** (ecosystem governance framework: witness-count and no-majority-control rules, minimum group sizes, delegation separating operator from legal entity). The "Gaps" section's claim that watcher terminology is largely absent is no longer accurate once those docs and the watcher-service doc are counted.
+8. **Duplicity detection is assigned to witnesses**, or to a watcher fed by witnesses, in several Origin docs. That conflicts with KERI's watcher-centred doctrine, in which witnesses receipt and watchers detect. No chapter should repeat Origin's wording without this caveat.
+9. **Misquotes found and corrected in the held-out version** (spelling, italics, quote marks, and five ellipsis-stitched quotes replaced with contiguous spans). In this committed version those quotes are left as they were; treat any quote here that contains an ellipsis as a patchwork until the held-out version is reviewed.
+
