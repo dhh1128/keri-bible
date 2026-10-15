@@ -7,8 +7,15 @@
 #
 # FIELDS
 #   id            stable key, used in delta reports and state files
-#   kind          git | gh-discussions | gh-prs | gh-repo | web
+#   kind          git | gh-discussions | gh-prs | gh-issues | gh-repo | web
+#                 refresh/freshness.py reads only `git` sources, from their watched .md .py .ts
+#                 .txt .json files plus .pdf (through pdftotext -layout) and .srt (caption text).
+#                 The other kinds are watched for change by detect.py and are invisible to it.
 #   path          repo location relative to $CODE_ROOT (default ~/code), per ~/code/repos.yaml
+#   repo, repos   owner/name of a GitHub source; gh-issues takes either one `repo` or a `repos` list
+#   since         gh-* conversation sources: report items updated on or after this date
+#   primary_authors  gh-discussions and gh-issues: logins whose threads are flagged, and for
+#                 gh-issues the only threads that make the source material
 #   remote        git remote to fetch and resolve branches against
 #   watch         paths within the repo that carry doctrine; changes elsewhere are noise
 #   cadence       hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
@@ -125,8 +132,10 @@ sources:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 80f77b73b, date: 2026-10-03},
          last_mined:   {commit: 80f77b73b, date: 2026-10-03}}
-    feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md]
-    chapters: ["03", "04", "05", "08", "09", "10"]
+    feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md,
+            raw/17-spac-tsp-privacy.md, raw/18-infrastructure-ops.md,
+            raw/19-authorization-and-agents.md, raw/21-sam-rulings.md]
+    chapters: ["03", "04", "05", "08", "09", "10", "11", "12", "13"]
     caveat: >-
       Mined 2026-10-03 at 80f77b73b, PARTIALLY, and each note's header says which parts: raw/09 read
       acdc/ipexing.py and vdr/verifying.py in full, counting.py/structing.py/exchanging.py in part, and
@@ -134,7 +143,9 @@ sources:
       NOT re-read. raw/16 read the presentation-registry paths of ipexing.py and regeventing.py; raw/15
       read only the changed hunks of kraming.py and Baser.clean(). Claims outside those regions keep their
       older stamps (b8f60166b or 3a8e01ae). Version line still 2.1.0-dev1. KERIA consumes keripy 1.2.x
-      (keri==1.2.14), not this line — see raw/10 §11a.
+      (keri==1.2.14), not this line — see raw/10 §11a. raw/17 (spac/, app/forwarding.py, app/keeping.py,
+      peer/exchanging.py, core/counting.py) and raw/18 (app/agenting.py, app/indirecting.py) cite the files
+      they read at 927c0cb87, which is ahead of last_mined; those readings cover only the files named.
 
   - id: keripy-knowledge
     kind: git
@@ -204,7 +215,7 @@ sources:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 68a5e2f76, date: 2026-10-03},
          last_mined:   {commit: 68a5e2f76, date: 2026-10-03}}
-    feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md]
+    feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md, raw/19-authorization-and-agents.md]
     chapters: ["01", "02", "03", "04", "05", "06", "07"]
     caveat: >-
       Daniel's own framing. Marker [spec] is wrong here in the specification sense — these are
@@ -231,20 +242,214 @@ sources:
       last_mined keeps the original reading date because no re-reading happened.
 
   - id: smithsamuelm-papers
-    kind: gh-repo
-    repo: SmithSamuelM/Papers
-    branch: master
-    watch: [whitepapers/kram.md]
+    kind: git
+    path: wot/Papers
+    remote: origin
+    watch:
+      # KRAM, mined in raw/15
+      - whitepapers/kram.md
+      # confidentiality and privacy, mined in raw/17
+      - whitepapers/SPAC_Message.md
+      - whitepapers/TSP_CESR_Implementation.md
+      - whitepapers/ACDCConfidentialDataManagement.md
+      - whitepapers/SustainablePrivacy.pdf
+      - presentations/SPAC_Overview.web.pdf
+      - presentations/TSPSlides20230308.web.pdf
+      - presentations/SevenPrivacies.web.pdf
+      - presentations/BulkIssuancePrivacy.pdf
+      - presentations/BulkIssuanceSynergyDataLoyalty.pdf
+      - presentations/KERI_PAC_Theorem.pdf
+      # infrastructure, mined in raw/18
+      - whitepapers/keridemlia.pdf
+      - presentations/KERI_Percolation_OOBI.web.pdf
+      - presentations/KERIVerifiableTrustBases.web.pdf
+      - presentations/Hio.web.pdf
+      - presentations/CensorshipResistance_IIW_2019_B.pdf
+      # authorization and agents, mined in raw/19
+      - whitepapers/Revocation.md
+      - whitepapers/KERIArchGroupIssuance.md
+      - whitepapers/ManyCubed.md
+      - presentations/AuthorizationEVAC.pdf
+      - presentations/KERI_AI_Cyber_2026.pdf
+      - presentations/KERI_AlphaOmega.20250903.pdf
+      - presentations/AuthenticDataSupplyChains_DAD_Arch.web.pdf
+      # identifier theory, reputation and SEDI, mined in raw/20
+      - whitepapers/UniversalIdentifierTheory.pdf
+      - whitepapers/IdentifierTheory_web.pdf
+      - whitepapers/Identity-System-Essentials.pdf
+      - whitepapers/IdentityAndReputation.md
+      - whitepapers/SelfIdentifyingData.md
+      - whitepapers/DecentralizedAutonomicData.md
+      - whitepapers/A_DID_for_everything.md
+      - whitepapers/CooperationBeatsAggregation.md
+      - whitepapers/open-reputation-low-level-whitepaper.pdf
+      - whitepapers/open-reputation-high-level-whitepaper.pdf
+      - presentations/ReputationAlgorithms.pdf
+      - presentations/ReputationIIW2017.pdf
+      - presentations/ReputationDisintermediation_IIW_20180405.pdf
+      - presentations/AR_ACDC_Rep.web.pdf
+      - presentations/SEDI_Tradeoff.web.pdf
+      - presentations/SecurityThreatsMitigationsSEDI.web.pdf
+      - presentations/DuplicityGame_IIW_2020_A.pdf
     cadence: warm
     branches:
       - {name: master, role: standardizing, marker: "[proposal]",
-         last_scanned: {commit: 67550b477, date: 2026-10-03},
-         last_mined:   {commit: 67550b477, date: 2026-09-15}}
-    feeds: [raw/15-kram.md]
-    chapters: ["09"]
+         last_scanned: {commit: b47f21597, date: 2026-10-14},
+         last_mined:   {commit: b47f21597, date: 2026-10-14}}
+    feeds: [raw/15-kram.md, raw/17-spac-tsp-privacy.md, raw/18-infrastructure-ops.md,
+            raw/19-authorization-and-agents.md, raw/20-identity-theory-reputation-sedi.md]
+    chapters: ["01", "02", "05", "06", "07", "08", "09", "11", "12", "13", "14"]
     caveat: >-
-      KRAM whitepaper v0.7.6. Not cloned locally; read via the GitHub API. WebOfTrust/kram's README
-      is an earlier, shorter subset — superseded, cite the Papers version.
+      Sam Smith's whitepapers and decks: the author's positions, never normative, all [proposal]; several
+      are co-authored (raw/20 §0.4). last_mined b47f21597 covers the files raw/17-20 read. kram.md is the
+      exception: raw/15 read it at 67550b477 (2026-09-15), kram.md changes after that (8 insertions, 4
+      deletions by b47f21597), and raw/15 is not re-read against the change. WebOfTrust/kram's README is an
+      earlier, shorter subset of kram.md; cite the Papers version. PDFs are read as `pdftotext -layout`
+      renders them, so cite a page or slide rather than a line, and expect the extractor to split a
+      sentence or drop fi/ff ligatures. keridemlia.pdf has a broken text layer, so raw/18 quotes it from OCR
+      and freshness cannot match those quotes. The open-reputation papers are read for their headers only,
+      so treat them as unread. UniversalIdentifierTheory.pdf and IdentifierTheory_web.pdf are the same
+      blob. SPAC_Message.md's version string (0.5.3) does not track its content; cite by commit.
+      Revocation.md states a TEL transfer event in the present tense that is in neither ACDC branch.
+      SPAC_Strawman, TSPSlides20230208 and SustainablePrivacySlides are superseded by the decks watched
+      here and are not watched. ManyCubed.md, KERI_AlphaOmega and the DAD architecture deck (raw/19) and
+      KERI_PAC_Theorem (raw/17) are read in part, for lineage or for named pages, and are watched because
+      chapters 12 and 13 quote them.
+
+  # ---------------------------------------------------------------- specifications, standalone
+
+  - id: tsp-spec
+    kind: git
+    path: wot/tswg-tsp-specification
+    remote: origin
+    watch: [spec/spec.md]
+    cadence: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[spec]",
+         last_scanned: {commit: 5599b4556, date: 2026-10-14},
+         last_mined:   {commit: 5599b4556, date: 2026-10-14}}
+    feeds: [raw/17-spac-tsp-privacy.md]
+    chapters: ["04", "06", "07", "12"]
+    caveat: >-
+      Trust Spanning Protocol, Experimental Implementor's Draft Rev 3 with Errata (2026-09-30), wire version
+      0.2. [spec] means present in the line ToIP is standardizing, and that line calls itself experimental.
+      Only spec/spec.md is rendered (specs.json markdown_paths); the other spec/*.md files are template
+      residue. The test-vector appendix is not mined.
+
+  - id: did-webs-spec
+    kind: git
+    path: wot/kswg-did-method-webs-specification
+    remote: origin
+    watch: [spec/header.md, spec/body.md, spec/terms-definitions]
+    cadence: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[proposal]",
+         last_scanned: {commit: 2d84ef2b0, date: 2026-10-14},
+         last_mined:   {commit: 2d84ef2b0, date: 2026-10-14}}
+    feeds: [raw/20-identity-theory-reputation-sedi.md]
+    chapters: ["01", "06", "14"]
+    caveat: >-
+      ToIP KSWG did:webs method specification, v0.10.3 at this pin. It is on its own standards track,
+      separate from the KERI suite lines the [spec] marker names, so its text carries [proposal] here.
+      raw/20 mines it for its framing only: last_mined covers header.md and the body.md passages raw/20
+      cites, and the delegation, versionId, BADA and multisig rules are unread. The local clone also has a
+      `fork` remote (dhh1128); `origin` is the trustoverip repo.
+
+  # ---------------------------------------------------------------- KERI Foundation infrastructure
+
+  - id: kf-witness-hk
+    kind: git
+    path: wot/witness-hk
+    remote: origin
+    watch: [README.md, docs, ansible/README.md, src/witopnet]
+    cadence: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[code]",
+         last_scanned: {commit: 39e1c3fc7, date: 2026-10-14},
+         last_mined:   {commit: 39e1c3fc7, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md]
+    chapters: ["11"]
+    caveat: >-
+      Vendor code donated by healthKERI. [code] holds only for what raw/18 read in src/; README claims are
+      [practice]. At this pin it bundles a mailbox with each witness (raw/18 §9.3).
+
+  - id: kf-watcher-hk
+    kind: git
+    path: wot/watcher-hk
+    remote: origin
+    watch: [README.md, docs, src/watopnet]
+    cadence: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[code]",
+         last_scanned: {commit: 9be717f8a, date: 2026-10-14},
+         last_mined:   {commit: 9be717f8a, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md]
+    chapters: ["11"]
+    caveat: >-
+      raw/18 §7.3 finds no watcher-to-watcher sharing at this pin, by a negative search; re-check it
+      whenever the pin moves.
+
+  - id: kf-boot
+    kind: git
+    path: wot/kf-boot
+    remote: origin
+    watch: [README.md, setup-guide.md, docs]
+    cadence: warm
+    branches:
+      - {name: main, role: standardizing, marker: "[practice]",
+         last_scanned: {commit: 14c8f616e, date: 2026-10-14},
+         last_mined:   {commit: 14c8f616e, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md]
+    chapters: ["11"]
+    caveat: >-
+      Its product rules (1-of-1 or 3-of-4 witnesses, one hosted watcher) are vendor policy, not doctrine.
+
+  - id: kf-observer
+    kind: git
+    path: wot/kf-observer
+    remote: origin
+    watch: [README.md, src]
+    cadence: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[practice]",
+         last_scanned: {commit: d6368aef9, date: 2026-10-14},
+         last_mined:   {commit: d6368aef9, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md, raw/14-kericonf-2026.md]
+    chapters: ["10", "11"]
+    caveat: >-
+      Created October 2026 and moving fast. raw/18 reads the README, not the code, so last_mined covers
+      README.md only. It is not the older keri-foundation/observer repo, which is a placeholder; raw/14 §5's
+      "placeholder" status refers to that one.
+
+  - id: kf-registrar
+    kind: git
+    path: wot/kf-registrar
+    remote: origin
+    watch: [README.md, src]
+    cadence: hot
+    branches:
+      - {name: main, role: standardizing, marker: "[practice]",
+         last_scanned: {commit: bf14eac4d, date: 2026-10-14},
+         last_mined:   {commit: bf14eac4d, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md, raw/14-kericonf-2026.md]
+    chapters: ["10", "11"]
+    caveat: >-
+      Created October 2026 and moving fast. raw/18 reads the README, not the code, so last_mined covers
+      README.md only. It is not the older keri-foundation/registrar repo, which is a placeholder; raw/14 §5's
+      "placeholder" status refers to that one.
+
+  - id: keri-foundation-web
+    kind: web
+    urls:
+      - https://keri.foundation/
+      - https://keri.foundation/about/services/
+      - https://keri.foundation/faq/
+    cadence: cold
+    feeds: [raw/18-infrastructure-ops.md]
+    chapters: ["11"]
+    caveat: >-
+      A WordPress site, detected by content hash and invisible to freshness.py, so its quotes in chapter 11
+      always report missing. The five Ws definitions on /about/services/ are attributed to Sam Smith.
 
   # ---------------------------------------------------------------- GitHub conversations
 
@@ -254,14 +459,16 @@ sources:
     cadence: hot
     since: 2026-10-03
     primary_authors: [SmithSamuelM]
-    feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md]
-    chapters: ["07", "08", "09", "10"]
+    feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md, raw/21-sam-rulings.md]
+    chapters: ["03", "05", "06", "07", "08", "09", "10", "12", "13", "14"]
     caveat: >-
       The most doctrinally live source in the corpus and the one least visible to any local check.
       Sam edits posts in place — #1095 and #1613 both show "last edited" — so a quote can drift with
       no commit anywhere. Snapshotting (refresh/snapshot-discussions.py) is what makes those quotes
       re-verifiable. Watch BOTH vocabularies for a topic: "presentation registry" misses #1095,
-      which invents the idea under the name "issuee usage registry".
+      which invents the idea under the name "issuee usage registry". #1515, #1550, #1566, #1570, #1573, #1574
+      and #1598 carry delegation, registry and bulk-issuance rulings (raw/21), and the #1512 body is stale
+      against its own later comments (raw/21 R-027).
 
   - id: keripy-prs
     kind: gh-prs
@@ -274,21 +481,77 @@ sources:
       Merged PRs are the signal that a [proposal] became [code]. They feed triage rather than a note of
       their own; the note that moves is whichever one carries the design they implement.
 
+  - id: keripy-issues
+    kind: gh-issues
+    repo: WebOfTrust/keripy
+    cadence: hot
+    since: 2026-10-14
+    primary_authors: [SmithSamuelM]
+    feeds: [raw/21-sam-rulings.md]
+    chapters: ["03", "04", "05", "08", "09"]
+    caveat: >-
+      Sam's rulings in issue and pull-request comment threads, which neither keripy-discussions nor
+      keripy-prs (merged-PR titles) captures. A thread is flagged when an `involves:` search finds him in
+      it; whether GitHub counts a PR review comment as involvement is unverified. Rulings reverse within
+      days (raw/21 §11), so a scan reads the whole thread, not the first reply. Invisible to freshness.py.
+
+  - id: spec-issues-prs
+    kind: gh-issues
+    repos:
+      - trustoverip/kswg-keri-specification
+      - trustoverip/kswg-acdc-specification
+      - trustoverip/kswg-cesr-specification
+    cadence: hot
+    since: 2026-10-14
+    primary_authors: [SmithSamuelM]
+    feeds: [raw/21-sam-rulings.md]
+    chapters: ["03", "04", "05", "08"]
+    caveat: >-
+      Editor rulings that forecast spec text: ACDC #205 (default operator), #204 (bulk issuance normative),
+      #200 (bulk B derivation, landed), #191 (unique entropy, landed in v1.1); CESR #165 (PQ codes, landed in
+      v1.1), #175 (Ed448 seed, open). A ruling here is [proposal] until the text is in a branch at a named
+      commit; raw/21 §12 lists the ones that have not landed. The spec repos' discussions carry no Sam
+      rulings, which is why they have no source of their own.
+
   - id: conf26-subtitles
-    kind: gh-repo
-    repo: keri-foundation/CONF26-subtitles
-    branch: main
-    watch: [subtitles]
+    kind: git
+    path: wot/CONF26-subtitles
+    remote: origin
+    watch: [subtitles, subtitles-interviews]
     cadence: cold
     branches:
       - {name: main, role: standardizing, marker: "[proposal]",
-         last_scanned: {commit: 15f1e91a7, date: 2026-10-03},
+         last_scanned: {commit: 006042d39, date: 2026-10-14},
          last_mined:   {commit: unknown, date: 2026-09-01}}
-    feeds: [raw/14-kericonf-2026.md]
-    chapters: ["06", "08", "10"]
+    feeds: [raw/14-kericonf-2026.md, raw/18-infrastructure-ops.md, raw/19-authorization-and-agents.md,
+            raw/20-identity-theory-reputation-sedi.md]
+    chapters: ["05", "06", "07", "08", "10", "11", "12", "13", "14"]
     caveat: >-
       Edited auto-captions of spoken talks. A WEAK provenance class: near-wording only, never exact.
       See raw/14 §0 before any quote reaches a chapter. A conference corpus is near-static, hence cold.
+      raw/18, raw/19 and raw/20 read the talks they cite at 006042d39; raw/14 records no commit, so
+      last_mined stays unknown. freshness.py reads the .srt files with cues joined, so a quote must
+      match the captions as they read, not a cleaned-up transcript.
+
+  - id: keri-foundation-recordings
+    kind: git
+    path: wot/recordings-and-subtitles
+    remote: origin
+    watch: [subtitles/sam-smith]
+    cadence: cold
+    branches:
+      - {name: main, role: standardizing, marker: "[architect]",
+         last_scanned: {commit: bef1cdb0e, date: 2026-10-15},
+         last_mined:   {commit: unknown, date: 2026-10-14}}
+    feeds: [raw/19-authorization-and-agents.md]
+    chapters: ["01", "07"]
+    caveat: >-
+      Edited auto-captions of standalone videos, including Sam Smith's It's KERI or Surveillance. Same weak
+      provenance class as conf26-subtitles: near-wording only, status and intent only. raw/19 read a
+      pre-joined copy with no commit recorded, so last_mined is unknown. The repository is retired: its
+      README says the captions now live in the keri.foundation site repo, which is not public, under
+      confs/_archive/sam-smith/, so this clone is the last public copy and is not expected to move. No LICENSE file
+      (raw/14 §0). The SEDI summit captions under subtitles/SEDI are not watched; no note mines them.
 
   # ---------------------------------------------------------------- applied / web
 
@@ -346,3 +609,21 @@ sources:
     caveat: >-
       Thin original content on the homepage and About page; the rest is an outbound-link directory.
       Detected by content hash, since there is no commit to diff. Mined 2026-07-17.
+
+  - id: utah-sedi-statute
+    kind: web
+    urls:
+      - https://le.utah.gov/xcode/Title63A/Chapter20/63A-20.html
+    cadence: cold
+    feeds: [raw/20-identity-theory-reputation-sedi.md]
+    chapters: ["06"]
+    caveat: >-
+      Utah Code 63A-20, State-Endorsed Digital Identity, enacted by Chapter 436, 2026 General Session,
+      effective 2026-05-06. Law, not a kind of evidence the markers name, so this source has no branch and
+      no marker. raw/20 mines the official PDF C63A-20_2026050620260506.pdf held in the private repo
+      bakobo/sedi at 91402ae99, not this page. The page resolves (HTTP 200) but is a script shell: the
+      statute text loads from a versioned file, and its version list, which names
+      C63A-20_2026050620260506 as the only and current version, sits inside a script block that
+      detect.py strips before hashing. So the content hash does not move when the statute is amended;
+      check the version list by hand. The talks call the bill SB 260; the bill number is unverified
+      (raw/20 §4.1). Invisible to freshness.py.
