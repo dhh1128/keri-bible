@@ -10,16 +10,11 @@ Primary means the source itself. A diff is not the source. A commit message is n
 
 ## 2. Provenance classes are load-bearing and never upgraded for convenience
 
-The tier markers say where a claim lives, and their order is a real ordering:
-
-- **`[K]`** — keripy (or another implementation) behaves this way at a named commit. Code is evidence about code.
-- **`[P]`** — proposed in a GitHub discussion or whitepaper. A design, however confident its author.
-- **`[N1.1]`** — present in a specification's **v1.1** branch and not in the standardizing line. New thinking that is *likely, not certain*, to fold into the next standard.
-- **`[N]`** — present in the line the community is actively standardizing (`main`/v1.0). This is what "normative" means today.
+The provenance markers (`[N]`, `[N1.1]`, `[K]`, `[P]`, `[V]`, `[SAM-DIRECT]`) are defined in `docs/house-style.md`, and their order is a real ordering.
 
 A claim may only be marked at the tier its citation actually supports. Moving `[N1.1]` → `[N]` requires the text in the standardizing branch at a named commit, not an expectation that it will land. Moving `[P]` → `[K]` requires the code, not a merged PR title.
 
-There is a fifth class with no marker, because it should never appear as a citation: **spoken and first-hand report**. Edited auto-captions of conference talks (`raw/14`) preserve near-wording, never exact wording. A first-hand account of a call (`raw/16 §0`) preserves neither. Both are usable for **status and intent only** — "this work is intended", "this is not abandoned" — and never as evidence about a design detail, and never as a quotation. Do not launder either into a quote by finding similar words in a written source.
+Spoken and first-hand report needs care. Edited auto-captions of conference talks (`raw/14`) preserve near-wording, never exact speech. They may be quoted, but only as the captions read, with a caption locator giving speaker, talk and time (`docs/house-style.md`, Citations), and only as evidence of status, intent and framing, never of a design detail. A first-hand account of a call (`raw/16`, section 0) preserves neither wording nor detail: it is usable for status and intent only and is never quoted. Do not launder either into a stronger citation by finding similar words in a written source.
 
 ## 3. Append and correct; never silently rewrite
 
@@ -35,9 +30,7 @@ Distinguish an author's assessment from a surveyed result. When Sam writes "AFAI
 
 ## 5. Chapters keep their shape
 
-Each chapter opens with a **thesis** and, where it covers pre-normative material, a **status** paragraph saying plainly how far from normative it is. Chapters that use tier markers carry a "How to read this chapter" key listing the markers they use, with the commit each `[K]` marker is pinned to. A refresh updates those stamps; it does not drop them.
-
-Prose, not bullet-fragments. Bold is for the occasional load-bearing turn, not for faking structure. Markdown is never hard-wrapped — one line per paragraph, however long.
+Form is governed by `docs/house-style.md`: the chapter skeleton (thesis, status where the material is pre-normative, numbered sections, Sources), logical markup with no bold or italics, permanent heading anchors, the locator forms, and no hard wrapping. A refresh updates the pins in each chapter's Sources section; it does not drop them.
 
 ## 6. What a refresh may not do unattended
 

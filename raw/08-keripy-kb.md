@@ -41,31 +41,38 @@ The KB declares a version scope, verbatim: **"This knowledge base describes KERI
 
 **Root of trust = the identifier's own key-event history. No authority.** [protocol]
 > "The root of trust is the identifier's own key-event history — no authority." (`00-lens.md`, claim 1)
+
 A verifier establishes "who controls this AID right now" by **replaying its KEL from inception**, not by querying any trusted directory or CA (cites primer §2.2; wtbo §4). Code consequence: a verification path must **never acquire a *trust* dependency on an external service.** Witnesses and OOBIs are sources of **data, never sources of authority** — their output is re-verified locally (background §2.3–2.4). (`00-lens.md` claim 1)
 
 **Detection, not prevention.** [protocol] The canonical slogan:
 > "duplicity-evident, not duplicity-resistant." (`00-lens.md`, claim 2 heading)
+
 KERI is a **decentralized key-state *continuity* mechanism, not a consensus protocol, ledger, or global-ordering system** (background §1.1). It does **not** make a malicious controller's fork *impossible*; it makes it **detectable and attributable by observers** (background §4.5, §6; wtbo §4). (`00-lens.md` claim 2)
 
 **Correctness is LOCAL to a validator and observer-dependent.** [protocol]
 > "Correctness is **local to a validator** and observer-dependent; a valid KERL is not necessarily unique" (`00-lens.md`, claim 2, cites background §3.3, §7.4)
+
 Code consequence: "never assume 'the protocol guarantees one global history.'" Importing blockchain-consensus expectations is, **in the security model's own words, a *category error*.** (`00-lens.md` claim 2)
 
 **Zero-trust verifier / malicious-controller stance.** [protocol]
 > "The controller may be malicious; the verifier assumes nothing." (`00-lens.md`, claim 3 heading)
+
 Verifiers do NOT assume controller honesty — only **cryptographic soundness of signatures and hashes until a key is shown compromised** (background §2.1, assumptions A1/A3). Code consequence: "every externally supplied event, signature, key, receipt, or credential is **hostile input until verified**. Parsing/validation code is adversarial-input code; 'looks well-formed' is not 'is authorized.'" (`00-lens.md` claim 3)
 
 **Identity is sameness across time — bound to a rotating identifier, not to a key.** [protocol]
 > "Evidence binds to a rotating identifier, not a key; signatures are anchored and sequenced." (`00-lens.md`, claim 7 heading)
 > "Identity is *sameness across time*; a key is not" (`00-lens.md` claim 7, cites x509-prob "lifespans")
+
 ACDC/credential validity is judged against key state **as of the signature's KEL/TEL anchor position**, not against current key state or wall-clock time — "this is what defeats retrograde attacks" (primer §3.3; x509-prob "signatures aren't sequenced"; `was.md`). (`00-lens.md` claim 7)
 
 **Complexity is load-bearing (not incidental).** [protocol]
 > "Apparent redundancy — multiple signatures, witness receipts, escrows, pre-rotation, anchoring — is usually encoding a security guarantee that simpler systems cannot offer and cannot retrofit" (`00-lens.md`, claim 6, cites wtbo note [d])
+
 Code consequence: "do not 'simplify away' a guard you don't fully understand; treat an unexplained check as protecting an invariant until proven otherwise." Aligns with maintainer's minimal-surgery ethos — "the smallest correct change, not the cleverest." (`00-lens.md` claim 6)
 
 **keripy is a REFERENCE IMPLEMENTATION; the spec is exogenous.** [protocol → 2.0-wire in specifics]
 > "keripy's 'intent layer' is exogenous: the CESR / KERI / ACDC specifications." (`00-lens.md`, claim 5)
+
 keria, signify-ts, and others must interoperate on the wire. "A change that passes keripy's own tests but diverges from the spec/wire format is a **defect**, because it silently breaks interop." CESR code-table entries and sizing, field names and order, SAID derivation, version strings, count codes are **external contracts**. (`00-lens.md` claim 5)
 
 **Crypto agility is designed-in.** [protocol] A new algorithm enters "by claiming an unused CESR code-table slot; non-upgraded parsers still frame the stream correctly (read code → look up length → read bytes)" (primer §4.3; wtbo §3). KERI's quantum posture is **hybrid ECC+PQ multisig plus the hash-hidden next key** (primer §2.5). The Falcon/PQ work is "exercising designed-in agility"; getting the code-table entry and sizing math exactly right is "the highest-risk surface in the flagship." (`00-lens.md` claim 8)
@@ -78,6 +85,7 @@ keria, signify-ts, and others must interoperate on the wire. "A change that pass
 
 **Pre-rotation is the firewall; the next key is the crown jewel.** [protocol]
 > "Pre-rotation is the firewall; the next key is the crown jewel." (`00-lens.md`, claim 4 heading)
+
 Each establishment event commits only a **digest of the next key; the key itself stays offline** (primer §2.3). Asymmetry (design property, invariant C2): "**Compromise of *current* keys is survivable; compromise of *pre-rotation* keys is catastrophic and unrecoverable**" (background §3.4–3.5). Code consequence: "never weaken or short-circuit the 'revealed key hashes to the prior commitment' check; never log or persist next-key material where current-key material lives." (`00-lens.md` claim 4; `30-invariants.md` C1/C2)
 
 Invariant C2 verbatim-enough: "Compromise of pre-rotation (next) keys is catastrophic; current-key compromise is survivable. This is a *design property*, not a runtime check — it constrains where next-key material may live." (background §3.4; termdefs *live-attack*/*dead-attack*) (`30-invariants.md` C2) [protocol]
@@ -86,16 +94,19 @@ Invariant C2 verbatim-enough: "Compromise of pre-rotation (next) keys is catastr
 
 **Retrograde-attack defense = anchor-position validity (invariant H1).** [protocol]
 > "An anchored signature/credential is validated against the issuer key state AS OF its KEL anchor's sequence position, not current key state or wall-clock." (`30-invariants.md` H1)
+
 Enforced in `vdr/eventing.py:Tever.verifyAnchor`: `db.kels.getLast(pre, on=seqner.sn)` then `assert eserder.said == saider.qb64` — "the anchor must be the issuer KEL event at exactly that sn." (primer §3.3; x509-prob; `was.md`). WARNING: "the credential `Verifier` does not re-run this — see L15." (`30-invariants.md` H1)
 
 **Witness ≠ watcher (role-boundary as a security position).** [protocol] Invariant D3:
 > "A witness is NOT a watcher. A witness may serve a delegate's KEL without the delegator's seal/KEL; a validator must independently obtain the delegator's KEL (OOBI) before validating." (`30-invariants.md` D3; background §2.3, §6; twin #842 `970d2fbc`)
+
 "Witnesses store/serve, they do not vouch for cross-AID anchors." (`31-landmines.md` L4) A validator "must be independently introduced to / OOBI'd with the delegator before it can validate the delegate's KEL." (L4)
 
 **Duplicity detection semantics.** [protocol] "First-seen is immutable and is the basis for duplicity detection. 'The first-seen event is always seen and can never be unseen.'" (`30-invariants.md` E1; termdefs *first-seen*, *duplicity*) "Duplicity = two distinct valid events at the same sn for one AID." (E2) A **valid KERL is not necessarily unique** (B6): duplicate event = same SAID at same sn → merge signatures; different SAID at same sn → duplicity. "Code must never assume 'one global history.'" (`30-invariants.md` B6)
 
 **Recovery / superseding rotation — the ONE narrow exception to first-seen dominance.** [protocol] Invariant C3:
 > "Recovery / superseding rotation is the ONE narrow exception where correct witnesses may sign a conflicting establishment event at a seen sn" (`30-invariants.md` C3)
+
 Only a `rot` superseding an `ixn` (no intervening establishment event), linking to the prior event at its sn, and conforming to the pre-rotation commitment. (background §5.5)
 
 ---
