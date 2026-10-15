@@ -19,6 +19,10 @@ The table of contents at the top of `keri-bible.md` is generated from the chapte
 
 `python3 build-bible.py > keri-bible.md` regenerates the assembled reference from `bible/*.md`. Run it after editing any section file.
 
+## Published site
+
+The chapters, the doctrine and the marker legend are published at https://dhh1128.github.io/keri-bible/ by `.github/workflows/pages.yml` on every push to `main`. `site/site_source.py` assembles the source and `zensical.toml` configures the build; to preview locally, run `python3 site/site_source.py` and then `zensical build --clean --strict` with the generator pinned in `requirements-site.txt`, and serve `_site/html`. A new chapter must also be added to the nav in `zensical.toml`; a unit test fails until it is.
+
 ## Checks
 
 `.github/workflows/corpus-qa.yml` runs on every push to `main` and every pull request: the tooling unit tests (`python3 -m unittest discover -s tests`), a check that `keri-bible.md` is exactly what `build-bible.py` produces, and `tools/lint_corpus.py`, which enforces the parts of `docs/house-style.md` a script can check. Run all three locally before pushing. Quote freshness needs private sources, so it runs with the monthly refresh rather than in CI.

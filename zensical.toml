@@ -1,0 +1,81 @@
+# The published site, built by Zensical (pinned exactly in requirements-site.txt, because it is
+# pre-1.0). Its input is assembled by site/site_source.py into _site/src: the chapters, the doctrine,
+# a generated front page and a marker legend generated from docs/house-style.md. Colours follow the
+# keri-conformance-suite site, which took them from keri.one.
+#
+#   python3 -m pip install -r requirements-site.txt
+#   python3 site/site_source.py
+#   zensical build --clean --strict
+#
+# The site is then in _site/html.
+
+[project]
+site_name = "The KERI Bible"
+site_description = "A reference for KERI, CESR and ACDC, built from primary sources and written for adversarial review."
+site_url = "https://dhh1128.github.io/keri-bible/"
+repo_url = "https://github.com/dhh1128/keri-bible"
+repo_name = "dhh1128/keri-bible"
+copyright = "Text CC BY 4.0. Quoted passages remain under their sources' terms."
+docs_dir = "_site/src"
+site_dir = "_site/html"
+extra_css = ["stylesheets/bible.css"]
+nav = [
+  { "Home" = "index.md" },
+  { "Marker legend" = "legend.md" },
+  { "Doctrine" = "keri-doctrine.md" },
+  { "Chapters" = [
+    "bible/01-foundations-and-worldview.md",
+    "bible/02-security-model-and-threat-posture.md",
+    "bible/03-key-management-and-identifier-lifecycle.md",
+    "bible/04-cesr-and-the-wire.md",
+    "bible/05-acdc-and-verifiable-data.md",
+    "bible/06-governance-ecosystems-and-interop.md",
+    "bible/07-shibboleths-and-anti-patterns.md",
+    "bible/08-presentation-architectures-and-ipex.md",
+    "bible/09-kram-and-request-authentication.md",
+    "bible/10-presentation-registries.md",
+  ] },
+]
+
+# Every heading carries a permanent anchor and every cross-reference targets one, and the linter
+# already checks both; the strict build checks them again against the rendered pages.
+[project.validation]
+invalid_links = true
+invalid_link_anchors = true
+
+[project.theme]
+language = "en"
+features = [
+  "content.code.copy",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to light mode"
+
+# attr_list carries the permanent {#anchor} on every heading; toc.permalink shows a link beside each
+# heading so a reader can copy a section's citable URL.
+[project.markdown_extensions]
+attr_list = {}
+tables = {}
+toc.permalink = true
+pymdownx.superfences = {}
