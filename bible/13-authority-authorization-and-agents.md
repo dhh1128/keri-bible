@@ -261,7 +261,7 @@ Daniel Hardman presented an enterprise credential that delegates the right to si
 
 Guardianship is authority over another person's authority, and Sam's SEDI modeling treats it as a chain of grants rather than a key-management trick. A ward has "a limited set of citizen rights, which rights are held by their parents and must be delegated back to their child" ([keripy conversations > discussion #1550](https://github.com/WebOfTrust/keripy/discussions/1550), body of 2026-07-28, R-072), in diagrams labeled as notional and not State of Utah policy. On a parent's control over a child's social-media access, he lists five key arrangements and picks the one where the platform accepts authorization only from the parent's AID as "the minimally sufficient means for the parent to have control over the childs access to social media." ([keripy conversations > discussion #1573](https://github.com/WebOfTrust/keripy/discussions/1573#discussioncomment-17935861), comment of 2026-08-07, R-071). Divorce and remand to child services were among the cases he gave for registry transfer ([section 6](#transfer)). The custody-from-birth position is in [chapter 06, section 3](06-governance-ecosystems-and-interop.md#sedi-architecture). [proposal]
 
-## 12. Established, contested and open {#residuals}
+## 12. Established, contested and open {#conceded-weaknesses}
 
 ### Established {#established}
 
