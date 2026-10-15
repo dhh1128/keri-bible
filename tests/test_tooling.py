@@ -44,6 +44,9 @@ class QuotePairing(unittest.TestCase):
     def test_unicode_ellipsis_splits_like_three_dots(self):
         self.assertEqual(self.needles('"short bit… the longer fragment of the elided quotation"'), ["the longer fragment of the elided quotation"])
 
+    def test_curly_and_straight_apostrophes_match(self):
+        self.assertEqual(freshness.norm("the middle doesn\u2019t matter"), freshness.norm("the middle doesn't matter"))
+
     def test_editorial_insertion_is_removed_from_needle(self):
         needle, _ = freshness.quoted_needles('"the Issuer [sic] anchors the credential in a registry"')[0]
         self.assertNotIn("sic", needle)

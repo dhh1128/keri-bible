@@ -55,7 +55,9 @@ READABLE = EXTS | CONVERTED
 # precisely the "dead config looks like citation rot" failure this script is supposed to refuse.
 SKIP_DIRS = {".git", "node_modules", "dist", "build", "__pycache__", ".venv"}
 
-_EMPH = str.maketrans("", "", "*_`\"'")
+# Curly quotes go the same way as straight ones. A source typed "doesn’t" and a chapter quoting it as
+# "doesn't" differ only in the apostrophe, and stripping only the straight mark kept them apart.
+_EMPH = str.maketrans("", "", "*_`\"'\u2018\u2019\u201c\u201d")
 _DASH = re.compile(r"[—–]")
 _SLASH = re.compile(r" */ *")
 _WS = re.compile(r"\s+")
