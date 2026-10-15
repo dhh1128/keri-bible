@@ -4,23 +4,16 @@ A synthesized doctrine reference for KERI, CESR, and ACDC, built up from primary
 
 ## Folder layout
 
-- **`raw/`** — per-source doctrine-mining notes, one file per source (specs, papers, security-analysis corpus, keripy knowledge base and code). These are the working extraction notes that the synthesized sections are distilled from.
-- **`bible/`** — the ~5k-word synthesized sections, one file per topic. Each is a self-contained chapter written for an adversarial reviewer, separating what is well-established from what is contested or load-bearing.
-- **`keri-bible.md`** — the assembled reference: all `bible/` sections concatenated in sorted order with a title and an auto-generated table of contents. This is the mechanically built artifact; edit the section files in `bible/`, not this file.
-- **`keri-doctrine.md`** — the ~6.5k-word panel-ready distillation of the whole corpus (marked **DRAFT**, pending endorsement). This file is **consumed by the `keri-review-panel` workflow**, where every persona loads it first; the panel keeps its own copy alongside a `reference/bible/` synced from `bible/`. Editing it here does not change what a review reads until the panel is synced — run `./sync-reference.sh` in `~/code/wot/keri-review-panel`.
+- `raw/` — per-source doctrine-mining notes, one file per source (specs, papers, security-analysis corpus, keripy knowledge base and code, conference talks, GitHub rulings). These are the working extraction notes the chapters are distilled from.
+- `bible/` — the chapters, one file per topic, each written for an adversarial reviewer and separating what is established from what is contested or load-bearing. They run from about 7,500 to 19,000 words.
+- `keri-bible.md` — the assembled reference: every chapter in order, with a table of contents and the provenance-marker legend, built by `build-bible.py`. Edit the chapters in `bible/`, not this file.
+- `keri-doctrine.md` — the distillation of the corpus that the `keri-review-panel` workflow loads first in every persona (marked DRAFT, pending endorsement). The panel keeps its own copy alongside a `reference/bible/` synced from `bible/`; run `./sync-reference.sh` in `~/code/wot/keri-review-panel` after changing either.
+- `docs/house-style.md` — how the corpus is written: markup, headings and anchors, citation locators, Sources entries, and the provenance-marker legend. `refresh/prompts/standards.md` says what may be claimed and on what evidence.
+- `scenarios/` and `field/` — worked scenarios and field measurements that apply the doctrine.
 
-## Sections (in `bible/`, sorted)
+## Chapters
 
-1. 01 — Foundations and Worldview
-2. 02 — Security Model and Threat Posture
-3. 03 — Key Management and Identifier Lifecycle
-4. 04 — CESR & the Wire
-5. ACDC & Verifiable Data
-6. Governance, Ecosystems & Interop
-7. 07 — Shibboleths and Anti-Patterns
-8. Presentation Architectures & the IPEX Disclosure Model
-9. KRAM & Request Authentication
-10. Presentation Registries & Issuee-Side Detectability
+The table of contents at the top of `keri-bible.md` is generated from the chapter titles and is the authoritative list.
 
 ## Building
 
