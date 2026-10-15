@@ -386,6 +386,21 @@ def write_state(path: Path, fresh: dict):
     path.write_text(json.dumps({**old, **fresh}, indent=2, sort_keys=True))
 
 
+def write_outputs(run_dir: Path, report: dict):
+    """Write delta.json and delta.md, and only then the state the next run compares against.
+
+    State says "this change has been reported". Written first, a run that died before its report
+    would leave the change marked seen with no report of it, and the retry would call it quiet.
+    """
+    issuestate = {s["id"]: s.pop("seen") for s in report["sources"] if "seen" in s}
+    webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
+    (run_dir / "delta.json").write_text(json.dumps(report, indent=2))
+    (run_dir / "delta.md").write_text(render(report))
+    for name, fresh in (("issuestate.json", issuestate), ("webhashes.json", webhashes)):
+        if fresh:
+            write_state(run_dir / name, fresh)
+
+
 CHECKS = {"monthly", "quarterly"}
 
 
@@ -528,13 +543,6 @@ def main():
 
         report["sources"].append(entry)
 
-    # persist web hashes for the next run's comparison
-    issuestate = {s["id"]: s.pop("seen") for s in report["sources"] if "seen" in s}
-    webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
-    for name, fresh in (("issuestate.json", issuestate), ("webhashes.json", webhashes)):
-        if fresh:
-            write_state(run_dir / name, fresh)
-
     report["freshness"] = freshness(REPO)
     if report["freshness"].get("status") in ("error", "missing"):
         report["errors"].append({"id": "freshness", "error": report["freshness"].get("detail", "")})
@@ -542,8 +550,7 @@ def main():
                           or bool(report["freshness"].get("new"))
                           or bool(report["errors"]))
 
-    (run_dir / "delta.json").write_text(json.dumps(report, indent=2))
-    (run_dir / "delta.md").write_text(render(report))
+    write_outputs(run_dir, report)
     print(f"wrote {run_dir / 'delta.md'}")
     print(f"material={report['material']} errors={len(report['errors'])}")
 

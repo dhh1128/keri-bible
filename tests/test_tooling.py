@@ -262,6 +262,17 @@ class StateCarry(unittest.TestCase):
 
 
 class Rerun(unittest.TestCase):
+    def test_state_is_not_written_when_the_report_fails(self):
+        from unittest import mock
+        report = {"sources": [{"id": "iss", "seen": {"o/r#1": "t"}}, {"id": "w", "hashes": {"u": "h"}}]}
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            with mock.patch.object(detect, "render", side_effect=RuntimeError("interrupted")):
+                with self.assertRaises(RuntimeError):
+                    detect.write_outputs(d, report)
+            self.assertFalse((d / "issuestate.json").exists())
+            self.assertFalse((d / "webhashes.json").exists())
+
     def test_rerun_compares_with_its_own_state_and_keeps_unchecked_sources(self):
         import json
         from unittest import mock
