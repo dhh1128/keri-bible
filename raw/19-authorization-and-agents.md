@@ -24,11 +24,11 @@ Mining date: 2026-10-14. Worker role mine-authz.
 
 ## 0. Provenance notes, read before citing
 
-Everything about EVAC, reversion of authority, the registry transfer event and agentic control is [P], and Sam says so himself. In The Future of KERI he calls EVAC a proposal whose white paper he has started but not published (caption, byte ~7800), calls reversion of authority not written up in the spec but an easy modification (byte ~16300), and proposes the transfer event for version 1.1 of the ACDC spec (byte ~24400). Those are caption paraphrases, usable for status and intent only (standards §2). The written source for the same material is the deck `AuthorizationEVAC.pdf`, and it is slide text, not specification prose.
+Everything about EVAC, reversion of authority, the registry transfer event and agentic control is [proposal], and Sam says so himself. In The Future of KERI he calls EVAC a proposal whose white paper he has started but not published (caption, byte ~7800), calls reversion of authority not written up in the spec but an easy modification (byte ~16300), and proposes the transfer event for version 1.1 of the ACDC spec (byte ~24400). Those are caption paraphrases, usable for status and intent only (standards §2). The written source for the same material is the deck `AuthorizationEVAC.pdf`, and it is slide text, not specification prose.
 
 One written source states a proposal as fact, and that is a hazard. `Revocation.md` (June 2026) says, in present tense, that registry control "can be transferred via a transfer event in the registry." (§Proofing Applied to Revocation Registries, L118). No such event exists in either ACDC branch: the registry event table at `main` @`f0bd097de` lists exactly `rip`, `bup` and `upd` (L1958-1960), and `v1.1` @`2362e48a1` lists the same three (L2159-2161). keripy has no `xfr` or `rxr` at `80f77b73b` or at `0f1966f88` (a case-insensitive `git grep` over `src` for xfr, rxr, transfer registry and TransferEvent, zero hits). A reader must not take the Revocation.md sentence as evidence that transfer exists. The only spec trace is the reserved-field description for `rd`, which already anticipates the category: "Issuance and/or revocation, transfer, retraction, or usage registry for ACDC when not at top-level" (`main` L48). That is a label, not a mechanism.
 
-The part of this story that is normative is the bound blinded attribute block, which reached `main` [N] and keripy's data structures [K]; see §4.1. Everything built on top of it is [P].
+The part of this story that is normative is the bound blinded attribute block, which reached `main` [spec] and keripy's data structures [code]; see §4.1. Everything built on top of it is [proposal].
 
 The AI-agent material is advocacy, and the corpus should carry it as Sam's assessment. The written source (`KERI_AI_Cyber_2026.pdf`) is a list of questions prompted by a Five Eyes statement; its answers exist only in the video's captions. The coverage report (`.ignored/coverage-gaps-2026-10.md` §2.5) already cautions that the Five Eyes advisory and the OWASP report it leans on were not checked; they were not checked here either.
 
@@ -40,11 +40,11 @@ House-style note: per the mining brief this file uses no bold or italics, and st
 
 ## 1. The thesis: ACDCs carry authority across trust domains without loss
 
-The deck's framing slide sets two chains side by side. [P] "perpetual identity → perpetual issuances → lossless trust transfer (KERI Suite)" against "ephemeral identity → ephemeral issuances → lossy trust transfer (DNS/CA, OAuth/OIDC)" (`AuthorizationEVAC.pdf` p4). The conclusion drawn on the same slide is the doctrinal hook for this whole note: "ACDC lossless conveyor of trust → bridging ephemeral trust domains" and "eliminates recursive privilege escalation attack vulnerabilities" (p4).
+The deck's framing slide sets two chains side by side. [proposal] "perpetual identity → perpetual issuances → lossless trust transfer (KERI Suite)" against "ephemeral identity → ephemeral issuances → lossy trust transfer (DNS/CA, OAuth/OIDC)" (`AuthorizationEVAC.pdf` p4). The conclusion drawn on the same slide is the doctrinal hook for this whole note: "ACDC lossless conveyor of trust → bridging ephemeral trust domains" and "eliminates recursive privilege escalation attack vulnerabilities" (p4).
 
 The property list that makes an ACDC graph usable as an authority structure is stated on p3 as a single line: "Delegable Attenuable Aggrable Revocable Transferable Authority", followed by "High Fidelity Modeling of Real World Authority Structures" (p3). Compare the September 2025 overview deck, which had the first half of that list and not the second: "This provides TADAAA! (tail authenticated, delegated, attenuable, aggregable authorization)" (`KERI_AlphaOmega.20250903.pdf` p30). Revocable and Transferable were added between September 2025 and April 2026, and they are exactly the two properties the broken-chain proposals in §4 exist to deliver. That is the most compact evidence that §4 is new thinking, not a repackaging.
 
-Recursive privilege escalation attack (RPEA) is the named threat. The deck asserts elimination; the spoken argument (caption, The Future of KERI, byte ~2600 and ~7700) is that systems unable to bridge trust domains respond by enlarging one domain, and that strong mutual authentication at every edge leaves no foothold to escalate from. Status: Sam's assessment, [P]. No written source in this set defines RPEA formally; that is a gap (§12).
+Recursive privilege escalation attack (RPEA) is the named threat. The deck asserts elimination; the spoken argument (caption, The Future of KERI, byte ~2600 and ~7700) is that systems unable to bridge trust domains respond by enlarging one domain, and that strong mutual authentication at every edge leaves no foothold to escalate from. Status: Sam's assessment, [proposal]. No written source in this set defines RPEA formally; that is a gap (§12).
 
 The idea is older than the name. In 2017 Sam described the perimeter failure in the same shape: "Any mechanism that allows for lower priviledged users to access a network layer provides an attack vector for that user to elevate their priviledges" (`ManyCubed.md` §Security), with per-flow authentication as the cure: "Escalation opportunities are minimized." (§Security). The 2026 contribution is the claim that ACDCs, rather than per-flow channel security, are the bridging mechanism.
 
@@ -54,23 +54,23 @@ Keys at the edge removes the intermediary class entirely: "With KERI, each AID c
 
 ### 2.1 The rule
 
-[P] "Authorization to access a resource is granted by the resource's controller (authority)" (`AuthorizationEVAC.pdf` p6). Every node in an ACDC graph can play both roles: "Each Issuer in an ACDC graph may be both a resource authority and an edge." (p6). Impersonation is prevented by authentication at both ends: "Mutually authenticated edge (accessor) and authority prevent impersonation attacks" (p6).
+[proposal] "Authorization to access a resource is granted by the resource's controller (authority)" (`AuthorizationEVAC.pdf` p6). Every node in an ACDC graph can play both roles: "Each Issuer in an ACDC graph may be both a resource authority and an edge." (p6). Impersonation is prevented by authentication at both ends: "Mutually authenticated edge (accessor) and authority prevent impersonation attacks" (p6).
 
 ### 2.2 The mechanism
 
-An EVAC authorization is an ordinary ACDC whose attribute section carries a resource map. The slide's field list for the attribute block is "SAID UUID Issuee AID Registry Resource Map" followed by rows `route1 capabilities1`, `route2 capabilities2` (p14). The slide adds that the same section "could convey a policy engine rule set" (p14). The spoken gloss (caption, byte ~8000 onward) likens the route-plus-capability rows to object capabilities with read, write and execute. The attribute-section `Registry` field is the issuee's registry, distinct from the top-level issuer `rd`; Sam says in the talk that it is already in the spec though rarely read. The spec does allow an `rd` nested inside `a` ("the presence of registry SAID, `rd` field inside the attribute, `a`, section may better facilitate contractually protected disclosure", `main` L326), but its stated purpose there is bulk-issuance disclosure, not an issuee usage registry. The talk's claim is therefore stronger than the spec text; record it as [P].
+An EVAC authorization is an ordinary ACDC whose attribute section carries a resource map. The slide's field list for the attribute block is "SAID UUID Issuee AID Registry Resource Map" followed by rows `route1 capabilities1`, `route2 capabilities2` (p14). The slide adds that the same section "could convey a policy engine rule set" (p14). The spoken gloss (caption, byte ~8000 onward) likens the route-plus-capability rows to object capabilities with read, write and execute. The attribute-section `Registry` field is the issuee's registry, distinct from the top-level issuer `rd`; Sam says in the talk that it is already in the spec though rarely read. The spec does allow an `rd` nested inside `a` ("the presence of registry SAID, `rd` field inside the attribute, `a`, section may better facilitate contractually protected disclosure", `main` L326), but its stated purpose there is bulk-issuance disclosure, not an issuee usage registry. The talk's claim is therefore stronger than the spec text; record it as [proposal].
 
 Two registries back an EVAC grant (p15, p16). The issuance registry is the issuer's ordinary blindable TEL, served by a Registrar and cached by a verifier's Observer. The usage registry is the issuee's, and every presentation is anchored there: "ACDC Issuee Presentation state is verifiably bound to Issuee’s key state despite rotations" (p16). This is the presentation registry of `bible/10-presentation-registries.md` (Sam's earlier name, issuee usage registry, keripy #1095), applied to access control. EVAC adds no new registry type; it composes two that already exist in the corpus.
 
 ### 2.3 Where it stands
 
-[P] throughout. EVAC appears in neither ACDC branch (`grep -i evac` over `spec-body.md` at both pins, zero hits) nor in keripy `src` at `80f77b73b`. The white paper is unpublished (caption, byte ~7800). Enforcement of least privilege rests with the verifier or a policy engine it consults (caption, byte ~37700, answering Ned Smith); nothing in the written sources specifies how a verifier evaluates a resource map against a request.
+[proposal] throughout. EVAC appears in neither ACDC branch (`grep -i evac` over `spec-body.md` at both pins, zero hits) nor in keripy `src` at `80f77b73b`. The white paper is unpublished (caption, byte ~7800). Enforcement of least privilege rests with the verifier or a policy engine it consults (caption, byte ~37700, answering Ned Smith); nothing in the written sources specifies how a verifier evaluates a resource map against a request.
 
 ## 3. Delegated authority through credential chains: the normative baseline
 
-### 3.1 What the spec already says [N]
+### 3.1 What the spec already says [spec]
 
-The issuee field is what turns an ACDC from authentic data into authority: "the Issuer MAY use the ACDC as a contractual vehicle for conveying authorization to the Issuee." (ACDC `main` @`f0bd097de` §Attribute section, L324). The chain follows directly: "an Issuer MAY delegate authority to an Issuee who MAY then become a verifiably authorized Issuer" (L324), with attenuation named in the same sentence. The edge section closes the loop: "A common use case of a chain-of-authority is a delegation chain for authorization." (L1203). Untargeted ACDCs are explicitly not authorizations: an Untargeted ACDC is "not authentic data as an authorization or entitlement to a specified party" (L334). These are the citations a chapter should use for the [N] floor, ahead of any deck.
+The issuee field is what turns an ACDC from authentic data into authority: "the Issuer MAY use the ACDC as a contractual vehicle for conveying authorization to the Issuee." (ACDC `main` @`f0bd097de` §Attribute section, L324). The chain follows directly: "an Issuer MAY delegate authority to an Issuee who MAY then become a verifiably authorized Issuer" (L324), with attenuation named in the same sentence. The edge section closes the loop: "A common use case of a chain-of-authority is a delegation chain for authorization." (L1203). Untargeted ACDCs are explicitly not authorizations: an Untargeted ACDC is "not authentic data as an authorization or entitlement to a specified party" (L334). These are the citations a chapter should use for the [spec] floor, ahead of any deck.
 
 ### 3.2 Revocation propagates down the chain
 
@@ -92,17 +92,17 @@ The problem as Sam poses it: "When a delegatee's authority to issue authorizatio
 
 Three answers are offered, in increasing order of novelty.
 
-### 4.1 Bound blinded state registry [N] and [K]
+### 4.1 Bound blinded state registry [spec] and [code]
 
-The bound blinded attribute block adds two fields, `bn` and `bd`, binding each registry state update to the issuee's key state at the time of the update. Its purpose, in the specification's words: "The purpose of the bound blinded attribute block is to better support chains of authority using delegated chained ACDCs." (ACDC `main` §Bound Blinded Attribute Block, L2433). It proves that a delegate "had an authorization to issue its own delegated ACDCs, which authorization had been issued but not yet been revoked at the time of anchoring" (L2433). The same section is at `v1.1` L2628-2634. In keripy the structure exists: `BoundState = namedtuple("BoundState", 'd u td ts bn bd')` (`src/keri/core/structing.py:102` @`80f77b73b`), with the comment "bn = bound issuee key event hex sequence number bnh at time of state update" (:99). That is [K] for the data structure only; this pass did not check whether any verifier walks a chain using it.
+The bound blinded attribute block adds two fields, `bn` and `bd`, binding each registry state update to the issuee's key state at the time of the update. Its purpose, in the specification's words: "The purpose of the bound blinded attribute block is to better support chains of authority using delegated chained ACDCs." (ACDC `main` §Bound Blinded Attribute Block, L2433). It proves that a delegate "had an authorization to issue its own delegated ACDCs, which authorization had been issued but not yet been revoked at the time of anchoring" (L2433). The same section is at `v1.1` L2628-2634. In keripy the structure exists: `BoundState = namedtuple("BoundState", 'd u td ts bn bd')` (`src/keri/core/structing.py:102` @`80f77b73b`), with the comment "bn = bound issuee key event hex sequence number bnh at time of state update" (:99). That is [code] for the data structure only; this pass did not check whether any verifier walks a chain using it.
 
 The deck labels the result "Breaking the chain-of-authority while preserving validity of prior valid issuances" (`AuthorizationEVAC.pdf` p18). Its limit, from the talk (caption, byte ~16000): issuances made by a revoked delegate stay valid but can no longer be dynamically revoked by anyone, so they must be given expirations. Sam's example was a food-handler permit.
 
-### 4.2 Reversion of authority [P]
+### 4.2 Reversion of authority [proposal]
 
 When a delegate is revoked, responsibility for its still-valid issuances reverts to the delegator through the chaining edge: "Reverting authority to delegator when delegatee's authority is revoked" (`AuthorizationEVAC.pdf` p19). The spoken claim is that reversion can ascend the chain any number of levels (caption, byte ~18000). Status: not in either spec branch (`grep -i -E 'revert|reversion'` over both `spec-body.md` pins, zero hits), not in keripy. Sam calls it an easy modification of the spec (caption, byte ~16300); that is his estimate, not a measured one.
 
-### 4.3 Registry transfer event [P]
+### 4.3 Registry transfer event [proposal]
 
 Transfer differs from reversion in where control lands: "Replace the controller of registry without reverting the authority to delegator" (`AuthorizationEVAC.pdf` p20). The deck notes that KERI can already do this the heavy way: "Key rotation can already transfer control of AID and hence registry to new controllers" (p20). The proposal is a lighter, registry-scoped event: "New registry transfer xfr event to transfer control of registry only." (p20). The same slide's diagram names it "Registry Blinded Transfer Event (rxr)" with fields `v t d i rd n p dt` (p20). So the written source carries two different ilks, `xfr` in the bullet and `rxr` on the diagram, which is an inconsistency a spec draft would have to settle.
 
@@ -116,7 +116,7 @@ Who else named it. The Ryan Hansen panel includes a remark that the transfer reg
 
 ## 5. Revocation doctrine (Revocation.md, V0.4, June 2026)
 
-This is the most substantial new written doctrine in the set, and the bible does not have it. It is framed for SEDI but its arguments are general. All [P].
+This is the most substantial new written doctrine in the set, and the bible does not have it. It is framed for SEDI but its arguments are general. All [proposal].
 
 ### 5.1 Dynamic revocation is mandatory for long-lived entitlements
 
@@ -164,11 +164,11 @@ KAGI already has the agent-as-delegate pattern, a year before the AI framing: "A
 
 ### 6.4 Joint issuance
 
-"Joint issuance is a new concept." (§Joint Issued ACDCs). Each member issues its own copy, and a validator requires a threshold of copies identical below the top level, with the threshold fixed by a designated key state of the group AID. "joint ssuances by the group are a set of single-sig issuances anchored separately in each members KELs/TELs" (same section, typo in source). `sda.md` §8 treats joint issuance as the mechanism for a threshold root of authority (§10.4 below), citing the dossier work. Status: [P] in KAGI; whether the dossier specification makes it normative was not checked in this pass (the coverage report §2.11 flags the same gap).
+"Joint issuance is a new concept." (§Joint Issued ACDCs). Each member issues its own copy, and a validator requires a threshold of copies identical below the top level, with the threshold fixed by a designated key state of the group AID. "joint ssuances by the group are a set of single-sig issuances anchored separately in each members KELs/TELs" (same section, typo in source). `sda.md` §8 treats joint issuance as the mechanism for a threshold root of authority (§10.4 below), citing the dossier work. Status: [proposal] in KAGI; whether the dossier specification makes it normative was not checked in this pass (the coverage report §2.11 flags the same gap).
 
 ## 7. Contract credentials and execution trust
 
-Both are spoken only, [P] at best, and the chapter should treat them as applied patterns, not doctrine.
+Both are spoken only, [proposal] at best, and the chapter should treat them as applied patterns, not doctrine.
 
 Contract credentials (Cole Davis, caption): a credential derived one-to-one from a legal contract, with the legal prose or its SAID in the rules section, deal points in attributes, and edges composing authority; the lessee issues itself an access credential under an `I2I` edge; termination of the lease revokes everything downstream. The normative hook is real and already cited in §3.1, the spec's "contractual vehicle for conveying authorization" (ACDC `main` L324). Davis's own caveat (caption) is that he could not stand up the real stack and simulated it.
 
@@ -222,7 +222,7 @@ The bearer critique already in 07 §5.2 comes from here: "Possession of an API k
 
 ### 10.2 What it adds that EVAC lacks
 
-EVAC's resource map is a route plus a capability list. `sda.md` locates acts by effect over a kind of state (§4) and carries a separate relationship facet naming principal, relationship type, liable party, presented identity and revocation terms (§5): "Beneficiary, actor, and liable party can be three different parties" (§5). It distinguishes authority to act from authority to authorize, with a containment pattern for orchestrators that matters for agents: "Give a powerful orchestrator broad authority to authorize but an empty act surface, and its blast radius on compromise collapses" (§5). None of this appears in the EVAC deck. A chapter can present EVAC as the transport and `sda.md` as one proposal for the payload, both [P].
+EVAC's resource map is a route plus a capability list. `sda.md` locates acts by effect over a kind of state (§4) and carries a separate relationship facet naming principal, relationship type, liable party, presented identity and revocation terms (§5): "Beneficiary, actor, and liable party can be three different parties" (§5). It distinguishes authority to act from authority to authorize, with a containment pattern for orchestrators that matters for agents: "Give a powerful orchestrator broad authority to authorize but an empty act surface, and its blast radius on compromise collapses" (§5). None of this appears in the EVAC deck. A chapter can present EVAC as the transport and `sda.md` as one proposal for the payload, both [proposal].
 
 ### 10.3 Open loop, and a tension with KERI's registries
 
@@ -240,7 +240,7 @@ The objection the paper concedes: a persistent grant "is granted once and weighe
 
 ### 10.6 Construction-time constraint
 
-"a delegate configured never to sub-delegate produces no sub-delegation any verifier will honor" (§7). This is KERI's `DND` trait read as an authorization control; see `bible/03-key-management-and-identifier-lifecycle.md:120` for the [N] trait. The talk makes the same point about edges or delegated-AID configuration limiting depth (caption, The Future of KERI; summary at `.ignored/conf26/talks-A.md:187`).
+"a delegate configured never to sub-delegate produces no sub-delegation any verifier will honor" (§7). This is KERI's `DND` trait read as an authorization control; see `bible/03-key-management-and-identifier-lifecycle.md:120` for the [spec] trait. The talk makes the same point about edges or delegated-AID configuration limiting depth (caption, The Future of KERI; summary at `.ignored/conf26/talks-A.md:187`).
 
 ## 11. Lineage summary
 
@@ -275,13 +275,13 @@ The objection the paper concedes: a persistent grant "is granted once and weighe
 
 ## Proposed chapter outline
 
-Recommendation: one new chapter, titled Authority, authorization and agents, with AI agents as a section inside it, not a chapter of their own. The doctrinal content of the agent material is that agents need no new mechanism (§9.1); giving them their own chapter would contradict that. The advocacy half (KERI or surveillance) belongs as a short, caveated section in `bible/01` on why the community frames KERI as the answer to AI-era impersonation, plus one shibboleth in `bible/07`. Status paragraph required: nearly everything past the [N] baseline is [P].
+Recommendation: one new chapter, titled Authority, authorization and agents, with AI agents as a section inside it, not a chapter of their own. The doctrinal content of the agent material is that agents need no new mechanism (§9.1); giving them their own chapter would contradict that. The advocacy half (KERI or surveillance) belongs as a short, caveated section in `bible/01` on why the community frames KERI as the answer to AI-era impersonation, plus one shibboleth in `bible/07`. Status paragraph required: nearly everything past the [spec] baseline is [proposal].
 
-1. Thesis and status. Authority is delegated through credential chains; enforcement is the verifier's; keep trust domains small and bridge them losslessly. Support: §1 (p3, p4 quotes), §3.1 (L324, L1203). Status: [N] floor, [P] superstructure.
+1. Thesis and status. Authority is delegated through credential chains; enforcement is the verifier's; keep trust domains small and bridge them losslessly. Support: §1 (p3, p4 quotes), §3.1 (L324, L1203). Status: [spec] floor, [proposal] superstructure.
 2. The normative floor: targeted ACDCs as authorization, chains of authority, attenuation, revocation cascade. Support: §3.1, §3.2. Cross-link `bible/05` §5 and 07 §10.5.
 3. Lossless versus lossy trust transfer, and RPEA. Support: §1 (p4, ManyCubed). Mark RPEA undefined in writing (§12 item 1).
 4. EVAC: rule, resource map, issuance plus usage registry. Support: §2. Cross-link `bible/10`.
-5. Broken chains: bound blinded state [N][K], reversion [P], transfer [P], with the `Revocation.md` drift warning. Support: §4, §0. Cross-link `bible/05` §9.
+5. Broken chains: bound blinded state [spec][code], reversion [proposal], transfer [proposal], with the `Revocation.md` drift warning. Support: §4, §0. Cross-link `bible/05` §9.
 6. Revocation doctrine: why bare signatures force revocation, why federation followed, one registry per issuance, the unlinkability and ZKP critique as Sam's assessment. Support: §5. Cross-link 07 §3 and §5.4.
 7. Group and joint issuance, and agents in negotiation. Support: §6, §10.4. Cross-link `raw/15` and `bible/09`.
 8. What a grant should contain: the `sda.md` model as one proposal (acts, relationship facet, authority to act versus authorize, standing authority). Support: §10. Flag the §10.3 tension.
@@ -310,13 +310,13 @@ Not applied. The `smithsamuelm-papers` change retargets an existing entry, which
       - presentations/KERI_AI_Cyber_2026.pdf
     tier: warm
     branches:
-      - {name: master, role: standardizing, marker: "[P]",
+      - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: b47f21597, date: 2026-10-14},
          last_mined:   {commit: b47f21597, date: 2026-10-14}}
     feeds: [raw/15-kram.md, raw/19-authorization-and-agents.md]
     chapters: ["05", "07", "09"]
     caveat: >-
-      Sam's whitepapers and decks. All [P]. Decks are slide text; quote by page, and
+      Sam's whitepapers and decks. All [proposal]. Decks are slide text; quote by page, and
       expect ligature damage in extracted text (fi, ff). Revocation.md states the
       proposed TEL transfer event in present tense; it is not in either ACDC branch.
       KAGI's KRAM half overlaps keripy discussion #934, mined in raw/15.
@@ -337,7 +337,7 @@ Not applied. The `smithsamuelm-papers` change retargets an existing entry, which
     watch: [subtitles/sam-smith]
     tier: cold
     branches:
-      - {name: main, role: standardizing, marker: "[P]",
+      - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: unknown, date: 2026-10-14},
          last_mined:   {commit: unknown, date: 2026-10-14}}
     feeds: [raw/19-authorization-and-agents.md]

@@ -16,7 +16,7 @@ Scope statistics: the issue search returned 212 distinct issues and PRs (66 issu
 
 ## 0. Provenance and how to read this note
 
-A GitHub comment is `[P]` in this corpus's tier scheme, however confident its author: it is a position stated in a discussion, not specification text and not code (`refresh/prompts/standards.md` §2). Sam is a spec editor for all three specifications, so his rulings in those repositories forecast the text more reliably than anyone else's, but they are still forecasts until the text lands. Each ruling below says whether it has reached a spec branch, and which, with the line at the pin.
+A GitHub comment is `[proposal]` in this corpus's tier scheme, however confident its author: it is a position stated in a discussion, not specification text and not code (`refresh/prompts/standards.md` §2). Sam is a spec editor for all three specifications, so his rulings in those repositories forecast the text more reliably than anyone else's, but they are still forecasts until the text lands. Each ruling below says whether it has reached a spec branch, and which, with the line at the pin.
 
 Comment bodies are moving targets. Sam edits in place: #1613's body carries the in-body version "v1.5 2026/08/18" and was last edited 2026-09-02; #1549's body was edited after its own comment stream superseded parts of it. Every ruling therefore records the comment URL and its `created_at` and `updated_at` from the cached API response. Where the two differ, the quote was read at the cached (updated) text.
 
@@ -36,7 +36,7 @@ Ruling: "This is a bug. Good catch." Comment https://github.com/WebOfTrust/kerip
 
 Question settled: whether a delegated inception (`dip`) is forbidden to carry seals in its `a` field, given that `BaseHab.incept` passed `data=` to `incept()` but not to `delcept()`. It is not forbidden; the omission was a defect.
 
-Cross-check: `[K]` at keripy `80f77b73b`, `src/keri/app/habbing.py` L1107-1115 now passes `data=data` to `eventing.delcept`. Not in the bible, which never says either way whether a `dip` may anchor seals. Belongs in `bible/03` §delegation as a one-line fact.
+Cross-check: `[code]` at keripy `80f77b73b`, `src/keri/app/habbing.py` L1107-1115 now passes `data=data` to `eventing.delcept`. Not in the bible, which never says either way whether a `dip` may anchor seals. Belongs in `bible/03` §delegation as a one-line fact.
 
 ### R-002 A KEL event's own version is permanent; attachments can be newer
 
@@ -64,7 +64,7 @@ Ruling: "An effectively non-transferable AID is an AID that uses a transferable 
 
 Question settled: whether post-quantum public keys, too large for a compact non-transferable prefix, need a new non-transferable code meaning a digest of a public key. They do not: the existing effectively non-transferable AID already gives a compact identifier with a one-event KEL as its key cache.
 
-Cross-check: `[K]` keripy `80f77b73b` `src/keri/core/eventing.py` L2121-2127 documents `transferable` as "Returns True if identifier does not have non-transferable derivation code and .nextor is not None". The general principle is already in the bible at `bible/03-key-management-and-identifier-lifecycle.md:47`, which corrects the prior that non-transferability is a property of the prefix code. The ruling's consequence for post-quantum codes reached CESR `v1.1` (R-019). Not in CESR `main`.
+Cross-check: `[code]` keripy `80f77b73b` `src/keri/core/eventing.py` L2121-2127 documents `transferable` as "Returns True if identifier does not have non-transferable derivation code and .nextor is not None". The general principle is already in the bible at `bible/03-key-management-and-identifier-lifecycle.md:47`, which corrects the prior that non-transferability is a property of the prefix code. The ruling's consequence for post-quantum codes reached CESR `v1.1` (R-019). Not in CESR `main`.
 
 ### R-005 Delegated superseding recovery is implemented in keripy, not necessarily in agents
 
@@ -88,7 +88,7 @@ Ruling: "in general a controller should be able to send a signed receipt of one 
 
 Question settled: whether `processReceipt`'s refusal of a receipt in which the receiptor is the event's own controller is correct. Sam reads the refusal as an assumption that "controller would always sign locally so a remote receipt must be a fraud attempt", and rules the assumption too narrow.
 
-Cross-check: `[P]`, an open issue. Not in the bible. Not checked in code. Low priority.
+Cross-check: `[proposal]`, an open issue. Not in the bible. Not checked in code. Low priority.
 
 ---
 
@@ -138,7 +138,7 @@ Then, on the KERI spec's own worked example: "Yeah, putting DID in a plain, non-
 
 Cross-check against the KERI spec: the placement rule is in `v1.1` @`3753f3797` L381 (the trait "MUST NOT appear in a non-delegated Inception, `icp` event", per `bible/03`), and Ean's `v1.1` trait list is empty (L618). On `main` @`fbdd4a615` Ean's plain `icp` still carries `"c": ["DID"],` at L591. So the ruling is carried into `v1.1` and not into `main`.
 
-This settles an open tension in the bible. `bible/03-key-management-and-identifier-lifecycle.md:126` carries two readings of the Ean example, a defect being fixed or a genuine disagreement between branches, and says that no source in the corpus settles it. Sam's reply is that source: the `main` example is an oversight. `bible/03:126` and `bible/07-shibboleths-and-anti-patterns.md:312` (§8.4) should cite it. The placement half of §8.4 can then stop being carried as `[N1.1]`-only intent and be stated as the spec editor's ruling, still tiered `[N1.1]` for text.
+This settles an open tension in the bible. `bible/03-key-management-and-identifier-lifecycle.md:126` carries two readings of the Ean example, a defect being fixed or a genuine disagreement between branches, and says that no source in the corpus settles it. Sam's reply is that source: the `main` example is an oversight. `bible/03:126` and `bible/07-shibboleths-and-anti-patterns.md:312` (§8.4) should cite it. The placement half of §8.4 can then stop being carried as `[spec-next]`-only intent and be stated as the spec editor's ruling, still tiered `[spec-next]` for text.
 
 ### R-013 Delegated AIDs work without ACDCs; `DND` limits depth, `DID` asserts one controller
 
@@ -152,7 +152,7 @@ Cross-check: `bible/03-key-management-and-identifier-lifecycle.md:120` has both 
 
 Ruling: "The Kever won't validate the event so it will be dropped and hence never be seen by anyone anywhere." Comment https://github.com/WebOfTrust/keripy/pull/1572#issuecomment-5184545123, created and updated 2026-08-04T20:58:20Z. Followed by: "There is no code support yet for "DID" because DID enforcement comes at the EGF level AFAIK" (https://github.com/WebOfTrust/keripy/pull/1572#issuecomment-5184567539, 2026-08-04T21:00:40Z).
 
-Cross-check: `[K]` keripy `80f77b73b` `src/keri/core/eventing.py` L3251, "if dkever.doNotDelegate:  # drop event if delegation not allowed". Consistent. The bible says `DID`'s consequence is unspecified on both branches (`bible/03:124`, `bible/07:312`). The second comment adds Sam's answer to where that consequence lives: the EGF, with no protocol-level enforcement. That is an assessment ("AFAIK") and should be recorded as one, in `bible/03` §8 and `bible/07` §8.4.
+Cross-check: `[code]` keripy `80f77b73b` `src/keri/core/eventing.py` L3251, "if dkever.doNotDelegate:  # drop event if delegation not allowed". Consistent. The bible says `DID`'s consequence is unspecified on both branches (`bible/03:124`, `bible/07:312`). The second comment adds Sam's answer to where that consequence lives: the EGF, with no protocol-level enforcement. That is an assessment ("AFAIK") and should be recorded as one, in `bible/03` §8 and `bible/07` §8.4.
 
 ### R-015 `DI2I` reaches delegated AIDs at any depth; depth is controlled by `DND` and `DID` (a reversal)
 
@@ -162,7 +162,7 @@ Reversed three days later: "After some thought, I am revising my previous commen
 
 Then, on what the operator inspects: "DI2I has to do with the delegated inception event. that is the only event where the delegators AID is included in an establishement event." Comment https://github.com/WebOfTrust/keripy/pull/1564#issuecomment-5220496025, created and updated 2026-08-07T18:08:49Z.
 
-Cross-check against the ACDC spec: `v1.1` @`2362e48a1` L1221 says `DI2I` admits "any delegated AIDs of the Issuee", silent on depth; `main` @`f0bd097de` is the same in substance. Sam says that silence needs filling: "the spec language needs to include the qualification that the a delegated AID in the context of `DI2I` is any layer of delegation." Not carried into either branch. `[K]` keripy `80f77b73b` still fails `DI2I` closed by design (`bible/08-presentation-architectures-and-ipex.md:128`); PR #1564, which implements the any-depth reading, is open.
+Cross-check against the ACDC spec: `v1.1` @`2362e48a1` L1221 says `DI2I` admits "any delegated AIDs of the Issuee", silent on depth; `main` @`f0bd097de` is the same in substance. Sam says that silence needs filling: "the spec language needs to include the qualification that the a delegated AID in the context of `DI2I` is any layer of delegation." Not carried into either branch. `[code]` keripy `80f77b73b` still fails `DI2I` closed by design (`bible/08-presentation-architectures-and-ipex.md:128`); PR #1564, which implements the any-depth reading, is open.
 
 Already in the bible: `DI2I`'s existence and fail-closed status (`bible/08:122`, :128). Missing: the any-depth ruling, the reversal, and the rule that depth is governed by inception-time traits rather than by the operator. Belongs in `bible/05` §5 (operators) and `bible/03` §delegation. This is one of the most important missing rulings, because a reader of the spec text alone would implement the narrower reading that Sam first proposed and then withdrew.
 
@@ -198,7 +198,7 @@ Cross-check: the bible's agility material (`bible/01-foundations-and-worldview.m
 
 Ruling: "The CESR code defines the encoding not the usage semantics." And: "the only exception we make in CESR for cryptographic primitives that encode some semantic is the non-trans versus trans codes for public keys as AIDs." Comment https://github.com/trustoverip/kswg-cesr-specification/pull/165#issuecomment-4087093269, created 2026-03-19T02:12:01Z, updated 2026-03-19T02:21:57Z.
 
-Cross-check against the CESR spec: carried into `v1.1` @`65fd7518b` L1559, which says a "digest of a public key" code "would mix the semantics of a Primitive's use with the semantics of its cryptographic algorithm, which this specification otherwise avoids." Absent from `main` @`bad6edd84` (1565 lines; the PQ material is `v1.1`-only). The principle is not stated in the bible; `bible/04` should state it with the `v1.1` citation as `[N1.1]` and Sam's comment as its rationale.
+Cross-check against the CESR spec: carried into `v1.1` @`65fd7518b` L1559, which says a "digest of a public key" code "would mix the semantics of a Primitive's use with the semantics of its cryptographic algorithm, which this specification otherwise avoids." Absent from `main` @`bad6edd84` (1565 lines; the PQ material is `v1.1`-only). The principle is not stated in the bible; `bible/04` should state it with the `v1.1` citation as `[spec-next]` and Sam's comment as its rationale.
 
 ### R-020 The Ed448 seed code should be fixed, and implemented with tests, before more codes land
 
@@ -222,7 +222,7 @@ Ruling: "This embedding requires that embedded messages share the same serializa
 
 Question settled: why IPEX tests that use `specialExchange` must stay on v1. Embedding is a v1 construct and v2 replaces it.
 
-Cross-check: `[K]` keripy `80f77b73b` `src/keri/peer/exchanging.py` L801-815, `specialExchange` defaults to `version=Vrsn_1_0` and `kind=Kinds.json`. Not in the bible (zero hits for "substream" or "specialExchange"). Belongs in `bible/04` (message composition) and `bible/08` (why a v2 `grant` carries its ACDCs as attachments, not as `e` embeds).
+Cross-check: `[code]` keripy `80f77b73b` `src/keri/peer/exchanging.py` L801-815, `specialExchange` defaults to `version=Vrsn_1_0` and `kind=Kinds.json`. Not in the bible (zero hits for "substream" or "specialExchange"). Belongs in `bible/04` (message composition) and `bible/08` (why a v2 `grant` carries its ACDCs as attachments, not as `e` embeds).
 
 ### R-023 Signatures go in insertion-ordered sets, not LMDB duplicates, because post-quantum signatures are too large
 
@@ -246,7 +246,7 @@ Cross-check: a keripy naming rule; carried out across the 2026 refactor PRs (#12
 
 Ruling: "The issuee in an ACDC with Agg section (selectively disclosable) is the "i" field in the second (index 1) attribute block. This could/should be better clarified in the spec." Comment https://github.com/WebOfTrust/keripy/pull/1505#issuecomment-4981932724, created and updated 2026-07-15T14:47:58Z. Repeated in the #1512 body (created 2026-07-16T15:44:30Z).
 
-Cross-check against the ACDC spec: not carried as a rule on either branch. `v1.1` @`2362e48a1` shows an issuee block at index 1 in its JSON example (L920-924) and notes "the value of the `i` field is the Issuee of the ACDC" (L941), but states no positional requirement. `[K]` keripy reads `A[1].i` (`bible/05-acdc-and-verifiable-data.md:74`, Finding 2). The bible's Finding 2 says "nothing requires the issuee block to sit at index 1"; that remains true of spec and schema, and Sam's ruling says the intent is that it does sit there and the spec should say so. `bible/05:74` should add the ruling so the finding reads as a spec gap against a stated intent rather than an open design question.
+Cross-check against the ACDC spec: not carried as a rule on either branch. `v1.1` @`2362e48a1` shows an issuee block at index 1 in its JSON example (L920-924) and notes "the value of the `i` field is the Issuee of the ACDC" (L941), but states no positional requirement. `[code]` keripy reads `A[1].i` (`bible/05-acdc-and-verifiable-data.md:74`, Finding 2). The bible's Finding 2 says "nothing requires the issuee block to sit at index 1"; that remains true of spec and schema, and Sam's ruling says the intent is that it does sit there and the spec should say so. `bible/05:74` should add the ruling so the finding reads as a spec gap against a stated intent rather than an open design question.
 
 A related ruling on `dt`: "unlike issuee where the index 1 is for the issuee when there is one, there is no preferred index to place the dt." Comment https://github.com/WebOfTrust/keripy/issues/1679#issuecomment-5671060930, created 2026-09-14T21:28:58Z, updated 2026-09-14T21:31:42Z.
 
@@ -276,13 +276,13 @@ Ruling: "two schema validations must be performed and both must be valid." Comme
 
 The purpose: "The allows near side nodes to require backwards compatible schema versions (essentially upgrading) via backwards compatible edge schema without having to reissue far node's ACDCs." Same comment.
 
-Cross-check: `[K]` enforced with "satisfy" rather than "equal" semantics at `bible/08-presentation-architectures-and-ipex.md:128`. The upgrade-without-reissue purpose is not in the bible and belongs in `bible/05` §5 beside the edge `s` field.
+Cross-check: `[code]` enforced with "satisfy" rather than "equal" semantics at `bible/08-presentation-architectures-and-ipex.md:128`. The upgrade-without-reissue purpose is not in the bible and belongs in `bible/05` §5 beside the edge `s` field.
 
 ### R-029 `I2I` was misapplied to an identity relation; edges need non-delegative operators
 
 Ruling: "The mistake is that for the worked example, the `I2I` unary edge operator is misapplied." And: "So the edge defines an an identity relation not a delegation relation." Comment https://github.com/WebOfTrust/keripy/pull/1505#issuecomment-5004919975, created 2026-07-17T15:39:38Z, updated 2026-07-17T19:29:26Z.
 
-Cross-check: the result, `E1E`, is `[N1.1]` in ACDC `v1.1` and enforced in keripy; the full lineage through #1515 is already in the bible at `bible/08-presentation-architectures-and-ipex.md:144` and :122. The framing that `I2I` encodes delegation, not same-holder binding, is in tension with `bible/07-shibboleths-and-anti-patterns.md:428`, which calls `I2I`'s doctrinal meaning "issuer-to-issuee same-holder binding". See Contradictions T-09.
+Cross-check: the result, `E1E`, is `[spec-next]` in ACDC `v1.1` and enforced in keripy; the full lineage through #1515 is already in the bible at `bible/08-presentation-architectures-and-ipex.md:144` and :122. The framing that `I2I` encodes delegation, not same-holder binding, is in tension with `bible/07-shibboleths-and-anti-patterns.md:428`, which calls `I2I`'s doctrinal meaning "issuer-to-issuee same-holder binding". See Contradictions T-09.
 
 ### R-030 The empty-operator default should become `NI2I` in ACDC v1.1, behind a version switch
 
@@ -290,7 +290,7 @@ Ruling (issue body): "If the vLEI ecosystem has fully moved to specifying edge o
 
 Decision recorded: "Based on the discussion in the maintainer call yesterday. The change of default is to land in v1.1 of the ACDC spec." And: "the v1.1 code must have a version switch that changes the default for v1.1 ACDCs but not for prior versions of the ACDC protocol." Comment https://github.com/trustoverip/kswg-acdc-specification/issues/205#issuecomment-5268897690, created and updated 2026-08-12T15:29:09Z.
 
-Cross-check against the ACDC spec: not carried. `v1.1` @`2362e48a1` L1209-1213 still appends `I2I` for a targeted far node and `NI2I` for an untargeted one; the only change from `main` is that `E1E` joined the gate. Issue #205 is open. `[K]` keripy `80f77b73b` still infers `I2I` in `vdr/verifying.py` and applies no default in `acdc/ipexing.py` (`bible/08:140`). The bible records the #1556 proposal for group-scoped defaults (`bible/08:229`) but not this decided change of the global default. This is important and missing: it reverses the edge default that every vLEI credential in production relies on, for v1.1 ACDCs only. Belongs in `bible/05` §5 and `bible/08` §5, tiered `[P]` with the maintainer-call decision noted.
+Cross-check against the ACDC spec: not carried. `v1.1` @`2362e48a1` L1209-1213 still appends `I2I` for a targeted far node and `NI2I` for an untargeted one; the only change from `main` is that `E1E` joined the gate. Issue #205 is open. `[code]` keripy `80f77b73b` still infers `I2I` in `vdr/verifying.py` and applies no default in `acdc/ipexing.py` (`bible/08:140`). The bible records the #1556 proposal for group-scoped defaults (`bible/08:229`) but not this decided change of the global default. This is important and missing: it reverses the edge default that every vLEI credential in production relies on, for v1.1 ACDCs only. Belongs in `bible/05` §5 and `bible/08` §5, tiered `[proposal]` with the maintainer-call decision noted.
 
 ### R-031 An unrecognized operator token should not be silently defaulted (assent only)
 
@@ -328,7 +328,7 @@ Cross-check: consistent with `bible/08:148` (m-ary operators implemented only in
 
 Ruling: "We are deprecating the 'upd' event so no reason to implement it. Only do the 'bup'". And: "We are going to drop support for `upd` in v1.1". Comment https://github.com/WebOfTrust/keripy/pull/1612#issuecomment-5259378594, created 2026-08-11T22:04:47Z, updated 2026-08-12T15:26:45Z. Restated with its reason: "This was because a blindable update can be unblinded by merely attaching the unblinded attribute block." (https://github.com/WebOfTrust/keripy/discussions/1566#discussioncomment-17846317, created 2026-07-30T23:26:36Z, updated 2026-07-30T23:33:36Z.) The idea first appears as a question at the end of the #1082 body ("We only really need the blindaable state update.").
 
-Cross-check against the ACDC spec: not carried. `v1.1` @`2362e48a1` still defines `upd` (route row L2161, "non-blindable transaction event state update"; field order L2194), identically to `main`. `[K]` keripy `80f77b73b`: the V2 registry module says "The v2 ACDC TEL only supports registry inception and blind updates" (`src/keri/acdc/regeventing.py` L121), but `src/keri/acdc/messaging.py` L80-104 still builds an `upd`. Not in the bible (zero hits for `upd`). Missing and important: a reader of `v1.1` will implement an event the spec editor has deprecated. Belongs in `bible/05` §registries. See T-03.
+Cross-check against the ACDC spec: not carried. `v1.1` @`2362e48a1` still defines `upd` (route row L2161, "non-blindable transaction event state update"; field order L2194), identically to `main`. `[code]` keripy `80f77b73b`: the V2 registry module says "The v2 ACDC TEL only supports registry inception and blind updates" (`src/keri/acdc/regeventing.py` L121), but `src/keri/acdc/messaging.py` L80-104 still builds an `upd`. Not in the bible (zero hits for `upd`). Missing and important: a reader of `v1.1` will implement an event the spec editor has deprecated. Belongs in `bible/05` §registries. See T-03.
 
 ### R-037 Registry transfer: proposed as `rxr`, renamed `xfr`, approved, not yet specified
 
@@ -342,7 +342,7 @@ Cross-check: not in either ACDC branch (no match for `xfr` or `rxr` in `spec-bod
 
 Ruling: "anchoring TEL events should follow the idempotent first seen rule used for KEL events." And: "So put not pin." And: "it does not clobber a previously verified anchor" Comment https://github.com/WebOfTrust/keripy/pull/1612#issuecomment-5373529636, created and updated 2026-08-21T18:08:50Z.
 
-Cross-check: partly carried. `[K]` keripy `80f77b73b` and upstream head `c102367ea` both have `putAnchor` in `src/keri/acdc/registering.py` L58-64, which refuses a new anchor whose sealing sequence number is not lower than the stored one ("Keep the earliest verified sealing event for this TEL event") but then writes with `pin`, so a later-arriving anchor with a lower sequence number does replace a previously verified one. Sam's ruling says a verified anchor is not clobbered. See T-08. The first-seen principle for KELs is in the bible (`bible/03:148`); its extension to TEL anchors is not. Belongs in `bible/05` §registries.
+Cross-check: partly carried. `[code]` keripy `80f77b73b` and upstream head `c102367ea` both have `putAnchor` in `src/keri/acdc/registering.py` L58-64, which refuses a new anchor whose sealing sequence number is not lower than the stored one ("Keep the earliest verified sealing event for this TEL event") but then writes with `pin`, so a later-arriving anchor with a lower sequence number does replace a previously verified one. Sam's ruling says a verified anchor is not clobbered. See T-08. The first-seen principle for KELs is in the bible (`bible/03:148`); its extension to TEL anchors is not. Belongs in `bible/05` §registries.
 
 ### R-039 The registry is general; a `bup`'s state string is unrestricted
 
@@ -378,7 +378,7 @@ Cross-check: not in the bible. `bible/10-presentation-registries.md` has the iss
 
 Ruling: "there is only one shared secret salt", so "the derivation of the vk for each constituent of B can't use the same path as the top level UUID". And: "The concatenation should be of the text domain qb64." And: "So the preferred default should be Blake256." Comment https://github.com/trustoverip/kswg-acdc-specification/pull/200#issuecomment-5063392427, created 2026-07-23T21:01:26Z, updated 2026-07-23T21:38:35Z. "Blake256" means Blake3-256.
 
-Cross-check against the ACDC spec: carried into both branches. `main` @`f0bd097de` L2811 and `v1.1` @`2362e48a1` L3012 say the derivation path for `v_k` "is therefore `k.`"; `main` L2818 says the concatenation operators "operate on the fully qualified CESR (qb64 text) representations of their operands" and "unless a different algorithm is negotiated out of band, H is Blake3-256". This is the one bulk-issuance ruling that reached the standardizing line. Not in the bible; belongs in `bible/05` §bulk issuance, tiered `[N]`.
+Cross-check against the ACDC spec: carried into both branches. `main` @`f0bd097de` L2811 and `v1.1` @`2362e48a1` L3012 say the derivation path for `v_k` "is therefore `k.`"; `main` L2818 says the concatenation operators "operate on the fully qualified CESR (qb64 text) representations of their operands" and "unless a different algorithm is negotiated out of band, H is Blake3-256". This is the one bulk-issuance ruling that reached the standardizing line. Not in the bible; belongs in `bible/05` §bulk issuance, tiered `[spec]`.
 
 A follow-on ruling from the same thread: "From a SEDI perspective they want to do Independent registry bulk issuance which does not use B." (https://github.com/trustoverip/kswg-acdc-specification/pull/200#issuecomment-5063821231, created and updated 2026-07-23T21:42:01Z.)
 
@@ -408,7 +408,7 @@ Cross-check: carried into `v1.1` only. `v1.1` @`2362e48a1` L98 is `### Unique En
 
 Ruling: "the proposed architecture for SEDI is the the IAL3 identity assurance process issues a SEDI management ACDC." And: "The SEDI management ACDC is only used in one context and that is to request bulk issued SEDI credentials." Comment https://github.com/WebOfTrust/keripy/issues/1532#issuecomment-5061387439, created and updated 2026-07-23T17:26:31Z. And: "a simple rule of don't reuse a bulk issued aid unless its with the same disclosee".
 
-Cross-check: `[P]`, Sam's proposal for a state program, not a spec matter. Not in the bible or in `scenarios/utah-sedi-age-residency.md` as far as a grep for "management ACDC" shows. Belongs in `bible/06` §SEDI and the SEDI scenario.
+Cross-check: `[proposal]`, Sam's proposal for a state program, not a spec matter. Not in the bible or in `scenarios/utah-sedi-age-residency.md` as far as a grep for "management ACDC" shows. Belongs in `bible/06` §SEDI and the SEDI scenario.
 
 ### R-048 Unlinkable ZKPs are precluded because they defeat detectability
 
@@ -442,7 +442,7 @@ Ruling: "I agree. an unsolicited grant i.e using a xip message should be spurnab
 
 Question settled: issue #1628 notes that #1517 had removed `grant` from the routes a `spurn` can answer, on Sam's earlier reasoning that a grant after an agree cannot be taken back. That reasoning is kept for a grant that answers an agree; a flow-starting grant, which nobody agreed to, may be refused.
 
-Cross-check against the ACDC spec: not carried. The `v1.1` route table (L2005-2009) lists `spurn` as rejecting `apply`, `offer` and `agree`, with no row for `grant`, on both branches. `[K]` keripy `80f77b73b` agrees with Sam: `src/keri/acdc/ipexing.py` L761 rejects a spurn whose prior is a grant only when that grant has a prior (`if verb == Ipex.spurn and pverb == Ipex.grant and pserder.ked.get("p", ""):`), and the builder at L2120-2121 raises "only flow-starting grants may be spurned". The bible states the opposite of the code: see T-01, the most consequential finding of this pass.
+Cross-check against the ACDC spec: not carried. The `v1.1` route table (L2005-2009) lists `spurn` as rejecting `apply`, `offer` and `agree`, with no row for `grant`, on both branches. `[code]` keripy `80f77b73b` agrees with Sam: `src/keri/acdc/ipexing.py` L761 rejects a spurn whose prior is a grant only when that grant has a prior (`if verb == Ipex.spurn and pverb == Ipex.grant and pserder.ked.get("p", ""):`), and the builder at L2120-2121 raises "only flow-starting grants may be spurned". The bible states the opposite of the code: see T-01, the most consequential finding of this pass.
 
 ### R-052 An empty `dp` copies the prior plan; with no prior it asks for nothing
 
@@ -450,7 +450,7 @@ Ruling: "An empty [] for dp field means ditto the prior dp field from the apply 
 
 This refines Sam's own earlier text. The #1549 body (created 2026-07-25, edited 2026-08-04) said: "When the `offer` is different or is unsolicited, then the `dp` field value must not be an empty list."
 
-Cross-check against the ACDC spec: contradicted. `v1.1` @`2362e48a1` L1917: "Where the answering list differs, or where the message is unsolicited, the `dp` value MUST NOT be an empty list." `[K]` keripy upstream head `c102367ea` (read via the GitHub API; PR #1698 merged 2026-10-08, after the `80f77b73b` pin) implements Sam's version: "An empty plan inherits from a prior message and means no disclosure" when the message opens a thread (`src/keri/acdc/ipexing.py` L513-514 at `c102367ea`), and it now validates `dp` on `agree` and `grant` as well as `apply` and `offer` (L515-519). See T-02.
+Cross-check against the ACDC spec: contradicted. `v1.1` @`2362e48a1` L1917: "Where the answering list differs, or where the message is unsolicited, the `dp` value MUST NOT be an empty list." `[code]` keripy upstream head `c102367ea` (read via the GitHub API; PR #1698 merged 2026-10-08, after the `80f77b73b` pin) implements Sam's version: "An empty plan inherits from a prior message and means no disclosure" when the message opens a thread (`src/keri/acdc/ipexing.py` L513-514 at `c102367ea`), and it now validates `dp` on `agree` and `grant` as well as `apply` and `offer` (L515-519). See T-02.
 
 ### R-053 An offer's `o` is the origin SAID of a metadata-ACDC DAG
 
@@ -480,13 +480,13 @@ Cross-check against the ACDC spec: partly carried. `v1.1` @`2362e48a1` L1903 say
 
 Ruling: "I think we add it to the ACDC v1.1 spec draft." And: "IPEX probably gets its own spec." Comment https://github.com/WebOfTrust/keripy/discussions/1542#discussioncomment-17841472 (as R-055).
 
-Cross-check: the first half is done (`dp` is `[N1.1]`, `bible/08:78`). The forecast that IPEX splits into a separate specification at an IETF working group is not in the bible and bears on `bible/08` §13 open question 15 (dp's syntax is normative while its only binding sits in a non-normative IPEX section).
+Cross-check: the first half is done (`dp` is `[spec-next]`, `bible/08:78`). The forecast that IPEX splits into a separate specification at an IETF working group is not in the bible and bears on `bible/08` §13 open question 15 (dp's syntax is normative while its only binding sits in a non-normative IPEX section).
 
 ### R-057 Only v2 exchanges will be anchored
 
 Ruling: "Its only with v2 exchange messages that we plan to anchor exchanges. We really don't want to be anchoring v1 exchanges." Comment https://github.com/WebOfTrust/keripy/pull/1492#issuecomment-5093267019, created and updated 2026-07-27T15:25:30Z.
 
-Cross-check: consistent with `[K]`: anchoring (`ax`) exists only in the V2 module (`bible/08:259`). The policy statement, that v1 exchanges will never be anchored and production branches must upgrade, is missing and belongs in `bible/08` §5a.
+Cross-check: consistent with `[code]`: anchoring (`ax`) exists only in the V2 module (`bible/08:259`). The policy statement, that v1 exchanges will never be anchored and production branches must upgrade, is missing and belongs in `bible/08` §5a.
 
 ### R-058 Disclosure reasons about exposure, not meaning; schema is type only
 
@@ -795,7 +795,7 @@ Not applied. The `gh-issues` kind does not exist in `refresh/detect.py` today; t
     caveat: >-
       Editor rulings that forecast spec text: ACDC #205 (default operator), #204 (bulk issuance
       normative), #200 (bulk B derivation, landed), #191 (unique entropy, landed in v1.1);
-      CESR #165 (PQ codes, landed in v1.1), #175 (Ed448 seed, open). A ruling here is [P] until
+      CESR #165 (PQ codes, landed in v1.1), #175 (Ed448 seed, open). A ruling here is [proposal] until
       the text is in a branch at a named commit; raw/21 §12 lists the ones that have not landed.
 
   - id: keripy-discussions
