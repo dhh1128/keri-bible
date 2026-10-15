@@ -211,6 +211,21 @@ class IssueState(unittest.TestCase):
         detect.mark_changed(again, seen)
         self.assertFalse(again[0]["changed"])
 
+    def test_missing_timestamp_is_changed_every_time(self):
+        seen = detect.mark_changed(self.items(None), {})
+        again = self.items(None)
+        detect.mark_changed(again, seen)
+        self.assertTrue(again[0]["changed"])
+
+    def test_same_second_new_comment_or_title_is_changed(self):
+        first = self.items("2026-10-14T01:00:00Z")
+        seen = detect.mark_changed(first, {})
+        for field, value in (("comments", 1), ("title", "renamed")):
+            later = self.items("2026-10-14T01:00:00Z")
+            later[0][field] = value
+            detect.mark_changed(later, seen)
+            self.assertTrue(later[0]["changed"], field)
+
     def test_new_comment_makes_it_changed_again(self):
         seen = detect.mark_changed(self.items("2026-10-14T01:00:00Z"), {})
         later = self.items("2026-11-02T09:00:00Z")

@@ -260,17 +260,24 @@ def issues_since(repo: str, since: str, primary: set[str]):
 
 
 def mark_changed(items, seen_before: dict) -> dict:
-    """Mark each issue item `changed` unless the previous run saw it at the same update time.
+    """Mark each issue item `changed` unless the previous run saw it in the same state.
 
     A gh-issues source lists everything updated since a fixed date, so without this a thread Sam
     commented on once would make the source material on every run until someone moved `since`.
-    Returns this run's {repo#number: updated_at} for the next run to compare against. With no
-    previous state every item counts as changed, which is the right answer for a first run.
+    The state is the update time plus the comment count and a digest of the title: GitHub's
+    updated_at has one-second resolution, and the other two catch a second revision inside that
+    second where they can. An item with no update time is always changed and is not recorded, so
+    a malformed response cannot silence the next run. Returns this run's state for the next run.
+    With no previous state every item counts as changed, which is right for a first run.
     """
     seen = {}
     for h in items:
         key = f"{h.get('repo', '')}#{h['number']}"
-        seen[key] = h.get("updated_at", "")
+        if not h.get("updated_at"):
+            h["changed"] = True
+            continue
+        title = hashlib.sha1(str(h.get("title", "")).encode()).hexdigest()[:8]
+        seen[key] = f"{h['updated_at']}|{h.get('comments', 0)}|{title}"
         h["changed"] = seen_before.get(key) != seen[key]
     return seen
 
