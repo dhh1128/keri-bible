@@ -177,8 +177,8 @@ def build_corpus() -> tuple[str, int, int]:
 
 
 def longest_fragment(span: str) -> str:
-    """Elided quotes ("A... B") match on their longest fragment."""
-    return max((p.strip() for p in span.split("...")), key=len, default="")
+    """Elided quotes ("A... B" or "A… B") match on their longest fragment."""
+    return max((p.strip() for p in re.split(r"\.\.\.|…", span)), key=len, default="")
 
 
 def quoted_needles(text: str) -> list[tuple[str, str]]:

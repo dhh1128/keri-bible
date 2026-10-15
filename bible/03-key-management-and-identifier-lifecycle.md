@@ -65,7 +65,7 @@ keripy's `Kever.exposeds` is the firewall in code (keripy `core/eventing.py`, `K
 
 #### The implementation defect a reviewer must guard {#permissive-defect}
 
-The check can fail open on a digest-code mismatch, silently excluding an `ondex` from threshold satisfaction (keripy-knowledge `31-landmines.md` > L6), which [chapter 02, section 5](02-security-model-and-threat-posture.md#exposeds-fail-open) owns. One layer up, `Serder._compute` overwrites the SAID field from raw bytes, and "a wrong digest code yields an invalid SAID with no error." (keripy-knowledge `31-landmines.md` > L7) The invariant over both is "Never weaken or short-circuit this." (keripy-knowledge `30-invariants.md` > C1) Neither landmine was re-tested at `b8f60166b`, and any new digest code widens the surface.
+The check can fail open on a digest-code mismatch, silently excluding an `ondex` from threshold satisfaction (keripy-knowledge `31-landmines.md` > L6). One layer up, `Serder._compute` overwrites the SAID field from raw bytes, and "a wrong digest code yields an invalid SAID with no error." (keripy-knowledge `31-landmines.md` > L7) The invariant over both is "Never weaken or short-circuit this." (keripy-knowledge `30-invariants.md` > C1) Neither landmine was re-tested at `b8f60166b`, and any new digest code widens the surface.
 
 ## 6. Rotation and the general pre-rotation family {#rotation-family}
 

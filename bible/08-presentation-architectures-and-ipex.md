@@ -140,7 +140,7 @@ The Discloser sends `offer` and `grant`; the Disclosee sends `apply`, `agree` an
 
 ## 8. Freshness: KRAM, and what rests on it {#freshness-kram}
 
-KRAM is treated in [chapter 09](09-kram-and-request-authentication.md); this section covers how IPEX depends on it. A signature is a bearer token, "Any holder of both the document and its signature can replay them, and the signature will verify" (#1613), and KRAM gives one play or none within a window on the receiver's clock, collecting a multisig sender's signatures in its escrow. It uses monotonic receiver-clock datetimes, not the nonce #1613 describes ([chapter 09, section 8](09-kram-and-request-authentication.md#nonce-correction)), and it is in no KERI specification ([chapter 09, section 5](09-kram-and-request-authentication.md#normative-status)), so the freshness the multiply-endorsed design needs is absent at the specification layer.
+KRAM is treated in [chapter 09](09-kram-and-request-authentication.md); this section covers how IPEX depends on it. A signature is a bearer token, "Any holder of both the document and its signature can replay them, and the signature will verify" (#1613), and KRAM gives one play or none within a window on the receiver's clock, collecting a multisig sender's signatures in its escrow. It uses monotonic receiver-clock datetimes, not the nonce #1613 describes ([chapter 09, section 8](09-kram-and-request-authentication.md#load-bearing)), and it is in no KERI specification ([chapter 09, section 5](09-kram-and-request-authentication.md#normative-status)), so the freshness the multiply-endorsed design needs is absent at the specification layer.
 
 ### The evidence policy {#evidence-policy}
 
@@ -156,7 +156,7 @@ V2 also reads KRAM's acceptance time: "A presentation requirement needs a comple
 
 ### #1555 and #1556 {#proposal-1555}
 
-[proposal] #1555 lets non-sender AIDs attach signature groups to a single `grant`, under KRAM's timeliness, and puts the signal in the ACDC because "There is no normative cryptographic commitment in an exchange message to a given schema." Its mechanism is a new m-ary edge-group operator, `ME`, on a bespoke origin: each far ACDC must be endorsed by its issuee. #1613 supersedes most of it, but not `ME`. Its companion #1556 makes unary defaults depend on the enclosing group (`NI2I` under `ME`) and adds an `IAND` group defaulting to `E1E`, rather than changing a global default that "might break vLEIs in the wild." A maintainer call has since decided a global `NI2I` default for v1.1 ACDCs ([chapter 05, section 5](05-acdc-and-verifiable-data.md#default-change-v1-1)).
+[proposal] #1555 lets non-sender AIDs attach signature groups to a single `grant`, under KRAM's timeliness, and puts the signal in the ACDC because "There is no normative cryptographic commitment in an exchange message to a given schema." Its mechanism is a new m-ary edge-group operator, `ME`, on a bespoke origin: each far ACDC must be endorsed by its issuee. #1613 supersedes most of it, but not `ME`. Its companion #1556 makes unary defaults depend on the enclosing group (`NI2I` under `ME`) and adds an `IAND` group defaulting to `E1E`, rather than changing a global default that "might break vLEIs in the wild." A maintainer call has since decided a global `NI2I` default for v1.1 ACDCs ([chapter 05, section 5](05-acdc-and-verifiable-data.md#default-gate)).
 
 ### #1613, the current proposal {#proposal-1613}
 
