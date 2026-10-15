@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "refresh"))
 
+import detect  # noqa: E402
 import freshness  # noqa: E402
 import lint_corpus  # noqa: E402
 
@@ -115,6 +116,52 @@ class ConvertedFormats(unittest.TestCase):
         self.assertIn("Pre-rotation commits to the next key", text)
         self.assertIn("service the controller chooses for itself", text)
         self.assertNotIn("not read", text)
+
+
+class GhIssues(unittest.TestCase):
+    """detect.issues_since lists issues and PRs and marks the threads a primary author is in."""
+
+    LINES = "\n".join([
+        '{"number": 12, "title": "a bug", "url": "https://x/12", "updated": "2026-10-14T01:00:00Z", "created": "2026-10-01T00:00:00Z", "author": "alice", "pr": false, "comments": 3}',
+        '{"number": 13, "title": "a fix", "url": "https://x/13", "updated": "2026-10-14T02:00:00Z", "created": "2026-10-02T00:00:00Z", "author": "SmithSamuelM", "pr": true, "comments": 0}',
+        '{"number": 14, "title": "quiet", "url": "https://x/14", "updated": "2026-10-14T03:00:00Z", "created": "2026-10-03T00:00:00Z", "author": "bob", "pr": false, "comments": 1}',
+        ""])
+
+    def test_items_and_primary_flag(self):
+        from unittest import mock
+        with mock.patch.object(detect, "run", return_value=self.LINES) as run, \
+             mock.patch.object(detect, "gh_json", return_value=[{"number": 12}]) as search:
+            hits = detect.issues_since("o/r", "2026-10-14", {"SmithSamuelM"})
+        self.assertIn("since=2026-10-14T00:00:00Z", " ".join(run.call_args[0][0]))
+        self.assertIn("--involves", search.call_args[0][0])
+        self.assertEqual([h["number"] for h in hits], [12, 13, 14])
+        self.assertEqual({h["number"]: h["primary"] for h in hits}, {12: True, 13: True, 14: False})
+        self.assertTrue(hits[1]["pr"])
+        self.assertEqual(hits[0]["updated"], "2026-10-14")
+
+    def test_non_json_output_is_an_error(self):
+        from unittest import mock
+        with mock.patch.object(detect, "run", return_value='{"message": "Not Found"\n'):
+            with self.assertRaises(detect.SourceError):
+                detect.issues_since("o/r", "2026-10-14", set())
+
+
+class Manifest(unittest.TestCase):
+    """Every source in refresh/sources.yaml is a kind detect.py handles, with the keys it reads."""
+
+    def test_every_source_is_readable_by_detect(self):
+        import yaml
+        m = yaml.safe_load((ROOT / "refresh" / "sources.yaml").read_text())
+        ids = [s["id"] for s in m["sources"]]
+        self.assertEqual(len(ids), len(set(ids)), "duplicate source ids")
+        need = {"git": {"path", "remote", "branches"}, "gh-repo": {"repo", "branches"},
+                "gh-discussions": {"repo", "since"}, "gh-prs": {"repo", "since"},
+                "gh-issues": {"since"}, "web": {"urls"}}
+        for s in m["sources"]:
+            self.assertIn(s["kind"], need, s["id"])
+            self.assertEqual(need[s["kind"]] - set(s), set(), s["id"])
+            if s["kind"] == "gh-issues":
+                self.assertTrue(s.get("repo") or s.get("repos"), s["id"])
 
 
 class Lint(unittest.TestCase):

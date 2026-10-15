@@ -223,6 +223,41 @@ def merged_prs_since(repo: str, since: str):
              "merged": (r.get("closedAt") or "")[:10]} for r in rows]
 
 
+def issues_since(repo: str, since: str, primary: set[str]):
+    """Issues and pull requests in `repo` updated on or after `since`, newest first.
+
+    The REST issues endpoint returns pull requests too, which is wanted: rulings land in PR review
+    threads as often as in issues. `primary` marks a thread a primary author is involved in at all
+    (author, commenter, mention), because a ruling is usually a reply in someone else's thread and
+    an author test alone would miss it.
+    """
+    q = (f"repos/{repo}/issues?state=all&sort=updated&direction=desc&per_page=100"
+         f"&since={since}T00:00:00Z")
+    out = run(["gh", "api", "--paginate", q, "--jq",
+               ".[] | {number, title, url: .html_url, updated: .updated_at, created: .created_at, "
+               "author: .user.login, pr: (.pull_request != null), comments}"])
+    hits = []
+    for line in out.split("\n"):
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError as e:
+            raise SourceError(f"gh returned non-JSON for {q}: {line[:200]}") from e
+        hits.append({"number": r["number"], "title": r["title"], "url": r["url"],
+                     "updated": (r["updated"] or "")[:10], "created": (r["created"] or "")[:10],
+                     "author": r.get("author") or "?", "pr": bool(r.get("pr")),
+                     "comments": r.get("comments", 0)})
+    involved = set()
+    for who in sorted(primary):
+        rows = gh_json(["search", "issues", "--repo", repo, "--involves", who, "--include-prs",
+                        "--updated", f">={since}", "--limit", "1000", "--json", "number"])
+        involved |= {r["number"] for r in rows}
+    for h in hits:
+        h["primary"] = h["number"] in involved or h["author"] in primary
+    return hits
+
+
 def gh_repo_commits(repo: str, branch: str, since_date: str, watch: list[str]):
     hits = []
     for p in (watch or [""]):
@@ -358,6 +393,15 @@ def main():
                     h["primary"] = h["author"] in primary
                 entry["items"] = hits
                 entry["material"] = bool(hits)
+
+            elif src["kind"] == "gh-issues":
+                primary = set(src.get("primary_authors", []))
+                for repo in src.get("repos") or [src["repo"]]:
+                    for h in issues_since(repo, str(src["since"]), primary):
+                        h["repo"] = repo
+                        entry["items"].append(h)
+                entry["material"] = any(h["primary"] for h in entry["items"]) if primary \
+                    else bool(entry["items"])
 
             elif src["kind"] == "gh-prs":
                 hits = merged_prs_since(src["repo"], str(src["since"]))
