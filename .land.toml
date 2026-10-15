@@ -1,0 +1,7 @@
+# The gate `pr-merge land` runs at a candidate before landing it on main: the same checks as
+# .github/workflows/corpus-qa.yml. Read from main's tip, never from the change being landed.
+gate = [
+    "python3 -m unittest discover -s tests",
+    "sh -c 'python3 build-bible.py | diff -q - keri-bible.md'",
+    "python3 tools/lint_corpus.py",
+]
