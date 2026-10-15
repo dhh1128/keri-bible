@@ -107,5 +107,18 @@ class Build(unittest.TestCase):
         self.assertNotIn("generate from", out)
 
 
+class SiteNav(unittest.TestCase):
+    def test_every_chapter_is_in_the_site_nav(self):
+        import tomllib
+        cfg = tomllib.loads((ROOT / "zensical.toml").read_text(encoding="utf-8"))
+        listed = set()
+        for entry in cfg["project"]["nav"]:
+            for value in entry.values():
+                if isinstance(value, list):
+                    listed.update(v for v in value if isinstance(v, str))
+        chapters = {f"bible/{p.name}" for p in (ROOT / "bible").glob("*.md")}
+        self.assertEqual(chapters - listed, set(), "chapters missing from zensical.toml's nav")
+
+
 if __name__ == "__main__":
     unittest.main()
