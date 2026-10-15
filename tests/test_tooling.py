@@ -199,6 +199,29 @@ class PageHash(unittest.TestCase):
             self.h("<html>redesigned</html>", self.MATCH)
 
 
+class ReportItems(unittest.TestCase):
+    def test_primary_item_past_the_cap_is_still_shown(self):
+        items = [{"number": i, "primary": False} for i in range(45)] + [{"number": 99, "primary": True}]
+        shown = detect.shown_items(items)
+        self.assertEqual(shown[0]["number"], 99)
+        self.assertEqual(shown[-1], 6)              # 45 others, 39 shown beside the one primary
+        self.assertEqual(len([x for x in shown if isinstance(x, dict)]), 40)
+
+    def test_every_primary_shown_even_beyond_the_cap(self):
+        items = [{"number": i, "primary": True} for i in range(50)] + [{"number": 100, "primary": False}]
+        shown = detect.shown_items(items)
+        self.assertEqual(len([x for x in shown if isinstance(x, dict) and x["primary"]]), 50)
+        self.assertEqual(shown[-1], 1)
+
+    def test_rendered_report_lists_a_late_primary_thread(self):
+        items = [{"number": i, "title": "t", "url": f"u{i}", "author": "a", "updated": "2026-10-14", "primary": False} for i in range(40)]
+        items.append({"number": 777, "title": "ruling", "url": "u777", "author": "a", "updated": "2026-10-14", "primary": True})
+        r = {"generated": "2026-10-15T00:00:00", "check": ["monthly"], "previous_run": None, "errors": [],
+             "sources": [{"id": "x", "kind": "gh-issues", "material": True, "feeds": [], "chapters": [], "items": items}],
+             "freshness": {"status": "error", "detail": ""}}
+        self.assertIn("#777", detect.render(r))
+
+
 class Checks(unittest.TestCase):
     """detect.selected_checks: monthly always, quarterly in the quarter months, --check overrides."""
 

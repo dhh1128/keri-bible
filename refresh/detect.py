@@ -492,6 +492,25 @@ def main():
     return 0 if report["material"] else 10
 
 
+ITEM_CAP = 40
+
+
+def shown_items(items, cap=ITEM_CAP):
+    """Items to print: every primary-author item, first, then others up to `cap` in all.
+
+    A primary item is what makes a conversation source material, and triage reads delta.md, so a
+    primary item left off the page is a ruling nobody is pointed at. Only the noise is capped; when
+    some is cut, the count of what was cut ends the list.
+    """
+    primary = [it for it in items if it.get("primary")]
+    rest = [it for it in items if not it.get("primary")]
+    room = max(cap - len(primary), 0)
+    out = primary + rest[:room]
+    if len(rest) > room:
+        out.append(len(rest) - room)
+    return out
+
+
 def render(r) -> str:
     L = [f"# Refresh delta — {r['generated'][:10]}", "",
          f"Checks run: {', '.join(r['check'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
@@ -545,8 +564,10 @@ def render(r) -> str:
             L.append(f"- **Untracked branch** `{nb['branch']}` ({nb['date']}) is newer than "
                      f"anything tracked here. Propose adding it in the PR body; do not retarget "
                      f"automatically.")
-        for it in s.get("items", [])[:40]:
-            if "number" in it:
+        for it in shown_items(s.get("items", [])):
+            if isinstance(it, int):
+                L.append(f"- …and {it} more, none of them by a primary author")
+            elif "number" in it:
                 star = " ⭐primary" if it.get("primary") else ""
                 when = it.get("updated") or it.get("merged")
                 edited = f", edited {it['edited']}" if it.get("edited") else ""
