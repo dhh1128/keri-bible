@@ -205,6 +205,11 @@ class PageHash(unittest.TestCase):
         with self.assertRaises(detect.SourceError):
             self.h(page, self.MATCH)
 
+    def test_present_but_empty_match_is_an_error(self):
+        for empty in ([], ""):
+            with self.assertRaises(detect.SourceError):
+                self.h(self.PAGE.format(v="2026", banner=""), empty)
+
     def test_match_that_finds_nothing_is_an_error(self):
         with self.assertRaises(detect.SourceError):
             self.h("<html>redesigned</html>", self.MATCH)

@@ -312,6 +312,8 @@ def page_hash(url: str, match=None):
     more than one means it is ambiguous which is live, and either is an error rather than a hash,
     so a redesigned page cannot go quiet behind a stale assignment.
     """
+    if match is not None and not match:
+        raise SourceError(f"{url}: `match` is present but empty; give a pattern or remove the key")
     body = fetch_page(url)
     if match:
         live = re.sub(r"(?s)<!--.*?-->", " ", body)
