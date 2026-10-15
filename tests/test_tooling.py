@@ -1,4 +1,5 @@
 """Unit tests for the corpus tooling. Run with `python3 -m unittest discover -s tests`."""
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -45,6 +46,75 @@ class QuotePairing(unittest.TestCase):
     def test_editorial_insertion_is_removed_from_needle(self):
         needle, _ = freshness.quoted_needles('"the Issuer [sic] anchors the credential in a registry"')[0]
         self.assertNotIn("sic", needle)
+
+
+def tiny_pdf(text: str) -> bytes:
+    """A one-page PDF showing `text` in Helvetica, built by hand so the test needs no PDF library."""
+    stream = f"BT /F1 12 Tf 72 720 Td ({text}) Tj ET".encode()
+    objs = [b"<< /Type /Catalog /Pages 2 0 R >>",
+            b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+            b"/Resources << /Font << /F1 5 0 R >> >> >>",
+            b"<< /Length %d >>\nstream\n" % len(stream) + stream + b"\nendstream",
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]
+    out, offsets = bytearray(b"%PDF-1.4\n"), []
+    for i, body in enumerate(objs, 1):
+        offsets.append(len(out))
+        out += b"%d 0 obj\n" % i + body + b"\nendobj\n"
+    xref = len(out)
+    out += b"xref\n0 %d\n0000000000 65535 f \n" % (len(objs) + 1)
+    out += b"".join(b"%010d 00000 n \n" % o for o in offsets)
+    out += b"trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n" % (len(objs) + 1, xref)
+    return bytes(out)
+
+
+class ConvertedFormats(unittest.TestCase):
+    """freshness reads PDFs and SubRip captions as text, so quotes from papers and talks resolve."""
+
+    SRT = ("\ufeff1\r\n00:00:01,000 --> 00:00:03,500\r\nthe witness pool is a\r\n\r\n"
+           "2\n00:00:03,600 --> 00:00:05,000\n<i>service the controller</i>\nchooses for itself\n\n"
+           "3\n00:00:05,100 --> 00:00:06,000\n2026\n")
+
+    def test_srt_drops_cue_furniture_and_joins_cues(self):
+        self.assertEqual(freshness.srt_text(self.SRT),
+                         "the witness pool is a service the controller chooses for itself 2026")
+
+    def test_quote_spanning_two_cues_matches(self):
+        corpus = freshness.norm(freshness.converted_text("talk.srt", self.SRT.encode()))
+        needle, _ = freshness.quoted_needles('"the witness pool is a service the controller chooses"')[0]
+        self.assertIn(needle, corpus)
+
+    def test_pdf_dispatches_to_pdf_extractor(self):
+        from unittest import mock
+        with mock.patch.object(freshness, "pdf_text", return_value="stub text") as stub:
+            self.assertEqual(freshness.converted_text("paper.PDF", b"%PDF-stub-for-dispatch"), "stub text")
+        stub.assert_called_once()
+
+    def test_unknown_converted_format_raises(self):
+        with self.assertRaises(ValueError):
+            freshness.converted_text("x.docx", b"")
+
+    @unittest.skipUnless(shutil.which("pdftotext"), "pdftotext (poppler-utils) not installed")
+    def test_pdf_text_extracted(self):
+        text = freshness.pdf_text(tiny_pdf("Duplicity is detectable by any validator"))
+        self.assertIn("Duplicity is detectable by any validator", text)
+
+    @unittest.skipUnless(shutil.which("pdftotext"), "pdftotext (poppler-utils) not installed")
+    def test_pdf_and_srt_read_from_a_git_ref(self):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            git = ["git", "-C", str(d), "-c", "user.name=t", "-c", "user.email=t@t"]
+            subprocess.run(["git", "init", "-q", "-b", "main", str(d)], check=True)
+            (d / "papers").mkdir()
+            (d / "papers/a.pdf").write_bytes(tiny_pdf("Pre-rotation commits to the next key"))
+            (d / "papers/talk.srt").write_text(self.SRT)
+            (d / "papers/skip.bin").write_bytes(b"not read")
+            subprocess.run(git + ["add", "."], check=True)
+            subprocess.run(git + ["commit", "-q", "-m", "x"], check=True)
+            text = freshness.read_ref(d, "main", ["papers"])
+        self.assertIn("Pre-rotation commits to the next key", text)
+        self.assertIn("service the controller chooses for itself", text)
+        self.assertNotIn("not read", text)
 
 
 class Lint(unittest.TestCase):

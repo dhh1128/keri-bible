@@ -44,6 +44,11 @@ MINLEN = 24                      # skip short quoted spans: terms and framings, 
 # in the bash predecessor — 2,039 of 3,331 quotes "missing", nearly all of them artifacts.
 MAXLEN = 320
 EXTS = {".md", ".py", ".ts", ".txt", ".json"}
+# Formats that are not plain text and go through a converter before they join the corpus. Sam's
+# papers and decks are PDFs and the conference talks are SubRip captions; with only EXTS above,
+# every quote from either reported missing however faithfully it was taken.
+CONVERTED = {".pdf", ".srt"}
+READABLE = EXTS | CONVERTED
 # Matched against a path RELATIVE to its root, never the absolute path. An earlier version tested
 # absolute parts and carried "docs" in this set, which silently excluded every file under
 # origin-platform/docs — a watched root — and reported 84 perfectly good quotes as drifted. That is
@@ -71,6 +76,71 @@ def norm(s: str) -> str:
     s = _DASH.sub(" ", s)
     s = _SLASH.sub("/", s)
     return _WS.sub(" ", s)
+
+
+_SRT_INDEX = re.compile(r"^\d+$")
+_SRT_TIME = re.compile(r"^\d{1,2}:\d{2}:\d{2}[,.]\d{1,3}\s*-->")
+_SRT_TAG = re.compile(r"</?[a-zA-Z][^>]*>|\{\\[^}]*\}")
+
+
+def srt_text(s: str) -> str:
+    """The spoken text of a SubRip file, cues joined with spaces.
+
+    Cue numbers and timestamp lines are dropped and every cue is joined to the next, because a
+    caption breaks a sentence wherever the speaker paused: a quote taken from the talk routinely
+    spans two or three cues, and with the cue furniture left in between it could never match.
+    """
+    keep = []
+    lines = [ln.strip() for ln in s.lstrip("\ufeff").splitlines()]
+    for i, line in enumerate(lines):
+        if not line or _SRT_TIME.search(line):
+            continue
+        # A cue number is a bare integer directly above a timestamp. Testing the position rather
+        # than the shape keeps a caption that is itself only a number ("2026").
+        if _SRT_INDEX.match(line) and i + 1 < len(lines) and _SRT_TIME.search(lines[i + 1]):
+            continue
+        keep.append(_SRT_TAG.sub("", line))
+    return " ".join(keep)
+
+
+def pdf_text(data: bytes) -> str:
+    """Text of a PDF as `pdftotext -layout` renders it.
+
+    The chapters' PDF quotations were taken from `pdftotext -layout` output (the extracted copies
+    under .ignored/papers-text/ are byte-identical to it), so the same extractor is what reproduces
+    them; the default and -raw modes order multi-column text differently. Raises RuntimeError
+    rather than returning empty text, so an unreadable PDF is reported instead of read as drift.
+    """
+    try:
+        p = subprocess.run(["pdftotext", "-layout", "-", "-"], input=data, capture_output=True)
+    except FileNotFoundError as e:
+        raise RuntimeError("pdftotext not installed (poppler-utils)") from e
+    if p.returncode != 0:
+        raise RuntimeError(f"pdftotext exit {p.returncode}: {p.stderr.decode(errors='replace')[:200]}")
+    return p.stdout.decode("utf-8", errors="replace")
+
+
+_CONVERTED_CACHE: dict[str, str] = {}
+
+
+def converted_text(name: str, data: bytes) -> str:
+    """Text for one file in a CONVERTED format, dispatched on its extension.
+
+    Memoized on content, because every branch is read twice (remote and local ref) and an
+    unchanged PDF is the same blob on both."""
+    key = hashlib.sha1(Path(name).suffix.lower().encode() + data).hexdigest()
+    if key not in _CONVERTED_CACHE:
+        _CONVERTED_CACHE[key] = _convert(name, data)
+    return _CONVERTED_CACHE[key]
+
+
+def _convert(name: str, data: bytes) -> str:
+    suffix = Path(name).suffix.lower()
+    if suffix == ".pdf":
+        return pdf_text(data)
+    if suffix == ".srt":
+        return srt_text(data.decode("utf-8", errors="replace"))
+    raise ValueError(f"no converter for {name}")
 
 
 def tracked_refs() -> list[tuple[Path, str, list[str]]]:
@@ -121,7 +191,7 @@ def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
         return any(fnmatch(f, g) or fnmatch(Path(f).name, g) for g in globs)
 
     wanted = [f for f in files.stdout.split("\n")
-              if f and wants(f) and Path(f).suffix in EXTS
+              if f and wants(f) and Path(f).suffix.lower() in READABLE
               and not (SKIP_DIRS & set(Path(f).parts))]
     # A watched path can be real on disk and absent from the tree. The Dossier spec's `.ref/`
     # directory is untracked, so reading refs alone dropped 96 of that note's quotes — a corpus
@@ -134,20 +204,39 @@ def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
         ondisk = repo / w
         if ondisk.is_dir():
             extra += [q for q in ondisk.rglob("*")
-                      if q.is_file() and q.suffix in EXTS
+                      if q.is_file() and q.suffix.lower() in READABLE
                       and not (SKIP_DIRS & set(q.relative_to(ondisk).parts))]
-        elif ondisk.is_file() and ondisk.suffix in EXTS:
+        elif ondisk.is_file() and ondisk.suffix.lower() in READABLE:
             extra.append(ondisk)
 
+    plain = [f for f in wanted if Path(f).suffix.lower() not in CONVERTED]
+    converted = [f for f in wanted if Path(f).suffix.lower() in CONVERTED]
     chunks = []
-    for i in range(0, len(wanted), 200):           # keep the argv under the exec limit
-        batch = wanted[i:i + 200]
+    for i in range(0, len(plain), 200):            # keep the argv under the exec limit
+        batch = plain[i:i + 200]
         cat = subprocess.run(["git", "-C", str(repo), "show"] + [f"{ref}:{f}" for f in batch],
                              capture_output=True, text=True, errors="replace")
         chunks.append(cat.stdout)
+    for f in converted:                            # one blob at a time: these are binary or framed
+        blob = subprocess.run(["git", "-C", str(repo), "show", f"{ref}:{f}"], capture_output=True)
+        chunks.append(_convert_or_warn(f"{repo.name}@{ref}:{f}", f, blob.stdout))
     for q in extra:
-        chunks.append(q.read_text(encoding="utf-8", errors="replace"))
+        if q.suffix.lower() in CONVERTED:
+            chunks.append(_convert_or_warn(str(q), q.name, q.read_bytes()))
+        else:
+            chunks.append(q.read_text(encoding="utf-8", errors="replace"))
     return "\n".join(chunks)
+
+
+def _convert_or_warn(label: str, name: str, data: bytes) -> str:
+    """Converted text, or a loud warning and nothing. A missing converter must not pass silently:
+    every quote from that file would then report as drift, which is the failure this script exists
+    to refuse."""
+    try:
+        return converted_text(name, data)
+    except (RuntimeError, ValueError) as e:
+        print(f"WARNING: could not read {label}: {e}", file=sys.stderr)
+        return ""
 
 
 def build_corpus() -> tuple[str, int, int]:
