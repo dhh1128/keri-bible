@@ -359,20 +359,31 @@ def previous_state_dir(current: Path):
 
 
 def last_state(run_dir: Path, name: str, src_id: str) -> dict:
-    """A source's entry in the newest earlier run's `name` file (webhashes.json, issuestate.json)
-    that has one.
+    """A source's entry in this run's own `name` file (webhashes.json, issuestate.json) if a
+    rerun already wrote one, else in the newest earlier run's file that has one.
+
+    The run's own file first, because a rerun in the same month has already reported what it
+    holds; comparing with last month would report the same change twice.
 
     Not just the immediately previous run's: a quarterly source is absent from the monthly runs in
     between, so reading only the last run would leave January with no baseline and report an
     amended page as a first sighting.
     """
-    for d in sorted((d for d in STATE.glob("*") if d.is_dir() and d.name != run_dir.name), reverse=True):
+    earlier = sorted((d for d in STATE.glob("*") if d.is_dir() and d.name != run_dir.name), reverse=True)
+    for d in [run_dir] + earlier:
         f = d / name
         if f.exists():
             got = json.loads(f.read_text()).get(src_id)
             if got is not None:
                 return got
     return {}
+
+
+def write_state(path: Path, fresh: dict):
+    """Write this run's state over any a rerun of the same run left, keeping the sources this
+    rerun did not check, so a narrower rerun does not erase their baseline."""
+    old = json.loads(path.read_text()) if path.exists() else {}
+    path.write_text(json.dumps({**old, **fresh}, indent=2, sort_keys=True))
 
 
 CHECKS = {"monthly", "quarterly"}
@@ -519,11 +530,10 @@ def main():
 
     # persist web hashes for the next run's comparison
     issuestate = {s["id"]: s.pop("seen") for s in report["sources"] if "seen" in s}
-    if issuestate:
-        (run_dir / "issuestate.json").write_text(json.dumps(issuestate, indent=2, sort_keys=True))
     webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
-    if webhashes:
-        (run_dir / "webhashes.json").write_text(json.dumps(webhashes, indent=2))
+    for name, fresh in (("issuestate.json", issuestate), ("webhashes.json", webhashes)):
+        if fresh:
+            write_state(run_dir / name, fresh)
 
     report["freshness"] = freshness(REPO)
     if report["freshness"].get("status") in ("error", "missing"):

@@ -261,6 +261,22 @@ class StateCarry(unittest.TestCase):
                 self.assertEqual(detect.last_state(d / "2027-01", "webhashes.json", "none"), {})
 
 
+class Rerun(unittest.TestCase):
+    def test_rerun_compares_with_its_own_state_and_keeps_unchecked_sources(self):
+        import json
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "2026-09").mkdir()
+            (d / "2026-09" / "issuestate.json").write_text(json.dumps({"iss": {"o/r#1": "sept"}}))
+            (d / "2026-10").mkdir()
+            with mock.patch.object(detect, "STATE", d):
+                detect.write_state(d / "2026-10" / "issuestate.json", {"iss": {"o/r#1": "oct"}, "q": {"x": "1"}})
+                self.assertEqual(detect.last_state(d / "2026-10", "issuestate.json", "iss"), {"o/r#1": "oct"})
+                detect.write_state(d / "2026-10" / "issuestate.json", {"iss": {"o/r#1": "oct2"}})
+                self.assertEqual(detect.last_state(d / "2026-10", "issuestate.json", "q"), {"x": "1"})
+
+
 class ReportItems(unittest.TestCase):
     def test_primary_item_past_the_cap_is_still_shown(self):
         items = [{"number": i, "primary": False} for i in range(45)] + [{"number": 99, "primary": True}]
