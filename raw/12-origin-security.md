@@ -193,6 +193,7 @@ Each recipient finds the suffix it can decrypt, recovers K, decrypts body. Libra
 
 ### Alias-generation algorithm — HWGA §Method
 Single-sig pattern (English): `{shadow}{who} as {role}{ctx_suffix}{variant}{caveat}`
+
 Multi-sig pattern: `{shadow}{who} (group) as {role}{ctx_suffix}{variant}{caveat}`
 - **who** = user's full name (from `user.firstName`/`lastName`) if a facet of the user; else org's friendly name (`organization.name`).
 - **role** = role's friendly name from cell DB.
