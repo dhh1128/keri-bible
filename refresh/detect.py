@@ -147,7 +147,7 @@ def untracked_branches(path: Path, remote: str, tracked: set[str], newest_tracke
 def cross_branch_diff(path: Path, remote: str, standardizing: str, forward: str, watch: list[str]):
     """Diff of the standardizing line against the forward line, over watched paths only.
 
-    Comparing this run's diff with the previous run's is what detects a TIER UPGRADE: text that
+    Comparing this run's diff with the previous run's is what detects a MARKER CHANGE: text that
     left the diff has (almost always) landed in the standardizing branch. The word 'almost' is
     why the report says 'verify' rather than asserting it — the hunk could equally have been
     dropped from the forward branch, and only reading it tells you which.
@@ -310,41 +310,41 @@ def previous_state_dir(current: Path):
     return dirs[-1] if dirs else None
 
 
-def selected_tiers(args, now):
-    if args.tiers:
-        return set(args.tiers.split(","))
-    tiers = {"hot", "warm"}
+def selected_cadences(args, now):
+    if args.cadences:
+        return set(args.cadences.split(","))
+    cadences = {"hot", "warm"}
     if now.month in QUARTER_MONTHS:
-        tiers.add("cold")
-    return tiers
+        cadences.add("cold")
+    return cadences
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-fetch", action="store_true", help="skip git fetch (offline / testing)")
-    ap.add_argument("--tiers", help="comma list, e.g. hot,warm,cold (default hot,warm + cold quarterly)")
+    ap.add_argument("--cadences", help="comma list, e.g. hot,warm,cold (default hot,warm + cold quarterly)")
     ap.add_argument("--run", help="state directory name (default YYYY-MM)")
     args = ap.parse_args()
 
     now = datetime.now(timezone.utc)
     manifest = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
     code_root = Path(os.path.expanduser(os.environ.get("CODE_ROOT", manifest["code_root"])))
-    tiers = selected_tiers(args, now)
+    cadences = selected_cadences(args, now)
 
     run_dir = STATE / (args.run or now.strftime("%Y-%m"))
     (run_dir / "crossdiff").mkdir(parents=True, exist_ok=True)
     prev = previous_state_dir(run_dir)
 
-    report = {"generated": now.isoformat(timespec="seconds"), "tiers": sorted(tiers),
+    report = {"generated": now.isoformat(timespec="seconds"), "cadences": sorted(cadences),
               "previous_run": prev.name if prev else None, "sources": [], "errors": []}
 
     for src in manifest["sources"]:
-        if src.get("tier", "hot") not in tiers:
+        if src.get("cadence", "hot") not in cadences:
             continue
-        entry = {"id": src["id"], "kind": src["kind"], "tier": src.get("tier"),
+        entry = {"id": src["id"], "kind": src["kind"], "cadence": src.get("cadence"),
                  "feeds": src.get("feeds", []), "chapters": src.get("chapters", []),
                  "caveat": src.get("caveat", ""), "branches": [], "items": [],
-                 "new_branches": [], "tier_upgrades": [], "material": False}
+                 "new_branches": [], "marker_changes": [], "material": False}
         try:
             if src["kind"] == "git":
                 path = resolve_path(src, code_root)
@@ -382,7 +382,7 @@ def main():
                     if old and old.exists():
                         gone = hunk_headers(old.read_text()) - hunk_headers(diff)
                         if gone:
-                            entry["tier_upgrades"] = sorted(gone)[:25]
+                            entry["marker_changes"] = sorted(gone)[:25]
                             entry["material"] = True
                     entry["crossdiff_size"] = len(diff.splitlines())
 
@@ -467,7 +467,7 @@ def main():
 
 def render(r) -> str:
     L = [f"# Refresh delta — {r['generated'][:10]}", "",
-         f"Tiers scanned: {', '.join(r['tiers'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
+         f"Cadences scanned: {', '.join(r['cadences'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
 
     if r["errors"]:
         L += ["## Errors — read these first", "",
@@ -475,7 +475,7 @@ def render(r) -> str:
               "config look identical from the outside, and only one of them is good news.", ""]
         L += [f"- **{e['id']}** — {e['error']}" for e in r["errors"]] + [""]
 
-    ups = [(s, s["tier_upgrades"]) for s in r["sources"] if s.get("tier_upgrades")]
+    ups = [(s, s["marker_changes"]) for s in r["sources"] if s.get("marker_changes")]
     if ups:
         L += ["## Marker change — forward text that left the standardizing diff", "",
               "Each hunk below was in the `main`↔`v1.1` diff last run and is not now. Usually that "

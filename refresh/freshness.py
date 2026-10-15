@@ -150,7 +150,7 @@ def tracked_refs() -> list[tuple[Path, str, list[str]]]:
     silently depends on whichever branch each repo happens to be sitting on — the first real run
     hit exactly that: keripy was parked on a feature branch, so "verified against keripy" meant
     "verified against somebody's work in progress". Every tracked line is read, so a quote living
-    only in v1.1 resolves too; which TIER it belongs to is the report's job, not this one's.
+    only in v1.1 resolves too; which marker it supports is the report's job, not this one's.
     """
     m = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
     root = Path(os.path.expanduser(os.environ.get("CODE_ROOT", m["code_root"])))

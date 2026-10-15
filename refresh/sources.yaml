@@ -11,7 +11,7 @@
 #   path          repo location relative to $CODE_ROOT (default ~/code), per ~/code/repos.yaml
 #   remote        git remote to fetch and resolve branches against
 #   watch         paths within the repo that carry doctrine; changes elsewhere are noise
-#   tier          hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
+#   cadence       hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
 #   branches      one entry per tracked line. Specs carry TWO, and they are not interchangeable:
 #                   role: standardizing  — what the community is standardizing now. Marker [spec].
 #                   role: forward        — new thinking likely, not certain, to fold into the
@@ -24,7 +24,7 @@
 #   caveat        free text; anything the pins would otherwise over-claim
 #
 # REVIEWED FIELDS — a refresh run may PROPOSE changes to these in the PR body, never apply them
-# itself: `branches` (which lines are tracked), `chapters` (the propagation map), `tier`.
+# itself: `branches` (which lines are tracked), `chapters` (the propagation map), `cadence`.
 # Rationale: on 2026-09-15 the ACDC spec's v1.1 branch was 491 lines of spec-body.md ahead of
 # main and nothing tracked it. A job that silently retargets its own sources can drift the same
 # way without anyone noticing it happened.
@@ -43,7 +43,7 @@ sources:
     path: wot/kswg-keri-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/termdefs.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    tier: hot
+    cadence: hot
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: fbdd4a615, date: 2026-10-03},
@@ -64,7 +64,7 @@ sources:
     path: me/kswg-cesr-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    tier: hot
+    cadence: hot
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: bad6edd84, date: 2026-10-03},
@@ -85,7 +85,7 @@ sources:
     path: me/kswg-acdc-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    tier: hot
+    cadence: hot
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: f0bd097de, date: 2026-10-03},
@@ -105,7 +105,7 @@ sources:
     path: me/kswg-dossier-specification
     remote: upstream
     watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
-    tier: warm
+    cadence: warm
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 3ff1b3202, date: 2026-10-03},
@@ -120,7 +120,7 @@ sources:
     path: wot/keripy
     remote: upstream
     watch: [src/keri]
-    tier: hot
+    cadence: hot
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 80f77b73b, date: 2026-10-03},
@@ -141,7 +141,7 @@ sources:
     path: wot/keripy-knowledge
     remote: origin
     watch: ["."]
-    tier: warm
+    cadence: warm
     branches:
       - {name: knowledge, role: standardizing, marker: "[code]",
          last_scanned: {commit: 9489ac9bd, date: 2026-10-03},
@@ -160,7 +160,7 @@ sources:
     path: wot/keria
     remote: upstream
     watch: [src/keria]
-    tier: warm
+    cadence: warm
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 928ce26a4, date: 2026-10-03},
@@ -176,7 +176,7 @@ sources:
     path: wot/signify-ts
     remote: upstream
     watch: [src]
-    tier: warm
+    cadence: warm
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 5a174b545, date: 2026-10-03},
@@ -199,7 +199,7 @@ sources:
     path: me/papers
     remote: origin
     watch: ["*.md"]
-    tier: hot
+    cadence: hot
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 68a5e2f76, date: 2026-10-03},
@@ -216,7 +216,7 @@ sources:
     path: wot/keri-security-analysis
     remote: origin
     watch: ["*.md"]
-    tier: warm
+    cadence: warm
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 149fa6c35, date: 2026-10-03},
@@ -235,7 +235,7 @@ sources:
     repo: SmithSamuelM/Papers
     branch: master
     watch: [whitepapers/kram.md]
-    tier: warm
+    cadence: warm
     branches:
       - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 67550b477, date: 2026-10-03},
@@ -251,7 +251,7 @@ sources:
   - id: keripy-discussions
     kind: gh-discussions
     repo: WebOfTrust/keripy
-    tier: hot
+    cadence: hot
     since: 2026-10-03
     primary_authors: [SmithSamuelM]
     feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md]
@@ -266,12 +266,12 @@ sources:
   - id: keripy-prs
     kind: gh-prs
     repo: WebOfTrust/keripy
-    tier: hot
+    cadence: hot
     since: 2026-10-03
     feeds: []
     chapters: ["03", "04", "05", "08", "09", "10"]
     caveat: >-
-      Merged PRs are the tier-movement signal for [proposal] → [code]. They feed triage rather than a note of
+      Merged PRs are the signal that a [proposal] became [code]. They feed triage rather than a note of
       their own; the note that moves is whichever one carries the design they implement.
 
   - id: conf26-subtitles
@@ -279,7 +279,7 @@ sources:
     repo: keri-foundation/CONF26-subtitles
     branch: main
     watch: [subtitles]
-    tier: cold
+    cadence: cold
     branches:
       - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 15f1e91a7, date: 2026-10-03},
@@ -297,7 +297,7 @@ sources:
     path: bakobo/schema
     remote: origin
     watch: ["."]
-    tier: cold
+    cadence: cold
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cfcbdcc7a, date: 2026-10-03},
@@ -310,7 +310,7 @@ sources:
     path: provenant/public-schema
     remote: origin
     watch: ["."]
-    tier: cold
+    cadence: cold
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 95a07e544, date: 2026-10-03},
@@ -323,7 +323,7 @@ sources:
     path: provenant/origin-platform
     remote: origin
     watch: [docs]
-    tier: cold
+    cadence: cold
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cb758b1b5, date: 2026-10-03},
@@ -340,7 +340,7 @@ sources:
       - https://keri.one/
       - https://keri.one/keri-resources/
       - https://keri.one/131-2/
-    tier: cold
+    cadence: cold
     feeds: [raw/13-keri-one-web.md]
     chapters: ["01", "06"]
     caveat: >-

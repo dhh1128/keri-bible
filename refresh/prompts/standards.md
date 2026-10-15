@@ -37,7 +37,7 @@ Form is governed by `docs/house-style.md`: the chapter skeleton (thesis, status 
 ## 6. What a refresh may not do unattended
 
 - **No new `bible/` chapter.** A new chapter is a structural decision about what the bible is. Propose it in the PR body, with what it would cover and which sources it would rest on. A new `raw/` note for a newly discovered topic is fine — that is mining, not restructuring.
-- **No retargeting the manifest.** `branches`, `chapters` and `tier` in `refresh/sources.yaml` are reviewed fields. Propose changes in the PR body; do not apply them.
+- **No retargeting the manifest.** `branches`, `chapters` and `cadence` in `refresh/sources.yaml` are reviewed fields. Propose changes in the PR body; do not apply them.
 - **No advancing `last_mined` for a source you did not re-read.** `last_scanned` advances every run. `last_mined` advances only where a note was actually re-read against that commit. Under-claim rather than over-claim: the pin is a promise about what was read.
 - **No writing to a WebOfTrust or trustoverip conversation.** Nothing in this procedure files an issue, comments on a discussion, or opens a PR anywhere but `dhh1128/keri-bible`. If a refresh turns up something that ought to be raised upstream, write it in the PR body and let Daniel raise it himself.
 
