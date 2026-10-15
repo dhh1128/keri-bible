@@ -118,7 +118,9 @@ def check_published(path: str, text: str, anchors_by_file: dict[str, set[str]]) 
             out.append(f"{path}:1: skeleton: the first H2 must be Thesis")
         if not h2 or h2[-1] != "Sources":
             out.append(f"{path}:1: skeleton: the last H2 must be Sources")
-        body_words = len(text.split("\n## Sources", 1)[0].split())
+        sources_line = next((n for n, lvl, t in heading_info(text) if lvl == 2 and ANCHOR_AT_END.sub("", t).strip() == "Sources"), None)
+        lines = text.split("\n")
+        body_words = len(" ".join(lines[: sources_line - 1] if sources_line else lines).split())
         if body_words > BODY_LIMIT:
             out.append(f"{path}:1: length: body is {body_words} words; the budget is 6,000 and the limit {BODY_LIMIT:,}")
         for t in h2:

@@ -91,6 +91,10 @@ class Lint(unittest.TestCase):
         long = self.CHAPTER.replace("## Sources", ("word " * 7600) + "\n\n## Sources")
         self.assertTrue(any("length" in p for p in self.published(long)))
 
+    def test_fenced_sources_heading_does_not_end_the_body(self):
+        long = self.CHAPTER.replace("## Sources", "```\n## Sources (quoted example)\n```\n\n" + ("word " * 7600) + "\n\n## Sources")
+        self.assertTrue(any("length" in p for p in self.published(long)))
+
     def test_hard_wrap(self):
         self.assertTrue(lint_corpus.check_wrap("x.md", "A paragraph that\ncontinues here.\n"))
         self.assertEqual(lint_corpus.check_wrap("x.md", "- item\n- item\n\n| a |\n| b |\n\n```\ncode\ncode\n```\n"), [])
