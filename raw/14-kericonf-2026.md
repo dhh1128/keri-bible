@@ -1,8 +1,11 @@
 # Doctrine Mining: KERI Conference 2026 talks — Registrar, Observer, bulk updates, usage registries
 
 **Sources:** hand-edited subtitle transcripts of the KERI Conference 2026 talks, `github.com/keri-foundation/CONF26-subtitles`, `subtitles/*.fixed.srt` (49 talks + 14 speaker interviews). Videos with a transcript search at https://keri.foundation/confs/2026/videos/.
+
 **Conference:** Lehi, Utah, 22–23 April 2026 (eve event 21 April).
+
 **Mining date:** 2026-09-01, against CONF26-subtitles HEAD as of that date.
+
 **Regenerate:** `git clone --depth 1 https://github.com/keri-foundation/CONF26-subtitles`, then strip index/timestamp lines from each `.srt` and join the caption text into one flowing paragraph per talk. Grepping the `.srt` files directly is nearly useless — captions break mid-sentence across cue boundaries, so every phrase of interest spans two or three records.
 
 ---

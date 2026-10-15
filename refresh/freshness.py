@@ -181,6 +181,26 @@ def longest_fragment(span: str) -> str:
     return max((p.strip() for p in span.split("...")), key=len, default="")
 
 
+def quoted_needles(text: str) -> list[tuple[str, str]]:
+    """Every checkable quotation in `text`, as (normalized needle, original fragment) pairs."""
+    out = []
+    for span in _QUOTED.findall(text):
+        if len(span) < MINLEN or len(span) > MAXLEN or "](" in span:
+            continue            # mis-paired quotes and link-bearing prose, not citations
+        # Citation glue: the regex happily pairs one quote's closing mark with the next
+        # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
+        # @`181569b64`).` is not a quotation and can never be found in a source.
+        if _GLUE.search(span) or not _OPENS.match(span.strip()):
+            continue
+        frag = longest_fragment(span)
+        if len(frag) < MINLEN:
+            continue
+        # Editorial insertions — [sic], [emphasis added], [the Issuee] — are the quoter's
+        # words, not the source's, so they must come out before matching.
+        out.append((norm(_EDITORIAL.sub(" ", frag)).strip(" \t.,;:!?()[]{}…"), frag))
+    return out
+
+
 def load_baseline() -> dict:
     if BASELINE.exists():
         return json.loads(BASELINE.read_text())
@@ -215,20 +235,7 @@ def main() -> int:
     for tf in targets:
         if not tf.is_file():
             continue
-        for span in _QUOTED.findall(tf.read_text(encoding="utf-8")):
-            if len(span) < MINLEN or len(span) > MAXLEN or "](" in span:
-                continue            # mis-paired quotes and link-bearing prose, not citations
-            # Citation glue: the regex happily pairs one quote's closing mark with the next
-            # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
-            # @`181569b64`).` is not a quotation and can never be found in a source.
-            if _GLUE.search(span) or not _OPENS.match(span.strip()):
-                continue
-            frag = longest_fragment(span)
-            if len(frag) < MINLEN:
-                continue
-            # Editorial insertions — [sic], [emphasis added], [the Issuee] — are the quoter's
-            # words, not the source's, so they must come out before matching.
-            needle = norm(_EDITORIAL.sub(" ", frag)).strip(" \t.,;:!?()[]{}…")
+        for needle, frag in quoted_needles(tf.read_text(encoding="utf-8")):
             total += 1
             if needle in corpus:
                 live += 1

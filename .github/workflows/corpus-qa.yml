@@ -1,0 +1,37 @@
+name: corpus-qa
+
+# The checks that keep the corpus consistent with docs/house-style.md and keep its tooling honest.
+# Quote freshness is not checked here: it needs private source repositories this workflow cannot
+# reach, so it stays with the monthly refresh.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Install tooling dependencies
+        run: python -m pip install -r requirements-ci.txt
+
+      - name: Tooling unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: keri-bible.md is reproducible from the chapters
+        run: python build-bible.py | diff -u keri-bible.md -
+
+      - name: House style
+        run: python tools/lint_corpus.py

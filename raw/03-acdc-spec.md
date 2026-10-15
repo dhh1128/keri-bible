@@ -32,6 +32,7 @@
 ## 2. Top-level structure, fields, invariants
 
 **Top-level field order (MUST):** `[v, t, d, u, i, rd, s, a, A, e, r]` (§Field Ordering, L32).
+
 **Required fields (MUST appear):** `[v, d, i, s]` (§Required Fields, L36). (Note: CESR-native `acm` variant lists required as `[v,t,d,i,s]`, L2970.)
 
 Field meanings (§Top-Level Fields, L16-28):
