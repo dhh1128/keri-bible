@@ -108,7 +108,7 @@ OOBA is a willingness-to-bootstrap control, and the thing it multiplies is the a
 
 #### What the count is evidence of {#multiple-well-knowns-entity}
 
-Added 2026-10-15. The count of well-knowns is never evidence about an AID's key state: whether an event was signed by the keys in force for that AID is settled by its KEL, and nothing in the well-known process touches that. It is legitimate evidence about a different question, which entity an AID belongs to. Sam's identifier-theory paper makes that association the way a root AID becomes recognized at all, because a self-certifying identifier is unique but not recognizable: [proposal] "The strength of the well-known establishment is multiplied by the number of such associations, i.e., it provides a reputational source of trust." (UniversalIdentifierTheory.pdf > 1.6 Root AID Establishment via Well Known Reputational Association, p.9 @`b47f21597`). The paper and the KERI specification are not in conflict, because they answer different questions. The specification's sentence that the arrangement "does not change the trust model of an OOBI" is about whether resolution's binding of keys to the AID can be strengthened, and it cannot. The paper's multiplication is about whether a verifier should believe that this AID is the one an organization declared as its own, which is a reputational judgment that redundant, independently controlled declarations do strengthen. The tell to catch is therefore narrower than the framing above suggests: the count appearing as an input to a judgment about key state or about the authenticity of an event. Using the count to judge whose AID it is does not fire the tell. Chapter 14, Identifiers, Trust Bases and Reputation (section 4, on establishing a root AID by well-known reputational association), develops the association and its tension with this row.
+Added 2026-10-15. The count of well-knowns is never evidence about an AID's key state: whether an event was signed by the keys in force for that AID is settled by its KEL, and nothing in the well-known process touches that. It is legitimate evidence about a different question, which entity an AID belongs to. Sam's identifier-theory paper makes that association the way a root AID becomes recognized at all, because a self-certifying identifier is unique but not recognizable: [proposal] "The strength of the well-known establishment is multiplied by the number of such associations, i.e., it provides a reputational source of trust." (UniversalIdentifierTheory.pdf > 1.6 Root AID Establishment via Well Known Reputational Association, p.9 @`b47f21597`). The paper and the KERI specification are not in conflict, because they answer different questions. The specification's sentence that the arrangement "does not change the trust model of an OOBI" is about whether resolution's binding of keys to the AID can be strengthened, and it cannot. The paper's multiplication is about whether a verifier should believe that this AID is the one an organization declared as its own, which is a reputational judgment that redundant, independently controlled declarations do strengthen. The tell to catch is therefore narrower than the framing above suggests: the count appearing as an input to a judgment about key state or about the authenticity of an event. Using the count to judge whose AID it is does not fire the tell. [Chapter 14, Identifiers, Trust Bases and Reputation, section 4](14-identifiers-trust-bases-and-reputation.md#well-known-association) (on establishing a root AID by well-known reputational association), develops the association and its tension with this row.
 
 ---
 
@@ -144,7 +144,7 @@ Verification legitimately reaches out to an authority to confirm current status.
 
 #### Narrowed 2026-10-15: state, not verdict {#status-endpoint-narrowed}
 
-Read literally, the sda.md sentence forbids every registry read at verification time, and that is stricter than KERI's own registry design, which puts a read at the point of validation: the ACDC specification has a validator query its own Observer there, and revocable authority cannot be honored without reading current state. The endorsed doctrine draws the line elsewhere, and this row now follows it. Fetching state that the verifier then checks against key state it has already verified, from any source including its own cache, is not a phone-home. Accepting a service's answer in place of that check is. A second harm is separate and also forbidden: a read that tells the Issuer where and when its credential was used, which the specification's Observer avoids by synchronizing on state changes rather than at the point of validation, the "no forced phone home validation" quoted above. The sda.md sentences stay quoted as the origin of the rule; what changed is the reading, from any read to an unverifiable answer or an Issuer-visible read. Chapter 13, Authority, Authorization and Agents (section 5, Verification-time state: fetching state versus asking for a verdict), carries the full argument.
+Read literally, the sda.md sentence forbids every registry read at verification time, and that is stricter than KERI's own registry design, which puts a read at the point of validation: the ACDC specification has a validator query its own Observer there, and revocable authority cannot be honored without reading current state. The endorsed doctrine draws the line elsewhere, and this row now follows it. Fetching state that the verifier then checks against key state it has already verified, from any source including its own cache, is not a phone-home. Accepting a service's answer in place of that check is. A second harm is separate and also forbidden: a read that tells the Issuer where and when its credential was used, which the specification's Observer avoids by synchronizing on state changes rather than at the point of validation, the "no forced phone home validation" quoted above. The sda.md sentences stay quoted as the origin of the rule; what changed is the reading, from any read to an unverifiable answer or an Issuer-visible read. [Chapter 13, Authority, Authorization and Agents, section 5](13-authority-authorization-and-agents.md#state-not-verdict) (Verification-time state: fetching state versus asking for a verdict), carries the full argument.
 
 ### 3.3 "Certificate Transparency already solved this." {#certificate-transparency}
 
@@ -272,7 +272,7 @@ The boundary runs in both directions and must be stated whenever this row is use
 
 #### A sanctioned bridge {#oauth-bridge}
 
-Added 2026-10-15. What this row rejects is the bearer secret and the identity provider as a root of trust, not every OAuth endpoint. An OAuth or OIDC authorization server built on ACDCs is a sanctioned pattern: in his talk The Future of KERI, Sam accepts that an OAuth server may stay where a deployment insists on one, on condition that it does not enlarge its trust domain and that the bridging itself is done with KERI and ACDCs (KERIConf26 caption, Samuel Smith, The Future of KERI; raw/19 section 8.1). That is status and intent from a caption, not a quotation, and no written source in the corpus carries the condition. The deployed instance is healthKERI's authorization server, described by Phil Feairheller at the same conference: client registration carries an IPEX presentation of a credential, the client identifier is that credential's SAID, there is no client secret, and every token request is signed (raw/19 section 8.2) [practice], a vendor's account that the corpus has not checked against code. The pattern reconciles with this row because it removes exactly the two things the row objects to. Whether the access token such a server issues is itself a bearer token downstream is the obvious objection, and no source here answers it. Chapter 13, Authority, Authorization and Agents (section 11, Applied patterns and bridges), carries the pattern and its reading against the doctrine.
+Added 2026-10-15. What this row rejects is the bearer secret and the identity provider as a root of trust, not every OAuth endpoint. An OAuth or OIDC authorization server built on ACDCs is a sanctioned pattern: in his talk The Future of KERI, Sam accepts that an OAuth server may stay where a deployment insists on one, on condition that it does not enlarge its trust domain and that the bridging itself is done with KERI and ACDCs (KERIConf26 caption, Samuel Smith, The Future of KERI; raw/19 section 8.1). That is status and intent from a caption, not a quotation, and no written source in the corpus carries the condition. The deployed instance is healthKERI's authorization server, described by Phil Feairheller at the same conference: client registration carries an IPEX presentation of a credential, the client identifier is that credential's SAID, there is no client secret, and every token request is signed (raw/19 section 8.2) [practice], a vendor's account that the corpus has not checked against code. The pattern reconciles with this row because it removes exactly the two things the row objects to. Whether the access token such a server issues is itself a bearer token downstream is the obvious objection, and no source here answers it. [Chapter 13, Authority, Authorization and Agents, section 11](13-authority-authorization-and-agents.md#applied-patterns) (Applied patterns and bridges), carries the pattern and its reading against the doctrine.
 
 ### 5.3 "The server is trusted infrastructure; the cloud holds my keys." {#custodial-cloud}
 
@@ -328,7 +328,7 @@ Encryption to a receiver says nothing reliable about who encrypted. [proposal] S
 
 #### The reframing {#hpke-authenticity-reframing}
 
-Authenticity comes from a signature by the sender's identifier, bound to the receiver as well, which is what ESSR does ([section 5.7](#encrypt-then-sign)). Chapter 12, Confidentiality and Secure Messaging (section 4, ESSR: authenticated encryption between identifiers), carries the construction and its status.
+Authenticity comes from a signature by the sender's identifier, bound to the receiver as well, which is what ESSR does ([section 5.7](#encrypt-then-sign)). [Chapter 12, Confidentiality and Secure Messaging, section 4](12-confidentiality-and-secure-messaging.md#essr) (ESSR: authenticated encryption between identifiers), carries the construction and its status.
 
 ### 5.7 "Encrypt, then sign, and the message is both confidential and authentic." {#encrypt-then-sign}
 
@@ -342,7 +342,7 @@ Naive composition leaves a forgery open. [proposal] "An attacker can strip the s
 
 #### The reframing {#encrypt-then-sign-reframing}
 
-Bind both ends: put the sender's identifier inside the ciphertext and sign over the receiver's identifier in plaintext, which is ESSR (encrypt sender's key, then sign receiver's key). KERI's version substitutes AIDs for long-term keys, so a stale key fails against current key state. Chapter 12, Confidentiality and Secure Messaging (section 4, ESSR: authenticated encryption between identifiers), carries the property table, the variants and what each gives up.
+Bind both ends: put the sender's identifier inside the ciphertext and sign over the receiver's identifier in plaintext, which is ESSR (encrypt sender's key, then sign receiver's key). KERI's version substitutes AIDs for long-term keys, so a stale key fails against current key state. [Chapter 12, Confidentiality and Secure Messaging, section 4](12-confidentiality-and-secure-messaging.md#essr) (ESSR: authenticated encryption between identifiers), carries the property table, the variants and what each gives up.
 
 ### 5.8 "TSP gives forward secrecy, like any modern secure-messaging protocol." {#tsp-forward-secrecy}
 
@@ -356,7 +356,7 @@ It does not, and its specification says so. [spec] "TSP does not provide forward
 
 #### The reframing {#tsp-forward-secrecy-reframing}
 
-Ask what a TSP message protects and for how long, and take the answer from the specification's own list of limits, which also says that metadata privacy is not cryptographic and that timing and size survive encryption. Key rotation retires a compromised decryption key going forward; it does not protect what was recorded before. Chapter 12, Confidentiality and Secure Messaging (section 10, What the TSP specification settles), carries the full list.
+Ask what a TSP message protects and for how long, and take the answer from the specification's own list of limits, which also says that metadata privacy is not cryptographic and that timing and size survive encryption. Key rotation retires a compromised decryption key going forward; it does not protect what was recorded before. [Chapter 12, Confidentiality and Secure Messaging, section 10](12-confidentiality-and-secure-messaging.md#tsp-spec) (What the TSP specification settles), carries the full list.
 
 ---
 
@@ -634,7 +634,7 @@ In KERI an agent is a delegate, and delegation is already specified for both ide
 
 #### The reframing {#agent-identity-reframing}
 
-Give the agent its own AID, delegated from an accountable person or organization, and give it authority by a credential chain the verifier checks at the edge. Whether the delegate is a model or a person changes the governance question of what it may be trusted to do, not the mechanism. Sam's wider thesis that only this approach avoids an identity built from behavioral surveillance is his advocacy, argued and not demonstrated, and a reviewer should repeat it as his. Chapter 13, Authority, Authorization and Agents (section 9, Agents are delegates), carries the doctrine and that thesis with its assessment boundary.
+Give the agent its own AID, delegated from an accountable person or organization, and give it authority by a credential chain the verifier checks at the edge. Whether the delegate is a model or a person changes the governance question of what it may be trusted to do, not the mechanism. Sam's wider thesis that only this approach avoids an identity built from behavioral surveillance is his advocacy, argued and not demonstrated, and a reviewer should repeat it as his. [Chapter 13, Authority, Authorization and Agents, section 9](13-authority-authorization-and-agents.md#agents) (Agents are delegates), carries the doctrine and that thesis with its assessment boundary.
 
 ---
 
@@ -818,7 +818,7 @@ KERI's authors name a different goal. [proposal] "Protection against exploitatio
 
 #### The reframing {#unlinkability-goal-reframing}
 
-Measure protection from unpermissioned exploitation: who can use the data, against whom, and what recourse the first party has. Correlation within a context is often the point. Chapter 12, Confidentiality and Secure Messaging (section 3, Effective privacy and the threat ranking), carries the argument.
+Measure protection from unpermissioned exploitation: who can use the data, against whom, and what recourse the first party has. Correlation within a context is often the point. [Chapter 12, Confidentiality and Secure Messaging, section 3](12-confidentiality-and-secure-messaging.md#effective-privacy) (Effective privacy and the threat ranking), carries the argument.
 
 ### 10.7 "Selective disclosure is a privacy safe harbor." {#selective-disclosure-harbor}
 
@@ -832,7 +832,7 @@ The act of disclosing singles out the discloser, and the context of a disclosure
 
 #### The reframing {#selective-disclosure-harbor-reframing}
 
-Selective disclosure reduces what is disclosed; it does not reduce the receiver's obligations. Protection of disclosed data comes from contractually protected disclosure and chain-link confidentiality ([chapter 06, section 4](06-governance-ecosystems-and-interop.md#layered-privacy)). Chapter 12, Confidentiality and Secure Messaging (section 7, Sustainable privacy), carries the contextual linkability attack.
+Selective disclosure reduces what is disclosed; it does not reduce the receiver's obligations. Protection of disclosed data comes from contractually protected disclosure and chain-link confidentiality ([chapter 06, section 4](06-governance-ecosystems-and-interop.md#layered-privacy)). [Chapter 12, Confidentiality and Secure Messaging, section 7](12-confidentiality-and-secure-messaging.md#sustainable-privacy) (Sustainable privacy), carries the contextual linkability attack.
 
 ### 10.8 "A long-lived cryptonym is a supercookie." {#cryptonym-supercookie}
 
@@ -846,7 +846,7 @@ The framing locates correlation in the identifier, and KERI's authors locate it 
 
 #### The reframing {#cryptonym-supercookie-reframing}
 
-Ask how many contexts an identifier spans, not whether it persists. The boundary is stated in the same source: two contexts in a partition "may be correlatable due to other information associated with any pair of contexts" (SPAC_Message.md > Basics, L480), so partitioning removes the identifier as a correlator and leaves every other correlator in place. A signed presentation remains a durable correlator inside its context ([chapter 01, section 8.2](01-foundations-and-worldview.md#durable-correlator)). Chapter 12, Confidentiality and Secure Messaging (section 5, Relationships, contexts and partitions), carries the definitions.
+Ask how many contexts an identifier spans, not whether it persists. The boundary is stated in the same source: two contexts in a partition "may be correlatable due to other information associated with any pair of contexts" (SPAC_Message.md > Basics, L480), so partitioning removes the identifier as a correlator and leaves every other correlator in place. A signed presentation remains a durable correlator inside its context ([chapter 01, section 8.2](01-foundations-and-worldview.md#durable-correlator)). [Chapter 12, Confidentiality and Secure Messaging, section 5](12-confidentiality-and-secure-messaging.md#contexts) (Relationships, contexts and partitions), carries the definitions.
 
 ---
 
