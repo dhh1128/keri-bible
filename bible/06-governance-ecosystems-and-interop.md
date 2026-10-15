@@ -40,13 +40,17 @@ The editor puts exchange shapes on the governance side [proposal]: enterprises a
 
 SEDI (State-Endorsed Digital Identity) applies KERI's root-of-trust doctrine to civil identity. Its statute holds that "An individual possesses an individual identity innate to the individual's existence and independent of the state, which identity is fundamental and inalienable." (Utah Code 63A-20 > 63A-20-101 Digital identity bill of rights, (1), p.1). The state endorses an identity; it does not create one. In the active credential family "The state issues Core to the citizen." (bakobo/schema sedi-core/index.md, L3 @cfcbdcc7a), to the citizen's own AID, so withdrawing the endorsement leaves the identifier and its log with the holder.
 
-### The statute {#sedi-statute}
+### Which law {#sedi-statute}
 
 The statute is Utah Code Title 63A, Chapter 20, effective 2026-05-06, "Enacted by Chapter 436, 2026 General Session" (Utah Code 63A-20 > 63A-20-101 Digital identity bill of rights, p.1). Talks call it SB 260 (raw/20 section 4.1), a number not tied here to a specific bill, so this chapter cites Code sections. Law carries no marker and names no technology.
 
+### The bill of rights {#sedi-bill-of-rights}
+
 Section 63A-20-101 lists eleven rights. Those that constrain a design are against compulsion ((4); 63A-20-304(1)(a)), against revocation except for compromise, error, fraud or the holder's request ((5); 63A-20-301(5)), to open standards ((7); 63A-20-301(2)(e)), "to choose what identity attributes are disclosed" ((8)), against state "surveillance, profiling, tracking, or persistent monitoring" ((10)), and against surrendering one's device to present ((11); 63A-20-304(1)(c), 63A-20-501(3), 63A-20-601(3)). What revocation removes is the endorsement; the holder's identifier and log are untouched.
 
-Several requirements read as KERI properties; the mapping is this chapter's. A personal digital identifier must be "mathematically provable to be under a holder's control" and "transportable to technical infrastructure of the holder's choosing" (Utah Code 63A-20 > 63A-20-201 Definitions, (20), p.3). The identity must include "compromise detection, recovery mechanisms, and cross-context correlation protections" (63A-20-301(1)(a), p.5), which duplicity evidence and pre-rotation supply; must not rest on shared secrets (63A-20-201(4)(b)); and must not let the department "monitor, surveil, or track the presentation" (63A-20-301(3), p.6). Issuance infrastructure must sit in an in-state, state-controlled data center (63A-20-301(2)(c)), which constrains the state's keys, witnesses and registries, not holders'. Any technology meeting these qualifies; that only KERI does is its authors' assessment.
+### Requirements that read as KERI properties {#sedi-requirements}
+
+The mapping to KERI is this chapter's. A personal digital identifier must be "mathematically provable to be under a holder's control" and "transportable to technical infrastructure of the holder's choosing" (Utah Code 63A-20 > 63A-20-201 Definitions, (20), p.3). The identity must include "compromise detection, recovery mechanisms, and cross-context correlation protections" (63A-20-301(1)(a), p.5), which duplicity evidence and pre-rotation supply; must not rest on shared secrets (63A-20-201(4)(b)); and must not let the department "monitor, surveil, or track the presentation" (63A-20-301(3), p.6). Issuance infrastructure must sit in an in-state, state-controlled data center (63A-20-301(2)(c)), which constrains the state's keys, witnesses and registries, not holders'. Any technology meeting these qualifies; that only KERI does is its authors' assessment.
 
 ### Identity proofing at a point in time {#sedi-proofing}
 
