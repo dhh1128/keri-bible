@@ -245,7 +245,8 @@ def issues_since(repo: str, since: str, primary: set[str]):
         except json.JSONDecodeError as e:
             raise SourceError(f"gh returned non-JSON for {q}: {line[:200]}") from e
         hits.append({"number": r["number"], "title": r["title"], "url": r["url"],
-                     "updated": (r["updated"] or "")[:10], "created": (r["created"] or "")[:10],
+                     "updated": (r["updated"] or "")[:10], "updated_at": r["updated"] or "",
+                     "created": (r["created"] or "")[:10],
                      "author": r.get("author") or "?", "pr": bool(r.get("pr")),
                      "comments": r.get("comments", 0)})
     involved = set()
@@ -256,6 +257,22 @@ def issues_since(repo: str, since: str, primary: set[str]):
     for h in hits:
         h["primary"] = h["number"] in involved or h["author"] in primary
     return hits
+
+
+def mark_changed(items, seen_before: dict) -> dict:
+    """Mark each issue item `changed` unless the previous run saw it at the same update time.
+
+    A gh-issues source lists everything updated since a fixed date, so without this a thread Sam
+    commented on once would make the source material on every run until someone moved `since`.
+    Returns this run's {repo#number: updated_at} for the next run to compare against. With no
+    previous state every item counts as changed, which is the right answer for a first run.
+    """
+    seen = {}
+    for h in items:
+        key = f"{h.get('repo', '')}#{h['number']}"
+        seen[key] = h.get("updated_at", "")
+        h["changed"] = seen_before.get(key) != seen[key]
+    return seen
 
 
 def gh_repo_commits(repo: str, branch: str, since_date: str, watch: list[str]):
@@ -425,8 +442,12 @@ def main():
                     for h in issues_since(repo, str(src["since"]), primary):
                         h["repo"] = repo
                         entry["items"].append(h)
-                entry["material"] = any(h["primary"] for h in entry["items"]) if primary \
-                    else bool(entry["items"])
+                seen_before = {}
+                if prev and (prev / "issuestate.json").exists():
+                    seen_before = json.loads((prev / "issuestate.json").read_text()).get(src["id"], {})
+                entry["seen"] = mark_changed(entry["items"], seen_before)
+                fresh = [h for h in entry["items"] if h["changed"]]
+                entry["material"] = any(h["primary"] for h in fresh) if primary else bool(fresh)
 
             elif src["kind"] == "gh-prs":
                 hits = merged_prs_since(src["repo"], str(src["since"]))
@@ -471,6 +492,9 @@ def main():
         report["sources"].append(entry)
 
     # persist web hashes for the next run's comparison
+    issuestate = {s["id"]: s.pop("seen") for s in report["sources"] if "seen" in s}
+    if issuestate:
+        (run_dir / "issuestate.json").write_text(json.dumps(issuestate, indent=2, sort_keys=True))
     webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
     if webhashes:
         (run_dir / "webhashes.json").write_text(json.dumps(webhashes, indent=2))
@@ -571,6 +595,8 @@ def render(r) -> str:
                 star = " ⭐primary" if it.get("primary") else ""
                 when = it.get("updated") or it.get("merged")
                 edited = f", edited {it['edited']}" if it.get("edited") else ""
+                if it.get("changed") is False:
+                    edited += ", unchanged since the last run"
                 L.append(f"- [#{it['number']}]({it['url']}) {it['title']} — {it['author']}, "
                          f"{when}{edited}{star}")
             elif "sha" in it:

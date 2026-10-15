@@ -199,6 +199,25 @@ class PageHash(unittest.TestCase):
             self.h("<html>redesigned</html>", self.MATCH)
 
 
+class IssueState(unittest.TestCase):
+    def items(self, updated):
+        return [{"repo": "o/r", "number": 12, "updated_at": updated, "primary": True}]
+
+    def test_unchanged_thread_is_not_changed_on_the_next_run(self):
+        first = self.items("2026-10-14T01:00:00Z")
+        seen = detect.mark_changed(first, {})
+        self.assertTrue(first[0]["changed"])
+        again = self.items("2026-10-14T01:00:00Z")
+        detect.mark_changed(again, seen)
+        self.assertFalse(again[0]["changed"])
+
+    def test_new_comment_makes_it_changed_again(self):
+        seen = detect.mark_changed(self.items("2026-10-14T01:00:00Z"), {})
+        later = self.items("2026-11-02T09:00:00Z")
+        detect.mark_changed(later, seen)
+        self.assertTrue(later[0]["changed"])
+
+
 class ReportItems(unittest.TestCase):
     def test_primary_item_past_the_cap_is_still_shown(self):
         items = [{"number": i, "primary": False} for i in range(45)] + [{"number": 99, "primary": True}]
