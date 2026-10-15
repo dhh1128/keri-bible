@@ -262,6 +262,17 @@ class StateCarry(unittest.TestCase):
 
 
 class Rerun(unittest.TestCase):
+    def test_backdated_run_ignores_later_runs(self):
+        import json
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            for run, h in (("2026-09", "sept"), ("2026-11", "nov")):
+                (d / run).mkdir()
+                (d / run / "webhashes.json").write_text(json.dumps({"w": {"u": h}}))
+            with mock.patch.object(detect, "STATE", d):
+                self.assertEqual(detect.last_state(d / "2026-10", "webhashes.json", "w"), {"u": "sept"})
+
     def test_state_is_not_written_when_the_report_fails(self):
         from unittest import mock
         report = {"sources": [{"id": "iss", "seen": {"o/r#1": "t"}}, {"id": "w", "hashes": {"u": "h"}}]}

@@ -369,7 +369,8 @@ def last_state(run_dir: Path, name: str, src_id: str) -> dict:
     between, so reading only the last run would leave January with no baseline and report an
     amended page as a first sighting.
     """
-    earlier = sorted((d for d in STATE.glob("*") if d.is_dir() and d.name != run_dir.name), reverse=True)
+    # Only runs that sort before this one: a backdated --run must not read a later run's state.
+    earlier = sorted((d for d in STATE.glob("*") if d.is_dir() and d.name < run_dir.name), reverse=True)
     for d in [run_dir] + earlier:
         f = d / name
         if f.exists():
