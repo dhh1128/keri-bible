@@ -1,10 +1,12 @@
 # KERI Doctrine {#doctrine}
 
-Status: DRAFT, pending Daniel's endorsement rule by rule. Rewritten 2026-10-15 from the 9,100-word version, under three rules agreed that day: a sentence stays only if no monthly refresh could change it; grounding is a link to the bible section that holds the quotes, not a quote; and the result serves as a lens, not a digest.
+Status: endorsed by Daniel Hardman rule by rule on 2026-10-15, with the shibboleth table reviewed in summary. Rewritten that day from the 9,100-word version under three rules: a sentence stays only if no monthly refresh could change it; grounding is a link to the bible section that holds the quotes, not a quote; and the result serves as a lens, not a digest. Reviewer routing (which persona reads which chapters) lives in keri-review-panel's configuration, not here.
 
 ## How to use this file {#use}
 
 This file makes a reviewer reason in KERI's own terms before reading anything else. It is not a summary of KERI and not a source. Every rule links to the bible section that grounds it; cite that section, or the primary source it quotes, never this file. Pins, commit-level behavior and the state of designs still in motion live in the bible, which is refreshed monthly. This file should not need to change when they do.
+
+A review by AI personas configured with this file is a structured self-attack, not independent validation. The personas share this file's framing, and often a model, so their agreement is weak evidence, and a dissent is worth more than a consensus.
 
 The provenance markers used in the bible (`[spec]`, `[spec-next]`, `[code]`, `[proposal]`, `[practice]`, `[architect]`) are defined in the legend at the top of `keri-bible.md`.
 
@@ -80,7 +82,7 @@ The provenance markers used in the bible (`[spec]`, `[spec-next]`, `[code]`, `[p
 
 29. When the specification and the reference implementation disagree, neither silently wins. The specification governs what conformance requires; the code governs what deployed software actually does; and the disagreement itself is a finding, a bug in one or a gap in the other, to be reported rather than resolved by assumption. Prose describing either, including a code comment describing the specification, is checked against what it describes before it is believed. [chapter 07, section 12](bible/07-shibboleths-and-anti-patterns.md#verify-the-code)
 
-30. The corpus states its own residuals, and a reviewer may press them. The no-trusted-third-party maxim is knowingly relaxed for issuee-side protection. A review by AI personas configured with this file is a structured self-attack, not independent validation. [chapter 07, section 14](bible/07-shibboleths-and-anti-patterns.md#residuals)
+30. KERI's authors concede some weaknesses, and a reviewer may press them rather than defend them away: the observability infrastructure (watchers, observers, registrars) and its deployments are immature; the formal literature is thin; depending on jurisdiction, KERI may lack legal recognition that some established technologies have; and protecting an issuee against misuse of its credentials leans on parties other than the issuee, which departs from KERI's rule that security never depend on a trusted third party (accepted because the harm is local). [chapter 07, section 14](bible/07-shibboleths-and-anti-patterns.md#residuals)
 
 ## Shibboleths {#shibboleths}
 
@@ -92,7 +94,7 @@ Each row is a framing whose shape encodes a prior KERI rejects. Hear the reflex 
 | Renew or re-issue the certificate. | Rotate; identity persists across keys. | [07, 2.3](bible/07-shibboleths-and-anti-patterns.md#renewal) |
 | Pin the key. | Pin the AID. | [07, 2.4](bible/07-shibboleths-and-anti-patterns.md#pinning) |
 | Where is the CRL or OCSP responder? | Status is anchored state, verified without a callback. | [07, 3.1](bible/07-shibboleths-and-anti-patterns.md#crl-ocsp) |
-| Consult a status endpoint at verification time. | A runtime callback is a phone-home in disguise. | [07, 3.2](bible/07-shibboleths-and-anti-patterns.md#status-endpoint) |
+| Consult a status endpoint at verification time. | Asking a service for a verdict is a phone-home; fetching state you then verify is not. | [07, 3.2](bible/07-shibboleths-and-anti-patterns.md#status-endpoint) |
 | Certificate Transparency already solved this. | CT redistributes administrative trust; KERI removes it. | [07, 3.3](bible/07-shibboleths-and-anti-patterns.md#certificate-transparency) |
 | You need a ledger or global consensus. | Per-identifier order suffices. | [07, 4.1](bible/07-shibboleths-and-anti-patterns.md#global-consensus) |
 | How do you honor the right to be forgotten? | Only a shared ledger cannot forget. | [07, 4.4](bible/07-shibboleths-and-anti-patterns.md#right-to-be-forgotten) |
@@ -104,7 +106,7 @@ Each row is a framing whose shape encodes a prior KERI rejects. Hear the reflex 
 | DIDs already solved this. | Not for issuer rotation or historical key state. | [07, 6.2](bible/07-shibboleths-and-anti-patterns.md#dids-solved-it) |
 | Canonicalize the JSON. | Commit to exact bytes with a SAID. | [07, 6.4](bible/07-shibboleths-and-anti-patterns.md#json-canonicalization) |
 | A secure system prevents forks. | A survivable one makes them evident and recoverable. | [07, 7.1](bible/07-shibboleths-and-anti-patterns.md#preventing-forks) |
-| A witness threshold gives global safety. | It gives durability of the controller's view. | [07, 7.4](bible/07-shibboleths-and-anti-patterns.md#witness-threshold) |
+| A witness threshold gives global safety. | It makes conflicting versions hard to receipt and easy to expose, which is not global safety. | [07, 7.4](bible/07-shibboleths-and-anti-patterns.md#witness-threshold) |
 | A witness is a notary or validator. | A witness stores and serves; it asserts nothing. | [07, 8.1](bible/07-shibboleths-and-anti-patterns.md#witness-not-ca) |
 | A watcher can distrust an identifier. | A watcher reports; the relying party decides. | [07, 8.2](bible/07-shibboleths-and-anti-patterns.md#watcher-enforcement) |
 | The delegator vouches for every delegatee. | Each delegation is checked, not inherited. | [07, 8.4](bible/07-shibboleths-and-anti-patterns.md#did-trait) |
@@ -118,23 +120,10 @@ Each row is a framing whose shape encodes a prior KERI rejects. Hear the reflex 
 
 No finding may rest only on a generic best practice or an analogy from PKI, IAM, consensus or zero-knowledge work. An analogy is a hypothesis, not a finding. Every finding must do three things.
 
-1. Cite ground truth: a specification section, a paper section, the security analysis, or a line in the reference code. When the claim is about what software does, read the code.
+1. Cite ground truth, and mark it as rule 28 requires: a specification section, a line in the reference code, a paper, or the security analysis. When the claim is about what software does, read the code.
 2. State its objective function (survivability or invulnerability) and the layer it faults (KERI's core, ACDC disclosure, governance, or deployment).
-3. Say which kind of weakness it is: a deliberate non-goal, a limit on what a proof covers, or a gap in deployment or ecosystem maturity. Only the third kind is a defect in KERI as designed, and the first two are findings only if KERI's own text claims otherwise.
+3. Say which kind of weakness it is: a defect in the specification or the code; a gap in deployment or ecosystem maturity; a limit on what a proof covers; or a deliberate non-goal. The last two are findings only where KERI's own text claims more than it delivers.
 
 Do not swing the other way and treat every KERI reframing as unassailable. A finding lands when it targets a real seam: a guard that does not fail closed; a wire format not honored byte for byte across implementations; layers that do not compose as claimed; an assumption silently granted; a simplification that desynchronizes parsers; a check that goes permissive on an unfamiliar code. Press those hard.
 
 Before emitting a finding, ask whether a KERI core contributor would recognize it as reasoning in KERI's terms or dismiss it as an imported prior. If the latter, cut it or reframe it.
-
-## Lens routing {#lens-routing}
-
-Each reviewer lens reads the chapters that give its concerns depth.
-
-- Security — chapter 02 and [chapter 03, sections 5, 10 and 11](bible/03-key-management-and-identifier-lifecycle.md#pre-rotation).
-- Relation algebra — [chapter 05, section 5](bible/05-acdc-and-verifiable-data.md#edges) and chapter 08's edges and DAG sections.
-- Privacy — [chapter 06, section 4](bible/06-governance-ecosystems-and-interop.md#layered-privacy) and chapter 05's disclosure and registry sections.
-- Specification precision — chapter 04 throughout and [chapter 01, section 8](bible/01-foundations-and-worldview.md#load-bearing-assumptions).
-- First-principles skepticism — [chapter 02, section 11](bible/02-security-model-and-threat-posture.md#dg-bindings), [chapter 01, sections 6 to 8](bible/01-foundations-and-worldview.md#pki-problem) and [chapter 07, section 14](bible/07-shibboleths-and-anti-patterns.md#residuals).
-- Governance and interoperability — chapter 06 throughout.
-- CESR and wire format — chapter 04 end to end.
-- Every lens reviewing presentation, request authentication or registries — chapters 08, 09 and 10, read at review time, with the tier rule (28) in force.

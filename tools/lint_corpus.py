@@ -24,9 +24,7 @@ from pathlib import Path
 
 GENERATED = ("refresh/state/",)
 PUBLISHED_DIRS = ("bible/", "docs/")
-# keri-doctrine.md joins this list when the 2026-10 rewrite lands; the pre-house-style version on
-# main would fail every markup rule, and it is being replaced rather than converted.
-PUBLISHED_FILES: tuple[str, ...] = ()
+PUBLISHED_FILES: tuple[str, ...] = ("keri-doctrine.md",)
 
 HEADING = re.compile(r"^(#{1,6}) (.*)$")
 ANCHOR_AT_END = re.compile(r"\s\{#([a-z0-9]+(?:-[a-z0-9]+)*)\}\s*$")
