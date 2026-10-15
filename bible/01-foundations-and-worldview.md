@@ -54,7 +54,7 @@ A crucial and often-missed corollary follows because events are signed nonrepudi
 
 ## 4. End-verifiability and ambient verifiability {#end-verifiability}
 
-#### End-verifiability {#end-verifiability-defined}
+### End-verifiability {#end-verifiability-defined}
 
 End-verifiability is the property that a message's authenticity can be verified by its ultimate recipient using only the data itself, with no dependence on the security of anything in between. "Everything in KERI or that depends on KERI is also end-verifiable; therefore, KERI has no security dependency on any other infrastructure, including conventional PKI. It also does not rely on security guarantees that may or may not be provided by web or internet infrastructure" (KERI spec, L88). End-verifiability is stated as "a prerequisite for true zero-trust computing infrastructure, where zero-trust means never trust always verify" (KERI spec, L103).
 
@@ -104,7 +104,7 @@ A note a reviewer should carry forward: KERI/ACDC canonicalization uses insertio
 
 KERI's positive design is best understood as a set of answers to specific, enumerated flaws in the incumbent PKI/X.509 model. The spec, the papers, and the security-analysis corpus converge on the same diagnosis.
 
-#### Identifier separated from its keys {#identifier-key-separation}
+### Identifier separated from its keys {#identifier-key-separation}
 
 The core flaw is separation of the identifier from its keys. In X.509 an identifier "is a record in a database. The key is a separate artifact. The binding between them is an assertion" — a certificate signed by a third party. "This places the root of trust outside the identity itself" (keri-security-analysis `cr-ad-trust.md` > 1. The Identity Problem: Administrative Trust and Its Limits). The KERI spec states the same flaw as verifiability failure: "the mapping between the identifier (domain name) and the controlling keypair(s) is merely asserted by a trusted entity (a certificate authority or CA)... a Verifier cannot verify cryptographically the mapping... but must trust the operational processes of the CA" — and the cert is signed "with keypairs controlled by the CA," giving "evidence of authenticity of the assignment... but not evidence of the veracity of the mapping" (KERI spec > Overcoming existing security overlay flaws, L81).
 
@@ -134,7 +134,7 @@ The purity position, distilled: trust must be cryptographic and local, not admin
 
 The specific divergences the corpus identifies:
 
-#### DIDs stalled on issuer rotation {#did-issuer-rotation}
+### DIDs stalled on issuer rotation {#did-issuer-rotation}
 
 DIDs solved holder rotation, then stalled on issuer rotation. Issuing evidence to an identifier rather than to a key solves rotation for the holder. "But there's a hitch. Evidence is also *issued by* an identifier... If the issuer updates their identifier, old evidence is invalidated" — and "This risk is poorly understood in SSI circles" (papers `x509-prob.md` > Much better alternatives exist). The vivid framing: a driver's-license bureau "whose recover-from-breach plan required all current license holders to come back to the office" (papers `was.md`).
 

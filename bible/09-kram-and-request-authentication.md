@@ -10,13 +10,13 @@ Two facts about KRAM's status matter more than any detail of its design, and the
 
 The markers do more work in this chapter than in most, because one tier is nearly empty: for KRAM the [N] tier is empty, and [section 5](#normative-status) documents the one near-miss.
 
-#### Status at 2026-10-03 {#status-2026-10-03}
+### Status at 2026-10-03 {#status-2026-10-03}
 
 The gap widened again, in a different direction. Between `b8f60166b` and keripy `main` @`80f77b73b` (2026-10-01) `kraming.py` moved by one commit (`790797bcd`, PR [#1693](https://github.com/WebOfTrust/keripy/pull/1693)) and now stands at 2,324 lines against a 6,193-line test file; the whitepaper and both specification lines did not move. The commit is small, but it changes what KRAM is in keripy. KRAM now records the receiver time at which it accepted a complete transactioned message, and IPEX's presentation-registry check refuses a `grant` without that record and uses the time as its cutoff ([section 8](#load-bearing)). So KRAM is no longer only a replay filter in keripy: one verification path above it depends on its acceptance timestamp. Separately, `Baser.clean()` now carries KRAM's replay caches across a database rebuild instead of discarding them ([section 7](#keripy)). Neither change reaches KERIA, which pins `keri==1.2.14` rather than following keripy `main` ([section 5](#normative-status)).
 
 ## 1. What problem KRAM solves, and why not the obvious alternatives {#problem}
 
-#### Secure attribution is ephemeral {#ephemeral-attribution}
+### Secure attribution is ephemeral {#ephemeral-attribution}
 
 [P] KERI's sign-everything posture means any over-the-wire message with a source AID and an attached signature can be attributed to that AID's controller. But the attribution decays: "Should the key state change between the time of origination and the time of verification, then the verifier can no longer assume the signature as a secure form of attribution because one of the primary reasons for a given controller to change its key state is to recover from key compromise" (keripy discussion [#934](https://github.com/WebOfTrust/keripy/discussions/934) > KRAM). A signed message is therefore "at best, an ephemeral issuance given the dynamic key state of the AID" — good enough to defeat impersonation at reception, and no more.
 
@@ -36,7 +36,7 @@ This is the same architectural instinct as the rest of KERI: prefer the non-inte
 
 ## 2. Simple KRAM: what is deployed, and why it is not enough {#simple-kram}
 
-#### The simple KRAM mechanism {#simple-mechanism}
+### The simple KRAM mechanism {#simple-mechanism}
 
 [P] A message carries a `dt` stamp; the receiver accepts it only if that stamp lies inside a window around the receiver's own current time, `[t-d-m*l, t+d]`, where `d` is clock drift/skew, `l` is average network latency and `m` a small integer. Typical values given: `d = 0.01` s, `l = 1` s, `m = 3`. No cache. The security argument is bluntly stated: "This window limits the time during which a replay attack can be mounted… Therefore the protective efficacy of simple KRAM is better the smaller the window."
 
@@ -60,7 +60,7 @@ Read this as an architectural tell. A mechanism whose window must be short to be
 
 ## 3. Full KRAM: monotonic caches, and why the window can be long {#full-kram}
 
-#### The monotonic-cache move {#monotonic-cache}
+### The monotonic-cache move {#monotonic-cache}
 
 [P] Replace "is this timestamp fresh?" with "is this timestamp fresh *and* strictly later than the last one I cached for this sender?" Once a monotonic cache is doing the uniqueness work, the window's job changes completely: "the monotonicity of the cache protects against a replay attack and the time window merely bounds the memory requirements." A window that is only a memory bound can be hours, days or weeks. That single reallocation of responsibility is what makes multisig workable, and it is the most important idea in the chapter.
 
@@ -92,7 +92,7 @@ Read this as an architectural tell. A mechanism whose window must be short to be
 
 The whitepaper's front matter is a redesign that supersedes the material behind it, and reading the older sections as current is the easiest mistake to make with this source. Sam's stated motive: "we added a lot of flexibility to allow resource tuning that may be overkill… in hindsight, I think single-key and multi-key controlled identifiers are sufficiently different that a different logic split would benefit."
 
-#### Authentication types, chosen by cardinality not threshold {#auth-types}
+### Authentication types, chosen by cardinality not threshold {#auth-types}
 
 [P] Three: attached seal reference (`asr`), attached signature single-key (`assk`), attached signature multi-key (`asmk`). The split is by "the cardinality of the current key list for the sender AID, not by whether the attached signature(s) satisfy the threshold… because threshold satisfication requires verifying the attached signatures first, which is a much heavier operation than merely counting the elements in the key list." A seal-reference message needs no signature collection at all — the anchoring seal in the sender's KEL already authenticated it — so it takes the short window whatever the key list looks like. When both a seal and signatures are attached, the seal is validated first because it is cheaper; if it validates, the signatures are discarded.
 
@@ -145,7 +145,7 @@ The rule loosens what counts as current without loosening what counts as stale: 
 
 ## 5. Normative status: the tier that is empty {#normative-status}
 
-#### KRAM is in no KERI specification {#no-spec}
+### KRAM is in no KERI specification {#no-spec}
 
 KRAM is in no KERI specification [N-absent]. Re-verified at `trustoverip/kswg-keri-specification` `main` @`fbdd4a615` (2026-09-15) and unchanged. A case-insensitive search for `kram` across the repository at that commit returns exactly one file, `docs/versions/v1/index.html`, and zero hits anywhere under `spec/`. The hit is not spec text. It is an external cross-reference pulled from `trustoverip/kerisuite-glossary` (declared `external_spec: "keri1"`, KERI spec `specs.json`, L26), and the whole of it is: "All requests from a web client must use KRAM (KERI Request Authentication Method) for replay attack protection. The method is essentially based on each request body needing to include a date time string field in ISO-8601 format that must be within an acceptable time window relative to the server's date time," plus a link to the `WebOfTrust/kram` repo. `spec/spec-body.md` does not mention KRAM. The ACDC and CESR specs do not mention it either — but that second negative rests on a search run on 2026-09-01 and carries no commit pin, because neither specification is available to re-search here; treat it as unverified rather than as re-confirmed.
 
@@ -179,7 +179,7 @@ Added 2026-10-03: the two fixes are independent in a stronger sense than "two au
 
 Both are non-interactive replay defences; they are not the same mechanism and do not compose silently.
 
-#### BADA {#bada}
+### BADA {#bada}
 
 [N] BADA (Best-Available-Data-Acceptance) is in the KERI spec, and governs data at rest: it guarantees monotonicity of updates to signed data. For KEL-anchored updates, accept if the update's anchor is later in the KEL than the prior's. For signed-but-not-anchored updates, compare key states, later key state wins, and where the key-state location is equal, later datetime wins — with datetimes relative to the controller's clock (KERI spec, ~L2887-2918; `raw/01-keri-spec.md` section 10).
 
@@ -195,7 +195,7 @@ The clean statement: BADA orders what a host stores; KRAM orders what a host acc
 
 ## 7. What keripy actually does {#keripy}
 
-#### The redesign is built {#redesign-built}
+### The redesign is built {#redesign-built}
 
 [K] The redesign is built, and it tracks v0.7.6 rather than the older strata. `src/keri/core/kraming.py` is 2,319 lines against a 6,187-line test file at `b8f60166b`, and 2,324 against 6,193 at `80f77b73b`. Line hints below are at `b8f60166b` unless stamped otherwise; past about L1460 they run 2 to 5 lines short at `80f77b73b`. Specifics worth knowing:
 
@@ -247,9 +247,9 @@ A divergence the corpus is not going to reconcile: do partials survive threshold
 
 ## 8. Where KRAM is load-bearing for other designs {#load-bearing}
 
-#### Multiply-endorsed presentation rests on KRAM {#multiply-endorsed}
+### Multiply-endorsed presentation rests on KRAM {#multiply-endorsed}
 
-Multiply-endorsed presentation rests on it entirely — see [chapter 08, sections 7 to 9](08-presentation-architectures-and-ipex.md#sec-7). The proposed IPEX design uses KRAM's escrow as the signature-collection mechanism itself: a replayed copy of the same message inside the window is not an attack but a contribution, so "This elegantly solves the multi-sig problem without requiring a pre-protocol to collect signatures. The receiver's KRAM escrow does the signature collection" (keripy discussion [#1613](https://github.com/WebOfTrust/keripy/discussions/1613)). That is an elegant reuse, and it means a freshness mechanism is also an availability mechanism: if KRAM's escrow is off or its window is short, group presentation does not merely lose replay protection, it stops working.
+Multiply-endorsed presentation rests on it entirely — see [chapter 08, sections 7 to 9](08-presentation-architectures-and-ipex.md#freshness-kram). The proposed IPEX design uses KRAM's escrow as the signature-collection mechanism itself: a replayed copy of the same message inside the window is not an attack but a contribution, so "This elegantly solves the multi-sig problem without requiring a pre-protocol to collect signatures. The receiver's KRAM escrow does the signature collection" (keripy discussion [#1613](https://github.com/WebOfTrust/keripy/discussions/1613)). That is an elegant reuse, and it means a freshness mechanism is also an availability mechanism: if KRAM's escrow is off or its window is short, group presentation does not merely lose replay protection, it stops working.
 
 #### KRAM's acceptance time as evidence {#acceptance-time}
 
@@ -267,7 +267,7 @@ Tethering is defined in terms of KRAM's guarantee. An AID appearing anywhere in 
 
 #### A correction to chapter 08 on nonces {#nonce-correction}
 
-A correction to [chapter 08, section 7](08-presentation-architectures-and-ipex.md#sec-7), on the evidence of the primary source. That chapter describes KRAM, following #1613, as using "a message SAID `d` field, a sender AID `i` field, a receiver AID `ri` field, a salty nonce `u` field, and a datetime stamp," and then flags a problem: `u` is not a field of an `exn`. The whitepaper does not build KRAM on a nonce. Its uniqueness comes from monotonic ordering of receiver-clock datetimes, and its Background section is an extended argument that nonce-based mechanisms are the thing KRAM replaces. A salty nonce appears once, in a different role: placed in the `q` modifier block of a transaction's first message to make the transaction ID universally unique — and the whitepaper immediately says a unique transaction ID cannot substitute for a timestamp, "because a timestamp is still needed in order to know when any given transaction can be pruned." So the `u`-on-`exn` puzzle is most likely an artifact of #1613's paraphrase rather than a design gap. The keripy implementation reads `msg.stamp` and never touches `u` (keripy `core/kraming.py`, L1071, re-checked at `b8f60166b`; `u` does not appear as a field reference anywhere in the module), which is consistent with the whitepaper and not with the paraphrase.
+A correction to [chapter 08, section 8](08-presentation-architectures-and-ipex.md#freshness-kram), on the evidence of the primary source. That chapter describes KRAM, following #1613, as using "a message SAID `d` field, a sender AID `i` field, a receiver AID `ri` field, a salty nonce `u` field, and a datetime stamp," and then flags a problem: `u` is not a field of an `exn`. The whitepaper does not build KRAM on a nonce. Its uniqueness comes from monotonic ordering of receiver-clock datetimes, and its Background section is an extended argument that nonce-based mechanisms are the thing KRAM replaces. A salty nonce appears once, in a different role: placed in the `q` modifier block of a transaction's first message to make the transaction ID universally unique — and the whitepaper immediately says a unique transaction ID cannot substitute for a timestamp, "because a timestamp is still needed in order to know when any given transaction can be pruned." So the `u`-on-`exn` puzzle is most likely an artifact of #1613's paraphrase rather than a design gap. The keripy implementation reads `msg.stamp` and never touches `u` (keripy `core/kraming.py`, L1071, re-checked at `b8f60166b`; `u` does not appear as a field reference anywhere in the module), which is consistent with the whitepaper and not with the paraphrase.
 
 ## 9. Open questions {#open-questions}
 
@@ -277,7 +277,7 @@ A correction to [chapter 08, section 7](08-presentation-architectures-and-ipex.m
 4. Who owns the granularity-change gap analysis? The whitepaper marks it unfinished; keripy implements it. Which is authoritative when they differ?
 5. What happens downstream of `xip`, `pro` and `bar`? All three pass through KRAM into stubs. Still open at `b8f60166b`, after the busiest month `kraming.py` has had, and still open at `80f77b73b` ([section 7](#processmsg)).
 6. How should an operator choose window classes? The lag values are security parameters — too long widens the replay surface, too short breaks multisig — and there is no policy guidance anywhere, only example numbers. Still open at `b8f60166b`, and there is not even an implicit recommendation to read off the code, since `kraming.py` ships no defaults and validates only ordering and sign ([section 7](#no-default-windows)).
-7. Does the `Exchanger` gap in [chapter 08, section 7](08-presentation-architectures-and-ipex.md#sec-7) close here? KRAM deliberately preserves non-sender endorsements for downstream handlers (`_normalizeSenderSeals`, "leaves only non-sender triples in ssts for non-auth forwarding / escrow"), and `Exchanger.processEvent` still rejects any message carrying a signature not from the sender (keripy `peer/exchanging.py`, `Exchanger.processEvent`, L88-95 @`4df8e4a86`, verified at `upstream/main` and not re-read at `b8f60166b` — `exchanging.py` was outside this month's mining). Two halves of one code path, still pulling in opposite directions as far as the evidence goes.
+7. Does the `Exchanger` gap in [chapter 08, section 8](08-presentation-architectures-and-ipex.md#freshness-kram) close here? KRAM deliberately preserves non-sender endorsements for downstream handlers (`_normalizeSenderSeals`, "leaves only non-sender triples in ssts for non-auth forwarding / escrow"), and `Exchanger.processEvent` still rejects any message carrying a signature not from the sender (keripy `peer/exchanging.py`, `Exchanger.processEvent`, L88-95 @`4df8e4a86`, verified at `upstream/main` and not re-read at `b8f60166b` — `exchanging.py` was outside this month's mining). Two halves of one code path, still pulling in opposite directions as far as the evidence goes.
 8. Do partially-signed entries survive threshold satisfaction? The whitepaper says yes, on evidentiary grounds; keripy at `b8f60166b` says no, on replay-safety grounds; both are quoted at their pins in [section 7](#partials-divergence). This is the sharpest code-versus-design divergence the chapter holds, and it is not a matter of vocabulary — the two policies differ in observable behavior for a late co-signer. Which governs, and was the whitepaper's rationale weighed and rejected or simply not seen?
 9. Where is the rule that a `tsg`'s `(sn, said)` names the last establishment event written down normatively? It is stated in a keripy docstring and, as far as this pass could find, in no KERI specification, no ACDC specification, and not in the KRAM whitepaper either. Two implementations got it wrong in the same direction and corrected it independently within six days, each from breakage rather than from a document ([section 5](#convergent-correction)). The rule decides which key state a signature is checked against, which is to say what a signature means, and it is the clearest case the corpus has of [section 5](#normative-status)'s residual costing something concrete. Its behavior under delegated establishment, superseding and recovery events is also unexamined — flagged as unexamined, not as a problem.
 10. Added 2026-10-03: should KRAM's acceptance time be something other protocols may rely on? At `80f77b73b` IPEX's presentation-registry check requires a completed KRAM acceptance and uses its `rdt` as a cutoff ([section 8](#acceptance-time)). That makes a receiver-local bookkeeping value into evidence for a credential-level verdict, and it couples presentation validity to whether KRAM is enabled — on this chapter's inference, not on a test. The whitepaper does not contemplate it, and neither does #1613, whose own coupling runs through the escrow rather than the timestamp. If the dependency is intended, it is a second reason KRAM needs a normative home (question 1); if it is not, the presentation check needs a time source that does not disappear when an operator sets `"enabled": false`.

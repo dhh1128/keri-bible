@@ -6,7 +6,7 @@ An ACDC presentation is not the disclosure of a credential. It is the disclosure
 
 ## Status {#status}
 
-#### Staleness warning: read this before you rely on anything below {#staleness-warning}
+### Staleness warning: read this before you rely on anything below {#staleness-warning}
 
 This chapter covers the fastest-moving, least-settled area of the KERI/ACDC design space. Between 2026-07-25 and 2026-08-19 the presentation model was revised five times in public, twice in ways that superseded earlier proposals outright, and the pace has not slowed: in the two weeks from 2026-09-01 to 2026-09-15, keripy's V2 IPEX module more than doubled in size, `dp` arrived in code, and a design conflict raised on a discussion on 2026-09-01 was settled by an implementation within ten days. This chapter is a synthesis as of 2026-09-15, with a keripy-side refresh on 2026-10-03; it is our best current reading, not a stable reference.
 
@@ -34,7 +34,7 @@ Every substantive claim below carries one of four tier markers. They are not dec
 
 The taxonomy is from discussion #1627, "ACDC Presentation Architectures" (SmithSamuelM, 2026-08-19). It is a framing document rather than a proposal for most of its length, and the framing is useful independent of whether one accepts its conclusions. [P]
 
-#### Portable Datalake {#portable-datalake}
+### Portable Datalake {#portable-datalake}
 
 One document, nested blocks, all attributes about one subject from one issuer; the holder discloses a subset at presentation time, often by checking boxes against an array. This is mDoc/mDL and mainstream W3C VC. Its advantage is simplicity. Its named disadvantages: it cannot express delegation or a delegation chain; everything must come from exactly one issuer, "Not one root-of-trust with a distributed set of hierarchically delegated Issuers, but one and only one Issuer"; the issuer must pull from every relevant database to issue it, so the architecture pushes issuers toward exactly the consolidated data lake that maximizes breach blast radius; and reissuance is forced at the periodicity of the most rapidly changing attribute in the document.
 
@@ -78,7 +78,7 @@ Note the tier split running through this section. The bespoke construction itsel
 
 Its two standard jobs are to carry presentation-specific contractual terms in its rule section — the spec's worked example carries an anti-assimilation clause and a one-time-purpose clause (ACDC spec > Disclosure-specific (Bespoke) Issued ACDCs > Example of a Bespoke Issued ACDC, L2069-2114 @2362e48a1) — and to name the Disclosee as its Issuee, so that "Signing the agreement to the offer of that bespoke ACDC consummates a contract between the named Issuer and the named Issuee."
 
-#### The bespoke origin as recipe {#recipe}
+### The bespoke origin as recipe {#recipe}
 
 #1627 adds a third job and a name for it: the bespoke origin as recipe. [P] The argument is that a set of unchained ACDCs issued by one root-of-trust to one issuee — the SEDI shape, State → citizen — looks like a soup but is a degenerate one, since "All the ingredients came from the same cupboard." A bespoke origin with one edge per ingredient converts it into a DAG at presentation time. The origin "does not need to be anchored or use a registry, so it's simple... It merely needs to be signed and have attached signatures because it's a one-time use ACDC."
 
@@ -94,7 +94,7 @@ The interoperability move is the interesting part: the bespoke ACDC is one-time-
 
 The section asserts its own status in its first sentence: "This section is normative. It defines the path syntax that designates the parts of an ACDC, or of a DAG of chained ACDCs" (ACDC spec > Disclosure Paths, L1811 @2362e48a1). That assertion is worth reading carefully rather than at face value, because the only place the branch binds `dp` to a wire format is the Disclosure Paths in `apply` and `offer` subsection, which sits inside the IPEX section that opens "This section is non-normative." The syntax is normative and its sole use is not — a seam in the branch itself, not an artifact of this chapter's reading, and it is carried as an open question in [section 14](#open-questions). [N1.1]
 
-#### Not an ACDC field {#dp-not-acdc-field}
+### Not an ACDC field {#dp-not-acdc-field}
 
 It is not an ACDC field. This is the first of two shape facts that are easy to state wrongly, and the spec states it flatly: "The `dp` field is not an ACDC field. It appears in the messages that negotiate a disclosure, not in the ACDCs that are disclosed" (ACDC spec > Disclosure Paths, L1813 @2362e48a1). It is deliberately not added to the reserved-label table for that reason — unlike `_`, which is ([section 5](#edges)). An ACDC that carried a `dp` field would be making a category error: the disclosure plan belongs to the negotiation, and the negotiation is not what gets signed as evidence. This matters for [section 11](#dag-soup). [N1.1]
 
@@ -166,7 +166,7 @@ Re-stamped 2026-10-03 at `80f77b73b`: still negotiated, not enforced. Every refe
 
 The presentation model leans on the edge layer in two places: `I2I` closes the bespoke recipe ([section 3](#bespoke-origin)), and every proposal to signal multiple endorsement in the ACDC rather than in the exchange message is a proposal for a new edge-group operator ([section 9](#multiple-endorsement)).
 
-#### Block discrimination [N] {#block-discrimination}
+### Block discrimination [N] {#block-discrimination}
 
 "An Edge MUST contain a node, `n` field. An Edge-group MUST NOT have a node, `n` field" (ACDC spec > Edge Section > Block Types, L1058 @f0bd097de). The Edge Section is itself the top-level edge-group. Edge-groups nest to arbitrary depth. Reserved labels are `[d, u, o, w]` for a group and `[d, u, n, s, o, w]` for an edge.
 
@@ -228,7 +228,7 @@ Superseded 2026-10-03 — the comment has changed, and the paragraph above descr
 
 ## 6. Two IPEX state machines, and only one of them runs {#two-ipex}
 
-#### New 2026-09-15 {#two-ipex-new}
+### New 2026-09-15 {#two-ipex-new}
 
 Every [K] claim about IPEX in this chapter now needs to say which IPEX, because keripy at `b8f60166b` contains two implementations of the protocol and they have begun to diverge. This section exists so that the rest of the chapter can cite one or the other without re-explaining the split.
 
@@ -258,7 +258,7 @@ Re-checked 2026-10-03 at `80f77b73b`. The predecessor table is unchanged — `Ip
 
 The DAG solves data integrity and authority structure. It does not, by itself, establish that the party sending the presentation controls anything at the moment of sending. Discussion #1613, "Authentication Factors in IPEX," is the systematic treatment. All of it is [P]; none of it is in any spec.
 
-#### Two purposes, never conflated {#two-purposes}
+### Two purposes, never conflated {#two-purposes}
 
 Every ACDC in a granted DAG needs an Issuer authentication factor — proof it was authentically issued. The `grant` needs a Grantor authentication factor — fresh proof of control by whoever is presenting. "For a given ACDC, a Grantor may be the Issuee, Issuer, both, or neither."
 
@@ -284,17 +284,17 @@ Everything about multiply-endorsed presentation rests on KRAM, so its status mat
 
 > This section is an audit of KRAM's status as it bears on presentation, not an account of what KRAM is. For the mechanism itself — the problem it solves, simple vs full KRAM, the monotonic timeliness cache, the v0.7.6 redesign, and its relationship to BADA-RUN — see [chapter 09](09-kram-and-request-authentication.md), which is built from Sam's whitepaper rather than from #1613's paraphrase of it. Two claims below are corrected there and are marked in place.
 
-#### The problem [N-adjacent] {#replay-problem}
+### The problem [N-adjacent] {#replay-problem}
 
 A signature is a bearer token: "Any holder of both the document and its signature can replay them, and the signature will verify" (#1613). The KERI spec states the general form and prefers non-interactive mitigation — "Because non-interactive mitigations are asynchronous, however, they do not have the latency and scalability limitations of interactive mitigations and are therefore preferred" (KERI spec > Replay attack, L2878 @be618e7dc).
 
 #### The proposed mechanism [P] {#kram-mechanism}
 
-As #1613 describes it, KRAM (KERI Request Authentication Mechanism) uses "a message SAID `d` field, a sender AID `i` field, a receiver AID `ri` field, a salty nonce `u` field, and a datetime stamp relative to the receiver's clock `dt` field." Corrected — the nonce is not part of KRAM. The whitepaper builds uniqueness from monotonic ordering of receiver-clock datetimes, and argues at length that nonce-based mechanisms are what KRAM replaces; keripy reads `msg.stamp` and never touches `u`. See [chapter 09, section 4](09-kram-and-request-authentication.md#sec-4) and [chapter 09, section 8](09-kram-and-request-authentication.md#sec-8). Its properties are otherwise as stated: one play or none, within a window measured on the receiver's clock, so "The sender cannot therefore lie about the datetime in the message." A same-message replay inside the window is either ignored or, for a multisig sender, contributes its signature to an escrow — "This elegantly solves the multi-sig problem without requiring a pre-protocol to collect signatures. The receiver's KRAM escrow does the signature collection."
+As #1613 describes it, KRAM (KERI Request Authentication Mechanism) uses "a message SAID `d` field, a sender AID `i` field, a receiver AID `ri` field, a salty nonce `u` field, and a datetime stamp relative to the receiver's clock `dt` field." Corrected — the nonce is not part of KRAM. The whitepaper builds uniqueness from monotonic ordering of receiver-clock datetimes, and argues at length that nonce-based mechanisms are what KRAM replaces; keripy reads `msg.stamp` and never touches `u`. See [chapter 09, section 4](09-kram-and-request-authentication.md#redesign) and [chapter 09, section 8](09-kram-and-request-authentication.md#load-bearing). Its properties are otherwise as stated: one play or none, within a window measured on the receiver's clock, so "The sender cannot therefore lie about the datetime in the message." A same-message replay inside the window is either ignored or, for a multisig sender, contributes its signature to an escrow — "This elegantly solves the multi-sig problem without requiring a pre-protocol to collect signatures. The receiver's KRAM escrow does the signature collection."
 
 #### Three findings about KRAM's actual status, each verified {#kram-status-findings}
 
-KRAM is not in the KERI specification. A search for "KRAM" across KERI spec `main` @`be618e7dc` returns nothing in `spec/spec-body.md`. The spec discusses replay attacks and BADA-RUN at length and never names this mechanism. So the freshness guarantee the entire multiply-endorsed design depends on is, at the specification layer, absent. (One near-miss, found later: the rendered v1 artifact carries a glossary cross-reference imported from `trustoverip/kerisuite-glossary`, defining simple KRAM in a single sentence. It is not spec text, and it describes the variant that cannot support multisig — see [chapter 09, section 5](09-kram-and-request-authentication.md#sec-5).)
+KRAM is not in the KERI specification. A search for "KRAM" across KERI spec `main` @`be618e7dc` returns nothing in `spec/spec-body.md`. The spec discusses replay attacks and BADA-RUN at length and never names this mechanism. So the freshness guarantee the entire multiply-endorsed design depends on is, at the specification layer, absent. (One near-miss, found later: the rendered v1 artifact carries a glossary cross-reference imported from `trustoverip/kerisuite-glossary`, defining simple KRAM in a single sentence. It is not spec text, and it describes the variant that cannot support multisig — see [chapter 09, section 5](09-kram-and-request-authentication.md#normative-status).)
 
 The `u` field KRAM is described as using does not exist on an `exn`. This puzzle probably dissolves — `u` is #1613's paraphrase, not the whitepaper's mechanism, per the correction above. The observation about message shapes stands on its own terms and is worth keeping, so it is recorded unchanged below. The KERI spec fixes both message shapes exactly: `xip` is `[v, t, d, u, i, ri, dt, r, q, a]` and `exn` is `[v, t, d, i, ri, x, p, dt, r, q, a]`, and for both, "All are REQUIRED. No other top-level fields are allowed (MUST NOT appear)" (KERI spec > Routed Messages > Exchange Transaction Inception Message Body, L1154 @be618e7dc; KERI spec > Routed Messages > Exchange Message Body, L1197 @be618e7dc). `u` is present on `xip` and absent on `exn`; the spec says `u` "appears in exchange transaction inception messages to ensure that the associated transaction ID is also universally unique" (KERI spec > Routed Messages > Reserved field labels in routed messages > UUID Salty Nonce field, L963 @be618e7dc). #1613 describes KRAM as using `u` and as applying "to each `xip` or `exn` individually." For an `exn` the uniqueness comes from `x` ⧺ `p` chaining instead. This may be a slip in the prose rather than a design gap, but it is not currently reconcilable as written.
 
@@ -335,7 +335,7 @@ Note that the origin `o` field is [P] and appears in no spec. Note also that `o`
 
 This is the clearest case in the corpus of a design that was superseded, and reading the superseded version as current is the most likely way to be wrong about it.
 
-#### #1555 (2026-07-29) [P, superseded] {#proposal-1555}
+### #1555 (2026-07-29) [P, superseded] {#proposal-1555}
 
 Non-sender AIDs attach signature groups (`-X`/`-Y` for transferable, and seal-source equivalents) to a single `grant`; KRAM's timeliness extends to them. The signal that endorsement is required should live in the ACDC, not the `exn`, because "An exchange message is relatively simple in comparison to an ACDC. There is no normative cryptographic commitment in an exchange message to a given schema." The mechanism: a new M-ary edge-group operator, `ME`, on a bespoke origin, meaning each far ACDC in the group must be endorsed by its issuee via signatures attached to the grant. Multi-DAG presentation explicitly out of scope.
 
@@ -377,7 +377,7 @@ But endorsement signatures do not decide whether a grant is valid. `IpexHandler.
 
 ## 10. Anchoring: the `ax` field, presentation registries, origin-AID anchoring {#anchoring}
 
-#### Mostly [P], from #1613, but no longer all of it {#anchoring-tiers}
+### Mostly [P], from #1613, but no longer all of it {#anchoring-tiers}
 
 The section was written when every construct in it was a proposal. At keripy `b8f60166b` one of the three legs is [K], and saying which one is the point: direct KEL anchoring of a truthy `ax` is implemented, and presentation-registry anchoring is not. The sub-claims are marked individually below.
 
@@ -445,7 +445,7 @@ The layering is explicit and worth preserving in any critique: the anchoring rul
 
 #1627's only concrete proposal. [P]
 
-#### The argument for needing it at all {#why-dag-soup}
+### The argument for needing it at all {#why-dag-soup}
 
 A bespoke origin converts a soup into a DAG, so why keep soup? "When the ingredients are sourced from different cupboards, i.e., each have different Issuee, then the presentation must be multiply endorsed." And the practical case: presenting several DAGs in parallel in one exchange beats a series of IPEXes, since "A series of IPEX presentations adds more failure modes, and if the business logic requires all to complete for processing to continue, now the parties to the exchange have to keep state across multiple IPEXes. This requires a meta IPEX protocol."
 
@@ -483,7 +483,7 @@ Against the earlier field-map-only text this chapter argued that the labels were
 
 #1627's applied section. Both are [P]; the trade is genuine and is the most decision- ready material in the discussion.
 
-#### Bespoke origin as recipe {#recipe-bespoke}
+### Bespoke origin as recipe {#recipe-bespoke}
 
 See [section 3](#bespoke-origin). Maximum flexibility. Relationships form only at presentation time, so "Data changes in each isolated ACDC that cause reissuance do not trigger a cascade of reissuance of other ACDCs." Cost: a bespoke ACDC per presentation, and no memorialization — "A bespoke on-the-fly ACDC does not have any ability to memorialize the state of the graph at the time."
 
@@ -501,7 +501,7 @@ Under the ontology recipe you present a branch, and a branch's local source node
 
 ## 13. Ground-truth matrix {#ground-truth}
 
-#### Two spec columns {#two-spec-columns}
+### Two spec columns {#two-spec-columns}
 
 The spec column is now two columns, because the ACDC branches have diverged and collapsing them was the previous draft's central error. `main` @`f0bd097de` is what "normative" means today; `v1.1` @`2362e48a1` is where most of this chapter's structural material actually lives. The keripy column was rebuilt at `b8f60166b` and updated on 2026-10-03 to `80f77b73b`; a cell that names `80f77b73b`, or a row the 2026-10-03 pass re-checked, is at the new pin, and the rest stand at `b8f60166b`. A V2 mark means the code is in `acdc/ipexing.py`, which still has no caller in `src/keri` at either pin ([section 6](#two-ipex)).
 
@@ -554,7 +554,7 @@ Added 2026-10-03. The authentication row block is now the part of the table wher
 
 Carried forward for anyone building on this chapter. Each is either unanswered in the sources or answered inconsistently across them.
 
-#### Question 1: Where does the multi-endorsement signal live? {#q-signal-home}
+### Question 1: Where does the multi-endorsement signal live? {#q-signal-home}
 
 #1555 says the ACDC (schema-is-type gives a cryptographic commitment an `exn` cannot match). #1627 leans toward the `exn` because anchoring would otherwise need a second operator. Both arguments are good and they point opposite ways. `ME` is explicitly not superseded, so both are live.
 
@@ -580,11 +580,11 @@ See [section 11](#dag-soup). Overtaken but not answered, 2026-09-15: keripy adop
 
 #### Question 5: What is KRAM's normative home? {#q-kram-home}
 
-It is load-bearing for everything in [section 8](#freshness-kram) through [section 10](#anchoring) and is in no specification. Does it belong in the KERI spec, an IPEX spec, or neither? (Carried forward and expanded in [chapter 09, section 5](09-kram-and-request-authentication.md#sec-5) and [chapter 09, section 9](09-kram-and-request-authentication.md#sec-9).)
+It is load-bearing for everything in [section 8](#freshness-kram) through [section 10](#anchoring) and is in no specification. Does it belong in the KERI spec, an IPEX spec, or neither? (Carried forward and expanded in [chapter 09, section 5](09-kram-and-request-authentication.md#normative-status) and [chapter 09, section 9](09-kram-and-request-authentication.md#open-questions).)
 
 #### Question 6 (resolved): ~~How does KRAM apply to an `exn`, which has no `u` field?~~ {#q-kram-u-field}
 
-Resolved: the `u` field is #1613's paraphrase, not KRAM's mechanism. See [section 8](#freshness-kram) and [chapter 09, section 8](09-kram-and-request-authentication.md#sec-8).
+Resolved: the `u` field is #1613's paraphrase, not KRAM's mechanism. See [section 8](#freshness-kram) and [chapter 09, section 8](09-kram-and-request-authentication.md#load-bearing).
 
 #### Question 7: Should `rd` in the attribute section be restricted to presentation registries? {#q-rd-restriction}
 

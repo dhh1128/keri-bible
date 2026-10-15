@@ -18,7 +18,7 @@ CESR is a dual text-binary encoding format whose unique property is text-binary 
 
 Three corrections to outsider priors are worth stating at the top, because they are the tells of someone who has not read the spec.
 
-#### CESR is not crypto-only {#not-crypto-only}
+### CESR is not crypto-only {#not-crypto-only}
 
 CESR is not crypto-only. "The CESR protocol... is not limited to merely encoding Cryptographic Primitives but any primary data type (numbers, text, datetimes, lists, maps) may be encoded in a composable way" (CESR spec > Abstract Domain representations, L11). Reviewers who model CESR as "a signature envelope" miss that it is a general primary-datatype encoding.
 
@@ -52,7 +52,7 @@ The interop payoff is precise and load-bearing: `T(B)` is naive Base64 encode an
 
 ## 3. Composability — the core invariant and the 24-bit backbone {#composability}
 
-#### Definition (well-established) {#composability-definition}
+### Definition (well-established) {#composability-definition}
 
 "An encoding has Composability when any set of Self-Framing concatenated Primitives expressed in either the Text domain or Binary domain may be converted as a group to the other Domain and back again without loss" (CESR spec > Composability, L5). Formally, `T(B)` and `B(T)` are jointly concatenation-composable iff `T(cat(b[k])) = cat(T(b[k]))` and `B(cat(t[k])) = cat(B(t[k]))` for all k — "the transformation of a set (as a whole) of concatenated Primitives is equal to the concatenation of the set of individually transformed Primitives" (CESR spec > Concatenation composability property, L70-73). The invariant is total: "Each and every Primitive or Count Code group of primitives MUST satisfy the Concatenation Composability property" (L73).
 
@@ -87,7 +87,7 @@ The padding-and-alignment math is the most fragile surface in the entire stack. 
 
 Two stability invariants govern how a type code behaves as the value changes.
 
-#### Stable type coding (invariant) {#stable-type-coding}
+### Stable type coding (invariant) {#stable-type-coding}
 
 "The type portion of all compliant prepended Framing Codes MUST be stable in the Text domain" — "the leading characters that determine the type do not change when any other portion of the primitive changes" (CESR spec > Stable type encoding, L202-206). The type comes first, consumes a fixed integral number of T-domain characters (L210), and never shares information bits with the length or value in any single T-domain character. Stability is imposed on T, not B, and the choice is deliberate: binary parsers handle bit-fields and shifts trivially, but text parsers only see whole characters, "another reason to impose a stability constraint on the 'T' domain type coding instead of the 'B' domain" (L208).
 
@@ -224,7 +224,7 @@ Some fixed-size codes carry their value inside the code's soft/size part (compac
 
 ## 7. Count / group framing codes (grouping and pipelining) {#count-codes}
 
-#### Count codes count quadlets, never primitives {#count-quadlets}
+### Count codes count quadlets, never primitives {#count-quadlets}
 
 Count Codes (a.k.a. Group Codes) count quadlets/triplets in a group — never primitives. "always counts the number of quadlets/triplets in the group not the number of primitives" (CESR spec > Count Code tables, L591). This is a recurring correction: reviewers reach for "number of items," but the count is in 24-bit units precisely so the group can be skipped without parsing its contents. Count codes enable pipelining (multiplex/demultiplex), core-affinity offloading, and hierarchical group-of-groups composition (CESR spec > Count or Group Framing Codes, L362; CESR spec > Composability, L7).
 
@@ -268,7 +268,7 @@ A milder version of the same pattern: typed-digest seals may now carry a nonce. 
 
 This is the piece outsiders most often miss: there is a code whose job is not to carry data or count anything, but to switch which code tables the parser uses. "A protocol genus and version code itself MUST NOT provide a count of the following Quadlets or triplets but MUST modify the protocol genus and Version of all the following Count Codes" (CESR spec > Protocol genus/version table, L609).
 
-#### Format `-_GGGVVV` {#genus-version-format}
+### Format `-_GGGVVV` {#genus-version-format}
 
 Format `-_GGGVVV` (8 chars): `-_` selector, `GGG` = 3-char genus (`262,144` possible genera), `VVV` = version where the first `V` is major and the last two are minor. `CAA` = 2.00, `CAQ` = 2.16; up to 64 majors × 4096 minors (CESR spec > Protocol genus/version codes, L615). The KERI/ACDC genus codes are `-_AAABAA` (v1.00) and `-_AAACAA` (v2.00) (L865-866).
 
@@ -290,7 +290,7 @@ The genus/version code is the crypto-agility and multi-protocol mechanism made e
 
 CESR must interleave with three non-native serializations, and here the framing device is not a count code but a Version String.
 
-#### Three interleaved non-CESR serializations {#interleaved-serializations}
+### Three interleaved non-CESR serializations {#interleaved-serializations}
 
 A CESR parser MUST support three interleaved non-CESR serializations: JSON, CBOR, MGPK (CESR spec > Performant resynchronization, L388). For those, the framing device is a Version String as the first field, label `v` (lowercase) — the regex target that yields serialization type and total size (CESR spec > Version String field, L1123, L1125).
 
@@ -312,7 +312,7 @@ CESR-native field maps carry no embedded version string. They use `-G##`/`--G###
 
 ## 10. Streaming, cold start, and the eight tritets {#cold-start}
 
-#### The cold-start problem {#cold-start-problem}
+### The cold-start problem {#cold-start-problem}
 
 After a cold start, a parser looks for framing info; ambiguity leads to confusion and a forced re-cold-start (TCP: close/reopen; UDP: ack/nack). "Good cold start re-synchronization is essential to robust performant Stream processing" — the goal is to resync by skipping to the next well-defined boundary, not by flushing buffers (CESR spec > Cold start Stream parsing problem, L380-384).
 
@@ -343,7 +343,7 @@ Non-native serializations may be interleaved with native CESR only at the top le
 
 ## 11. SAID — the content-address that lives inside its own content {#said}
 
-SAIDs are where CESR's encoding contract meets KERI's integrity model, and the interaction is load-bearing enough to restate here in wire terms (fuller treatment belongs to [chapter 05, section 2](05-acdc-and-verifiable-data.md#sec-2)).
+SAIDs are where CESR's encoding contract meets KERI's integrity model, and the interaction is load-bearing enough to restate here in wire terms (fuller treatment belongs to [chapter 05, section 2](05-acdc-and-verifiable-data.md#saids)).
 
 A SAID (Self-Addressing Identifier) is "a special type of content-addressable identifier based on an encoded cryptographic digest that is self-referential" — embedded inside the very serialization it identifies (CESR spec > SAID, L1178). A naive content-address cannot be self-referential (putting a digest inside the thing you are digesting changes the digest), which is why SAID uses a dummy-fill derivation: copy the SAID out, replace the field with dummy `#` characters (ASCII 0x23, chosen because it is not a valid Base64 char) sized to the exact full digest length, compute the digest of the dummied serialization using the algorithm named by the code, CESR-encode it to the same total length, and compare (CESR spec > Generation and Verification Protocols, L1197-1199). Because the encoded digest is the same length as the dummy fill, the surrounding byte offsets never move — the wire framing is preserved. keripy implements this in `Saider._derive`/`verify` [K]: `sad[label] = clas.Dummy * Matter.Sizes[code].fs`, digest, inject back, and on verify re-derive and compare `qb64b`, failing closed on any exception (keripy core/coring.py, L3875-3982, dummy-fill at L3899; `Dummy = "#"  # dummy spaceholder char for said. Must not be a valid Base64 char`, keripy core/coring.py, L3771, all @`b8f60166b`).
 
@@ -371,7 +371,7 @@ The ranked list of desync/downgrade surfaces an adversarial reviewer should prob
 9. A count code with two meanings: v2 `-N`. Added 2026-10-03. keripy at `80f77b73b` defines `-N` as `NonceSealSingles` (keripy core/counting.py, L228) while both CESR branches define it as transferable receipt quadruples (CESR spec, L915 @`bad6edd84`, L923 @`65fd7518b`) — see [section 7.1](#receipts-retired). Because CESR is self-framing, a group whose code means different things to producer and consumer is parsed confidently and wrongly, not rejected. (uncited — flagged by verification 2026-10-03: no parser was run on such a group, and a spec parser reading nonce singles as `pre+snu+dig+sig` quadruples may instead reject on a code-type mismatch in the prefix or signature slot; treat "not rejected" as unverified.) It is latent at this pin, since no keripy code path is known to emit `-N` and keripy's parser has no `-N` handler [K] — narrowed 2026-10-03 (verification): previously "keripy wires `-N` into no CESR-native serializer or parser"; v2 `messagize` would frame a `SealNonce` bond as `-N` if handed one ([section 7.1](#receipts-retired)) — and it becomes live the moment either side emits it. This is the clearest instance this chapter has of the [section 1](#what-cesr-is) point that keripy's tests cannot catch a wire defect: ~~keripy is internally consistent here, and the inconsistency is with the spec~~ the main inconsistency is with the spec, and keripy is not wholly consistent with itself either, since its v2 attachment emitter can frame a group its own parser cannot read.
 10. Sequence numbers are hex strings, and an implementation got that wrong until 2026-09-16. Added 2026-10-03. signify-ts built the source-seal `Seqner` in `messagize` from `new Seqner({ sn: parseInt(seal[1].s) })` (signify-ts src/keri/core/eventing.ts, L432 @`ffba8406e`), reading the hex `s` field as decimal — wrong from sequence number `0xa` upward. At `5a174b545` it reads `new Seqner({ snh: seal[1].s }).qb64b` (signify-ts eventing.ts, L430), the hex constructor (signify-ts#417; raw/10 section 11c) [K]. The resulting attachment would have been well-framed while carrying the wrong sequence number, so nothing at the framing layer could flag it (an inference from the code, not a run). The lesson for a reviewer is the same as item 9 from the other side: a value that is syntactically valid CESR can still be semantically wrong, and nothing in the type system caught this one.
 
-#### Well-established versus contested {#established-vs-contested}
+### Well-established versus contested {#established-vs-contested}
 
 Well-established and enforced in both spec and code: composability, the 24-bit alignment math, mid-padding, stable framing, count-codes-count-quadlets, the genus/version format and scope, the version-string formats, and the eight-tritet cold start. Uncertain or in-flux: the Op Code table is explicitly reserved/TBD (`_` selector, CESR L628, L948) — a whole stream-processing capability is gestured at but unspecified; and several large-variable/context tables are structurally defined but not exhaustively populated (raw/02 section Gaps). Superseded 2026-09-15: an earlier revision of this paragraph described the post-quantum code assignments as "being introduced in successive updates" with an open issue. That quoted phrase came from the unreachable `d35125e61` and appears on neither branch; it is cut ([section 5.7](#pq-in-practice)). The accurate statement is branch-dependent — no post-quantum code of any kind on `main` `bad6edd84`, and FN-DSA, ML-DSA and SLH-DSA populated with ML-KEM explicitly deferred on `v1.1` `65fd7518b`. The open issue is real and survives the retraction: `::: issue` "[Post-quantum cryptographic operations]", issue #14, sits at L559 on both branches unchanged, so the `v1.1` work did not close it. Minor source typos noted but non-doctrinal, both still present at `bad6edd84`: the `6A` table text says "pad size of 0" while the same paragraph ends with 2 lead bytes (L553), and a `-S#####` large count code is missing a leading `-` (L926) — both read as source typos, not design intent (raw/02 section Gaps).
 

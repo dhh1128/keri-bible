@@ -18,13 +18,13 @@ The code is a definite subset of #1613, and it departs from #1613 in two places 
 
 The [N] tier is nearly empty here; [section 5](#normative) gives the one word that qualifies and the dated negatives that surround it. The [N1.1] tier is new to this chapter this pass, in [section 3](#two-jobs) and [section 5](#normative), for the single-origin-node rule the DAG argument depends on.
 
-#### Two names, and searching one misses the other {#two-names}
+### Two names, and searching one misses the other {#two-names}
 
 A warning that is also a research finding: this concept has two names, and searching one misses the other. Sam calls it an Issuee usage registry in [#1095](https://github.com/WebOfTrust/keripy/discussions/1095) (October 2025) and a presentation registry in [#1613](https://github.com/WebOfTrust/keripy/discussions/1613) (August 2026). A search for "presentation registry" across keripy returns #1613, #1618, #1550 and — since 2026-09-02, in a comment only — #1627, and not #1095, which is the document that invents the idea and carries most of its security reasoning. Any survey of this topic has to search both terms plus "issuee registry". In speech Sam has used a third name, "user presentation registry" (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 14:36). The code has picked its own vocabulary, and it is the narrow one (keripy `80f77b73b`, `raw/16` section 7.7). `ipexing.py` says "presentation registry" in comments and docstrings, with "issuee/presentation-registry declarations" (keripy acdc/ipexing.py, IpexHandler._presentationRegistries, L1410 @80f77b73b) and "Issuee registry pairs" (keripy acdc/ipexing.py, IpexHandler._presentationRegistries, L1434 @80f77b73b); the registry facade says "issuee-controlled registry" (keripy acdc/registraring.py, Registrar.present, L413 @80f77b73b); the SEDI schemas describe the field as "Issuee Presentation Registry SAID"; the binding kind is `'presentation'` (keripy acdc/regeventing.py, L60 @80f77b73b) with default TEL state `"presented"`; and the Issuees a registry authenticates are the `tethered` set (keripy acdc/ipexing.py, IpexHandler.verify, L610 @80f77b73b). "Usage registry" occurs nowhere in keripy's `src/` or `tests/`. So a code search needs "presentation", "issuee-controlled" and "tethered" as well as the discussion terms. #1098 ([section 1](#asymmetry)) also says "presentation registry", in a body last edited 2026-09-26. This chapter uses "presentation registry" for the IPEX-anchoring application and "usage registry" for the general primitive, and [section 7](#keripy-verifier) and open question 2 argue that distinction is real rather than cosmetic.
 
 ## 1. The asymmetry that motivates it {#asymmetry}
 
-#### Issuer-side detectability {#issuer-detectability}
+### Issuer-side detectability {#issuer-detectability}
 
 Issuer-side detectability is mandatory, and already exists [P]. #1095's argument: the catastrophic failure is Issuer key compromise, because "the worst form of fraud with the most widespread potential of harm would be rampant impersonation fraud… This could annihilate trust in the ecosystem fostered by any assurance derived from the Issuer. The ROI to an attacker for compromising the Issuer keys could be huge, especially if that Issuer is a root-of-trust for Identity assurance for an ecosystem." Anchoring answers it: "an impersonator cannot impersonate the Issuer of an ACDC merely by compromising the signing keys of the Issuer. The impersonator MUST anchor the ACDC in a TEL that is anchored in the Issuer's KEL. This anchor enables the Issuer to detect any fraudulent issuances without requiring the cooperation of any other party, such as the Verifier."
 
@@ -48,7 +48,7 @@ Optional to use, but a credential format must not foreclose it [P]. Added 2026-1
 
 ## 2. The mechanism {#mechanism}
 
-#### The rule, in its original form [P] {#original-rule}
+### The rule, in its original form [P] {#original-rule}
 
 "The ACDC must include a requirement that the ACDC is only verifiable when the presentation of the ACDC by the Issuee is anchored as the latest state in an Issuee-controlled *usage registry*. The verifier won't accept the credential if it's also not anchored in the Issuee's (in addition to the Issuer's) registry" (#1095).
 
@@ -76,7 +76,7 @@ Incentive alignment, stated as a rule of construction [P]. "The verifier has a v
 
 This is the section to get right, because the mechanism is the same in both cases and the guarantees are not.
 
-#### Job one: impersonation-fraud detection {#job-fraud-detection}
+### Job one: impersonation-fraud detection {#job-fraud-detection}
 
 Job one: impersonation-fraud detection — requires that the Issuer is not the Grantor [P]. The protection works because the requirement is baked in by someone the attacker has not compromised: "an imposter that merely compromises the Grantor's signing infrastructure can't avoid the requirement without also compromising the Issuer." The Grantee enforces it by refusing an unanchored grant; the real Issuee then sees registry events it did not create and rotates.
 
@@ -114,7 +114,7 @@ One label caution, because it will mislead a careful reader rather than a carele
 
 ## 4. The trigger, and the ambiguity blocking it {#trigger}
 
-#### The signal is a three-part test [P] {#three-part-signal}
+### The signal is a three-part test [P] {#three-part-signal}
 
 From #1613: the requirement fires when a non-empty `rd` and a valid Issuee `i` are at the top level of the ACDC's attribute `a` section, and the ACDC's own top-level `rd` is non-empty. Miss any one and the meaning changes: with no Issuee in `a`, an `rd` in `a` imposes no anchoring requirement at all; with the top-level `rd` empty or missing, the `rd` in `a` "refers to an ACDC state registry, not an IPEX presentation registry." The top-level `rd` is doing disambiguation work, which is the easiest part of this design to miss when reading #1613 quickly.
 
@@ -149,7 +149,7 @@ From #1618: "An exchange anchored in a presentation registry would also need an 
 - The spec's rationale for nesting is bulk issuance and graduated disclosure — it "may better facilitate contractually protected disclosure of the bulk-issued registry" (ACDC spec > Attribute Section > Targeted Attribute Section, L326 @f0bd097de) — not fraud detection.
 - Blindable state registries and `rip` are fully normative, with a worked lifecycle. A `rip` is "a vacuous placeholder that reveals nothing about what will later be issued," which is where #1613's "latest non-vacuous event" phrasing comes from.
 
-#### The worked lifecycle states the correlation boundary [N] {#correlation-boundary}
+### The worked lifecycle states the correlation boundary [N] {#correlation-boundary}
 
 The worked lifecycle also states this chapter's correlation boundary, and states it better than the corpus had [N]. The Registry-Dependent Issuance Lifecycle section walks a registry from `rip` through issuance, blinded state, verification and revocation, and closes with two sentences that belong wherever anyone claims a blindable registry buys privacy. The first draws the line between the log and its contents: "The registry *events* remain public and chained (the `rd` and prior links are in the clear); it is the state *content* each event commits to that is protected." The second is the doctrine: "This is confidentiality of registry state, not anonymity of the credential — issuer, registry, and issuance chronology remain linkable, which is the intended, auditable trade-off." This is the normative version of what [section 3](#two-jobs) records from #1095 as a caveat — a usage registry is "bound to the AID of the Issuee, so it is linkable" — and it settles the register in which the whole correlation-resistance argument should be made. Linkability of the registry is not a defect the design failed to notice; it is the trade the design chose. Whoever writes spec text for presentation registries will have to say the same thing about an Issuee's registry that this section says about an Issuer's.
 
@@ -167,15 +167,15 @@ But the lifecycle is Issuer-controlled end to end, and that is a negative result
 
 ## 6. Where this sits against Registrar/Observer and KRAM {#registrar-and-kram}
 
-#### It extends the governance split to a third party {#governance-split}
+### It extends the governance split to a third party {#governance-split}
 
-[Chapter 05, section 9](05-acdc-and-verifiable-data.md#sec-9) records Sam's framing that the Registrar/Observer split deliberately replays witness/watcher one layer up: "we have witnesses that are controlled by controllers, watchers that are controlled by verifiers… We have registrars controlled by the issuers, and observers controlled by the verifiers" (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 16:58). A presentation registry adds an Issuee-controlled Registrar to that picture — the Holder, previously the one party in the triangle running no state infrastructure, now runs some. This is the synthesis the corpus does not state anywhere, and it makes the design look less like a bolt-on: "We shouldn't have shared governance" (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 16:54) applied consistently gives every party to a transaction its own state service.
+[Chapter 05, section 9](05-acdc-and-verifiable-data.md#registries) records Sam's framing that the Registrar/Observer split deliberately replays witness/watcher one layer up: "we have witnesses that are controlled by controllers, watchers that are controlled by verifiers… We have registrars controlled by the issuers, and observers controlled by the verifiers" (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 16:58). A presentation registry adds an Issuee-controlled Registrar to that picture — the Holder, previously the one party in the triangle running no state infrastructure, now runs some. This is the synthesis the corpus does not state anywhere, and it makes the design look less like a bolt-on: "We shouldn't have shared governance" (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 16:54) applied consistently gives every party to a transaction its own state service.
 
 Sam's KERIcon phrasing is the clean version: presentation registries let "presenters detect compromise of their proofs that are in their credentials that they're presenting. So they themselves will protect it from fraud, not just the issuer." (KERIConf26 caption, Samuel Smith, The Digital Identity Tradespace, 14:44) (Edited auto-caption — read `raw/14` section 0 before quoting it to anyone.)
 
 #### It sits inside KRAM's window [P] {#kram-window}
 
-"in order to pass KRAM, a `grant` message anchor must happen in a timely fashion relative to the IPEX exchange. The `grant` message… must be created, then anchored, and then pass the receiver's KRAM" (#1613). A presentation registry therefore inserts a registry write into the critical path of a freshness window — and #1095's verifier-side delay deliberately adds more latency on top. Nothing in the corpus connects the two numerically. See [chapter 09, section 3](09-kram-and-request-authentication.md#sec-3) on why full KRAM's windows can be long enough to absorb this, and [chapter 09, section 9](09-kram-and-request-authentication.md#sec-9) on the absence of any window-class policy guidance.
+"in order to pass KRAM, a `grant` message anchor must happen in a timely fashion relative to the IPEX exchange. The `grant` message… must be created, then anchored, and then pass the receiver's KRAM" (#1613). A presentation registry therefore inserts a registry write into the critical path of a freshness window — and #1095's verifier-side delay deliberately adds more latency on top. Nothing in the corpus connects the two numerically. See [chapter 09, section 3](09-kram-and-request-authentication.md#full-kram) on why full KRAM's windows can be long enough to absorb this, and [chapter 09, section 9](09-kram-and-request-authentication.md#open-questions) on the absence of any window-class policy guidance.
 
 #### keripy couples the two differently [K] {#rdt-coupling}
 
@@ -191,7 +191,7 @@ keripy confirms that layering for the sender and departs from #1613 for anyone e
 
 #### Independent of, and stronger than, `ax` [P] {#independent-of-ax}
 
-It is independent of, and stronger than, `ax` [P]. "Notwithstanding the presence or absence of the `ax` field, when an ACDC in a granted DAG meets the requirements for a Issuer signaled presentation anchor registry… then that `grant` message MUST be anchored in that registry for the `grant` to be valid. Otherwise, the presumption is that the grant is fraudulent." `ax` lets a party request perpetual verifiability; a presentation registry lets an Issuer impose it at issuance time, and the Grantor cannot opt out later. See [chapter 08, section 9](08-presentation-architectures-and-ipex.md#sec-9). ~~The two have since come apart in implementation as well as in design — `ax` is built, the presentation registry is not — which [section 7](#keripy-verifier) states as its own finding.~~ Superseded 2026-10-03: both are built at `80f77b73b`, and the independence clause is [K]: the presentation-registry check runs on every `grant` whether or not `ax` is present ([section 3](#two-jobs)).
+It is independent of, and stronger than, `ax` [P]. "Notwithstanding the presence or absence of the `ax` field, when an ACDC in a granted DAG meets the requirements for a Issuer signaled presentation anchor registry… then that `grant` message MUST be anchored in that registry for the `grant` to be valid. Otherwise, the presumption is that the grant is fraudulent." `ax` lets a party request perpetual verifiability; a presentation registry lets an Issuer impose it at issuance time, and the Grantor cannot opt out later. See [chapter 08, section 10](08-presentation-architectures-and-ipex.md#anchoring). ~~The two have since come apart in implementation as well as in design — `ax` is built, the presentation registry is not — which [section 7](#keripy-verifier) states as its own finding.~~ Superseded 2026-10-03: both are built at `80f77b73b`, and the independence clause is [K]: the presentation-registry check runs on every `grant` whether or not `ax` is present ([section 3](#two-jobs)).
 
 #### A registry anchor counts toward `ax` [K] {#counts-toward-ax}
 
@@ -205,7 +205,7 @@ And a registry anchor now counts toward `ax` [K]. #1613's Origin AID Anchoring s
 
 Re-read 2026-10-03 at `80f77b73b` (`raw/16` section 7), superseding the `b8f60166b` (2026-09-15) statement, which is retained under [section 7.5](#statement-2026-09-15) with superseded markers. Every claim in [section 7.1](#implemented) to [section 7.4](#three-factor-framing) is [K] at `80f77b73b` unless marked otherwise. The verifier-side presentation registry is built, on `grant` only, and it fails closed. The Issuee's write path is built. Discovery of a foreign registry is not built, and nothing in either specification describes any of it. For status only: the pull requests are #1693 (KeaxD, merged 2026-09-28), which added the verification, the `present`/`vacate` pair and non-sender `grant` endorsements; #1689 and #1697 (SmithSamuelM), which put Issuee presentation registries into the SEDI example schemas; and #1695 (KeaxD), which ran SEDI credentials through IPEX. A search of keripy issues for "presentation registry" still returns nothing.
 
-#### One boundary bounds every [K] claim in this section {#v2-boundary}
+### One boundary bounds every [K] claim in this section {#v2-boundary}
 
 One boundary bounds every [K] claim in this section, and it has not moved. `acdc/ipexing.py` is the V2 IPEX handler, and at `80f77b73b` its `loadHandlers` still has no caller anywhere in `src/keri`; keripy's own CLI wires up the V1 handler in `vc/protocoling.py`, and the v1 `vdr` verifier has no presentation registry (`raw/09` section 7b; `raw/16` section 7.8). So these are claims about code that exists and is tested in the reference implementation, not about behavior any shipped keripy command performs today.
 
@@ -285,7 +285,7 @@ So an Issuee could stand up a usage registry today with shipped tooling, and no 
 
 What a hostile reviewer will reach for, stated here so that none of it is a surprise.
 
-#### The origin document has had no engagement {#no-engagement}
+### The origin document has had no engagement {#no-engagement}
 
 The origin document has had no engagement — and the argument about what that silence meant has itself been corrected. #1095 is eleven months old with zero comments, and that part is unchanged. ~~What followed it here, written 2026-09-01: #1627 — Sam's newest architecture discussion — does not mention presentation or usage registries at all, so on the written corpus alone whether the idea was settled, parked or quietly superseded could not be determined, and the question was closed only by a first-hand account of a call.~~ Superseded 2026-09-15. #1627 does mention presentation registries, in a comment by SmithSamuelM dated 2026-09-02, answering a direct question about what an `ax` anchor applies to: "This anchor in the KEL only applies when their is not a presentation registry being used by DAG ACDCs" (the misspelling is his). PR #1674 then said in writing, on 2026-09-11, that presentation-registry anchoring "will come in a follow up PR". The conclusion did not change; its evidence class did. What this chapter asserted a fortnight ago on the strength of an unquotable conversation now rests on two written, attributable, dated sources, and the chapter no longer needs the call in order to say the design is alive.
 
@@ -319,7 +319,7 @@ And the code and its design document disagree, in two places, about what a Grant
 
 ## 9. Open questions {#open-questions}
 
-#### Question 1 (answered): ~~Is this live?~~ {#q-live}
+### Question 1 (answered): ~~Is this live?~~ {#q-live}
 
 Answered: yes, and as of 2026-09-15 answerable from written sources. ~~The answer rested on a first-hand report of a call on 2026-09-01, and on the observation that #1627 does not mention presentation registries at all.~~ Both halves of that basis are superseded ([section 8](#adversarial)): Sam wrote about presentation registries in a #1627 comment on 2026-09-02, and PR #1674 stated on 2026-09-11 that presentation-registry anchoring "will come in a follow up PR". The eleven-month silence on #1095 is real and still does not reflect the design's status. What remains open is everything below, none of which those sources address. 2026-10-03: past "live" and into "partly built". keripy `80f77b73b` implements the verifier side for `grant` ([section 7](#keripy-verifier)), and #1098 uses the possibility of a presentation registry as a premise in an unrelated design decision ([section 1](#asymmetry)).
 
@@ -329,7 +329,7 @@ Answered: yes, and as of 2026-09-15 answerable from written sources. ~~The answe
 
 #### Question 3: Does `rd`-in-`a` get disambiguated, and how? {#q-disambiguation}
 
-EGF-declared purpose, restriction to presentation registries in `v1.1`, or left ambiguous. Unresolved in #1613 and blocking any normative text. Still open, and now with a dated negative behind it: at `v1.1` @`2362e48a1` the relevant spec text is byte-identical to `main` @`f0bd097de`, so none of the three resolutions has been taken up in the branch most likely to have carried one ([section 4](#trigger)). What [section 4](#trigger) also newly records raises the stakes — the two readings are mutually exclusive per ACDC and the choice is permanent, so this is not a labelling question. Tracked as open question 7 in [chapter 08, section 13](08-presentation-architectures-and-ipex.md#sec-13). 2026-10-03: resolved in keripy, still open in the specifications. At `80f77b73b` an `a`-section `rd` with a top-level `rd` is a presentation registry, and one without is refused as an unsupported hidden Issuer registry ([section 4](#trigger), [K]). Interoperability now depends on the specifications adopting that rule or rejecting it explicitly.
+EGF-declared purpose, restriction to presentation registries in `v1.1`, or left ambiguous. Unresolved in #1613 and blocking any normative text. Still open, and now with a dated negative behind it: at `v1.1` @`2362e48a1` the relevant spec text is byte-identical to `main` @`f0bd097de`, so none of the three resolutions has been taken up in the branch most likely to have carried one ([section 4](#trigger)). What [section 4](#trigger) also newly records raises the stakes — the two readings are mutually exclusive per ACDC and the choice is permanent, so this is not a labelling question. Tracked as open question 7 in [chapter 08, section 13](08-presentation-architectures-and-ipex.md#q-rdt-coupling). 2026-10-03: resolved in keripy, still open in the specifications. At `80f77b73b` an `a`-section `rd` with a top-level `rd` is a presentation registry, and one without is refused as an unsupported hidden Issuer registry ([section 4](#trigger), [K]). Interoperability now depends on the specifications adopting that rule or rejecting it explicitly.
 
 #### Question 4: Does the exchange need its own `rd`? {#q-exchange-rd}
 
@@ -345,7 +345,7 @@ The current wording binds a registry to "the Issuer AID" (ACDC spec > Registry S
 
 #### Question 7: Who verifies, and against what? {#q-who-verifies}
 
-The design says the Grantee must check the anchor. Against the Issuee's Registrar directly, or via an Observer? [Chapter 05, section 9](05-acdc-and-verifiable-data.md#sec-9) records that Observers are verifier-controlled and watch registrar state — which is exactly the shape this needs — but no source connects them. PR #1674 pairs the two absences without connecting them either, naming "presentation-registry anchoring or observer-based TEL retrieval" as the follow-up work. 2026-10-03: half answered. The Grantee checks it, against a TEL it must already hold locally; retrieval has not arrived, and the tests preload the foreign TEL to "Simulate the future observer retrieval layer" ([section 7.3](#still-absent)). The Observer connection is still unbuilt, and still no written source connects the two.
+The design says the Grantee must check the anchor. Against the Issuee's Registrar directly, or via an Observer? [Chapter 05, section 9](05-acdc-and-verifiable-data.md#registries) records that Observers are verifier-controlled and watch registrar state — which is exactly the shape this needs — but no source connects them. PR #1674 pairs the two absences without connecting them either, naming "presentation-registry anchoring or observer-based TEL retrieval" as the follow-up work. 2026-10-03: half answered. The Grantee checks it, against a TEL it must already hold locally; retrieval has not arrived, and the tests preload the foreign TEL to "Simulate the future observer retrieval layer" ([section 7.3](#still-absent)). The Observer connection is still unbuilt, and still no written source connects the two.
 
 #### Question 8: Two incompatible bespoke origin ACDCs share a name {#q-two-bespoke-origins}
 
