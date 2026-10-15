@@ -189,8 +189,12 @@ def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
     # pathspec is not globbed the way a shell would glob it — and a watch entry of ["*.md"] then
     # yields an empty, perfectly quiet result. That silently emptied `papers` and
     # `keri-security-analysis` out of the corpus and reported ~150 sound quotes as drifted.
-    files = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "--name-only", ref],
-                           capture_output=True, text=True)
+    # -z, because without it git C-quotes any path holding a non-ASCII byte ("Sam Smith \357\275\234
+    # ...srt" in double quotes), which then matches no watch entry. The CONF26 caption titles all carry
+    # a fullwidth bar, so every caption fell through to the working-copy fallback below and a quote was
+    # "verified" against whatever the checkout held rather than against the ref.
+    files = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "-z", "--name-only", ref],
+                           capture_output=True, text=True, encoding="utf-8", errors="surrogateescape")
     if files.returncode != 0:
         return None
     literals = [w.rstrip("/") for w in watch if not any(c in w for c in "*?[") and w != "."]
@@ -204,7 +208,7 @@ def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
             return True
         return any(fnmatch(f, g) or fnmatch(Path(f).name, g) for g in globs)
 
-    wanted = [f for f in files.stdout.split("\n")
+    wanted = [f for f in files.stdout.split("\0")
               if f and wants(f) and Path(f).suffix.lower() in READABLE
               and not (SKIP_DIRS & set(Path(f).parts))]
     # A watched path can be real on disk and absent from the tree. The Dossier spec's `.ref/`

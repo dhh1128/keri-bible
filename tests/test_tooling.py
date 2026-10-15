@@ -111,6 +111,21 @@ class ConvertedFormats(unittest.TestCase):
         for quote in ("more flexibility", "contractually protected", "self-dealing", "selfdealing"):
             self.assertIn(freshness.norm(quote), corpus)
 
+    def test_non_ascii_path_is_read_from_the_ref_not_the_checkout(self):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            git = ["git", "-C", str(d), "-c", "user.name=t", "-c", "user.email=t@t"]
+            subprocess.run(["git", "init", "-q", "-b", "main", str(d)], check=True)
+            (d / "subtitles").mkdir()
+            talk = d / "subtitles" / "Sam Smith \uff5c The Future of KERI.srt"
+            talk.write_text(self.SRT)
+            subprocess.run(git + ["add", "."], check=True)
+            subprocess.run(git + ["commit", "-q", "-m", "x"], check=True)
+            talk.write_text("1\n00:00:01,000 --> 00:00:02,000\nonly in the working copy\n")
+            text = freshness.read_ref(d, "main", ["subtitles"])
+        self.assertIn("service the controller chooses for itself", text)
+        self.assertNotIn("only in the working copy", text)
+
     @unittest.skipUnless(shutil.which("pdftotext"), "pdftotext (poppler-utils) not installed")
     def test_pdf_and_srt_read_from_a_git_ref(self):
         with tempfile.TemporaryDirectory() as d:
