@@ -177,7 +177,7 @@ class PageHash(unittest.TestCase):
 
     PAGE = ('<html><head><script>var versionArr = [[\'C63A-20_{v}.html\',\'Current Version\']];\n'
             'var versionDefault="C63A-20_{v}";</script></head><body>{banner} Chapter 20</body></html>')
-    MATCH = r'var versionArr = \[.*?\];|var versionDefault="[^"]*"'
+    MATCH = [r'var versionArr = \[.*?\];', r'var versionDefault="[^"]*"']
 
     def h(self, body, match=None):
         from unittest import mock
@@ -193,6 +193,17 @@ class PageHash(unittest.TestCase):
         a = self.PAGE.format(v="2026", banner="")
         self.assertNotEqual(self.h(a, self.MATCH), self.h(self.PAGE.format(v="2027", banner=""), self.MATCH))
         self.assertEqual(self.h(a, self.MATCH), self.h(self.PAGE.format(v="2026", banner="Playback down today"), self.MATCH))
+
+    def test_commented_out_assignment_does_not_satisfy_the_pattern(self):
+        stale = '<!-- var versionArr = [[old]]; var versionDefault="old"; -->'
+        redesigned = stale + '<script>const versionArr = [["C63A-20_2027.html"]];</script>'
+        with self.assertRaises(detect.SourceError):
+            self.h(redesigned, self.MATCH)
+
+    def test_two_distinct_live_values_is_an_error(self):
+        page = self.PAGE.format(v="2026", banner="") + '<script>var versionDefault="C63A-20_2027";</script>'
+        with self.assertRaises(detect.SourceError):
+            self.h(page, self.MATCH)
 
     def test_match_that_finds_nothing_is_an_error(self):
         with self.assertRaises(detect.SourceError):

@@ -301,22 +301,28 @@ def fetch_page(url: str) -> str:
         return r.read().decode("utf-8", "replace")
 
 
-def page_hash(url: str, match: str | None = None):
+def page_hash(url: str, match=None):
     """Content hash of a page: its visible text, or only what `match` selects from the raw HTML.
 
     Visible text is the default because a cache-buster or a rotating nonce in a script must not read
     as a change. Some pages keep the fact worth watching inside a script, though: le.utah.gov serves
     each Code chapter as a shell whose version list is JavaScript, so an amendment leaves the visible
-    text untouched. For those, `match` names the fragment to hash, and a pattern that matches nothing
-    is an error rather than a hash of the empty string, so a redesigned page cannot go quiet.
+    text untouched. For those, `match` is a regex, or a list of them, run over the HTML with comments
+    removed. Each must match exactly one distinct value: none means the page has changed shape, and
+    more than one means it is ambiguous which is live, and either is an error rather than a hash,
+    so a redesigned page cannot go quiet behind a stale assignment.
     """
     body = fetch_page(url)
     if match:
-        found = re.findall(match, body, re.S)
-        if not found:
-            raise SourceError(f"{url}: watch pattern {match!r} matched nothing; the page has changed shape")
-        picked = "\n".join(f if isinstance(f, str) else "".join(f) for f in found)
-        return hashlib.sha256(picked.encode()).hexdigest()[:16]
+        live = re.sub(r"(?s)<!--.*?-->", " ", body)
+        picked = []
+        for pattern in ([match] if isinstance(match, str) else match):
+            found = {f if isinstance(f, str) else "".join(f) for f in re.findall(pattern, live, re.S)}
+            if len(found) != 1:
+                raise SourceError(f"{url}: watch pattern {pattern!r} matched {len(found)} distinct values, "
+                                  f"not one; the page has changed shape")
+            picked.append(found.pop())
+        return hashlib.sha256("\n".join(picked).encode()).hexdigest()[:16]
     # Strip scripts/styles and collapse whitespace so a cache-buster or a rotating nonce does not
     # read as a content change.
     body = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", body)

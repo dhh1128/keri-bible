@@ -14,8 +14,9 @@
 #   path          repo location relative to $CODE_ROOT (default ~/code), per ~/code/repos.yaml
 #   repo, repos   owner/name of a GitHub source; gh-issues takes either one `repo` or a `repos` list
 #   urls          web sources: each a URL, hashed on its visible text, or {url, match}, hashed on
-#                 what the regex `match` selects from the raw HTML, for a page whose changing part is
-#                 inside a script
+#                 what `match` (a regex or a list of them) selects from the HTML with comments
+#                 removed, for a page whose changing part is inside a script. Each regex must match
+#                 exactly one distinct value, or the source is an error
 #   since         gh-* conversation sources: report items updated on or after this date
 #   primary_authors  gh-discussions and gh-issues: logins whose threads are flagged, and for
 #                 gh-issues the only threads that make the source material
@@ -636,7 +637,7 @@ sources:
     urls:
       # The version list is JavaScript, so the visible text would never change; hash it instead.
       - url: https://le.utah.gov/xcode/Title63A/Chapter20/63A-20.html
-        match: 'var versionArr = \[.*?\];|var versionDefault="[^"]*"'
+        match: ['var versionArr = \[.*?\];', 'var versionDefault="[^"]*"']
     check: quarterly
     feeds: [raw/20-identity-theory-reputation-sedi.md]
     chapters: ["06"]
