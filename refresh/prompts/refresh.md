@@ -12,7 +12,7 @@ Classify every candidate in `delta.md` into exactly one class, with a one-line r
 
 - **doctrinal** — changes what the bible asserts, or adds something it lacks. Goes to mining.
 - **corroborative** — new evidence for a claim already made. Goes to mining, usually cheaply.
-- **tier movement** — same claim, different provenance: v1.1 text reaching the standardizing branch (`[N1.1]` → `[N]`), a discussion design reaching a spec (`[P]` → `[N1.1]`), an implementation landing (`[P]` → `[K]`). Cheap to apply and easy to miss by hand — this is much of why the job exists.
+- **marker change** — same claim, different provenance: v1.1 text reaching the standardizing branch (`[spec-next]` → `[spec]`), a discussion design reaching a spec (`[proposal]` → `[spec-next]`), an implementation landing (`[proposal]` → `[code]`). Cheap to apply and easy to miss by hand — this is much of why the job exists.
 - **re-anchor** — the claim stands, the line numbers moved. Skip mining, go straight to phase 4.
 - **noise** — CI, dependencies, typos, formatting, unrelated subsystems. Advances `last_scanned` only.
 
@@ -43,7 +43,7 @@ If a topic has no note and clearly warrants one, create `raw/NN-<topic>.md` foll
 
 One subagent per affected chapter, at most 4 concurrent, each owning exactly one file.
 
-- Update `bible/NN-*.md` from its notes. Re-evaluate tier markers against the new pins, update `@<commit>` stamps and any status paragraph, and add `[N1.1]` to the chapter's marker key where the chapter now needs it.
+- Update `bible/NN-*.md` from its notes. Re-evaluate markers against the new pins, update `@<commit>` stamps and any status paragraph, and add `[spec-next]` to the chapter's marker key where the chapter now needs it.
 - Update the shibboleth table in `bible/07-shibboleths-and-anti-patterns.md` when a refresh creates, retires, or sharpens one.
 - Update `keri-doctrine.md` **only where a load-bearing claim actually moves**. It is a house-style file a review panel reasons in, not a changelog; most months it needs nothing but a citation-durability stamp. When it does change, say so prominently in your report — a sync into `~/code/wot/keri-review-panel` is owed, and the PR body has to ask for it.
 - Refresh the citation-durability paragraph in `keri-doctrine.md` with the new pins, including a partial-re-anchor note if only part of the corpus was re-read. Being specific about what was *not* re-checked is the point of that paragraph.
@@ -68,7 +68,7 @@ Anything you cannot settle goes under `JUDGMENT NEEDED` in the report rather tha
 
 1. **Sources advanced** — `old → new` per source, `last_mined` distinguished from `last_scanned`.
 2. **Doctrinal changes** — per chapter, what a reader of the old version would now say differently.
-3. **Tier movement** — every marker change, with its evidence. A `[N1.1]` → `[N]` upgrade is a statement that something became standard; write it as one.
+3. **Marker change** — every marker change, with its evidence. A `[spec-next]` → `[spec]` upgrade is a statement that something became standard; write it as one.
 4. **Re-anchored only** — citations whose line numbers moved and whose claims did not.
 5. **Reviewed and dismissed** — counts by class, and the one-line reason for anything a reader might expect to have mattered.
 6. **Cuts** — quotes removed for failing verification, and what each used to support.

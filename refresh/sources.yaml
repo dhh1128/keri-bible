@@ -13,9 +13,9 @@
 #   watch         paths within the repo that carry doctrine; changes elsewhere are noise
 #   tier          hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
 #   branches      one entry per tracked line. Specs carry TWO, and they are not interchangeable:
-#                   role: standardizing  — what the community is standardizing now. Marker [N].
+#                   role: standardizing  — what the community is standardizing now. Marker [spec].
 #                   role: forward        — new thinking likely, not certain, to fold into the
-#                                          next standard. Marker [N1.1].
+#                                          next standard. Marker [spec-next].
 #                 last_scanned advances every run. last_mined advances ONLY when a note was
 #                 actually re-read against that commit. Never advance last_mined for a change
 #                 triaged as noise — the manifest must not claim a reading nobody did.
@@ -45,10 +45,10 @@ sources:
     watch: [spec/spec-body.md, spec/termdefs.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
     tier: hot
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: fbdd4a615, date: 2026-10-03},
          last_mined:   {commit: fbdd4a615, date: 2026-09-15}}
-      - {name: v1.1, role: forward, marker: "[N1.1]",
+      - {name: v1.1, role: forward, marker: "[spec-next]",
          last_scanned: {commit: 3753f3797, date: 2026-10-03},
          last_mined:   {commit: 3753f3797, date: 2026-09-15}}
     feeds: [raw/01-keri-spec.md]
@@ -57,7 +57,7 @@ sources:
       Both lines mined 2026-09-15 and the note now carries its own pins. The branches have DIVERGED —
       neither commit is an ancestor of the other — so a citation here must name its branch. Note also
       that spec-head.md reads "Specification Status: v1.1" on BOTH branches, so this corpus's
-      [N]/[N1.1] split tracks the git line, not the document's own version label.
+      [spec]/[spec-next] split tracks the git line, not the document's own version label.
 
   - id: cesr-spec
     kind: git
@@ -66,10 +66,10 @@ sources:
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
     tier: hot
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: bad6edd84, date: 2026-10-03},
          last_mined:   {commit: bad6edd84, date: 2026-09-15}}
-      - {name: v1.1, role: forward, marker: "[N1.1]",
+      - {name: v1.1, role: forward, marker: "[spec-next]",
          last_scanned: {commit: 65fd7518b, date: 2026-10-03},
          last_mined:   {commit: 65fd7518b, date: 2026-09-15}}
     feeds: [raw/02-cesr-spec.md]
@@ -87,10 +87,10 @@ sources:
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
     tier: hot
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: f0bd097de, date: 2026-10-03},
          last_mined:   {commit: f0bd097de, date: 2026-09-15}}
-      - {name: v1.1, role: forward, marker: "[N1.1]",
+      - {name: v1.1, role: forward, marker: "[spec-next]",
          last_scanned: {commit: 2362e48a1, date: 2026-10-03},
          last_mined:   {commit: 2362e48a1, date: 2026-09-15}}
     feeds: [raw/03-acdc-spec.md]
@@ -107,7 +107,7 @@ sources:
     watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 3ff1b3202, date: 2026-10-03},
          last_mined:   {commit: b9227753c, date: 2026-09-15}}
     feeds: [raw/04-dossier-spec.md]
@@ -122,7 +122,7 @@ sources:
     watch: [src/keri]
     tier: hot
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 80f77b73b, date: 2026-10-03},
          last_mined:   {commit: 80f77b73b, date: 2026-10-03}}
     feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md]
@@ -143,7 +143,7 @@ sources:
     watch: ["."]
     tier: warm
     branches:
-      - {name: knowledge, role: standardizing, marker: "[K]",
+      - {name: knowledge, role: standardizing, marker: "[code]",
          last_scanned: {commit: 9489ac9bd, date: 2026-10-03},
          last_mined:   {commit: 9489ac9bd, date: 2026-09-15}}
     feeds: [raw/08-keripy-kb.md]
@@ -162,7 +162,7 @@ sources:
     watch: [src/keria]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 928ce26a4, date: 2026-10-03},
          last_mined:   {commit: 928ce26a4, date: 2026-10-03}}
     feeds: [raw/10-keria-signify.md]
@@ -178,7 +178,7 @@ sources:
     watch: [src]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 5a174b545, date: 2026-10-03},
          last_mined:   {commit: 5a174b545, date: 2026-10-03}}
     feeds: [raw/10-keria-signify.md]
@@ -201,13 +201,13 @@ sources:
     watch: ["*.md"]
     tier: hot
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 68a5e2f76, date: 2026-10-03},
          last_mined:   {commit: 68a5e2f76, date: 2026-10-03}}
     feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md]
     chapters: ["01", "02", "03", "04", "05", "06", "07"]
     caveat: >-
-      Daniel's own framing. Marker [N] is wrong here in the specification sense — these are
+      Daniel's own framing. Marker [spec] is wrong here in the specification sense — these are
       authored positions, not normative text. Chapters cite them as the author's framing and
       should keep doing so; the marker field is unused for this source.
 
@@ -218,7 +218,7 @@ sources:
     watch: ["*.md"]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 149fa6c35, date: 2026-10-03},
          last_mined:   {commit: 149fa6c35, date: 2026-07-17}}
     feeds: [raw/07-security-analysis.md]
@@ -237,7 +237,7 @@ sources:
     watch: [whitepapers/kram.md]
     tier: warm
     branches:
-      - {name: master, role: standardizing, marker: "[P]",
+      - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 67550b477, date: 2026-10-03},
          last_mined:   {commit: 67550b477, date: 2026-09-15}}
     feeds: [raw/15-kram.md]
@@ -271,7 +271,7 @@ sources:
     feeds: []
     chapters: ["03", "04", "05", "08", "09", "10"]
     caveat: >-
-      Merged PRs are the tier-movement signal for [P] → [K]. They feed triage rather than a note of
+      Merged PRs are the tier-movement signal for [proposal] → [code]. They feed triage rather than a note of
       their own; the note that moves is whichever one carries the design they implement.
 
   - id: conf26-subtitles
@@ -281,7 +281,7 @@ sources:
     watch: [subtitles]
     tier: cold
     branches:
-      - {name: main, role: standardizing, marker: "[P]",
+      - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 15f1e91a7, date: 2026-10-03},
          last_mined:   {commit: unknown, date: 2026-09-01}}
     feeds: [raw/14-kericonf-2026.md]
@@ -299,7 +299,7 @@ sources:
     watch: ["."]
     tier: cold
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cfcbdcc7a, date: 2026-10-03},
          last_mined:   {commit: cfcbdcc7a, date: 2026-10-03}}
     feeds: [raw/11-credentials.md]
@@ -312,7 +312,7 @@ sources:
     watch: ["."]
     tier: cold
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 95a07e544, date: 2026-10-03},
          last_mined:   {commit: 95a07e544, date: 2026-10-03}}
     feeds: [raw/11-credentials.md]
@@ -325,7 +325,7 @@ sources:
     watch: [docs]
     tier: cold
     branches:
-      - {name: main, role: standardizing, marker: "[K]",
+      - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cb758b1b5, date: 2026-10-03},
          last_mined:   {commit: unknown}}
     feeds: [raw/12-origin-security.md]

@@ -4,10 +4,10 @@
 
 **Pinned commits (mined 2026-09-15):**
 
-- **`main`** — the standardizing line, marker **`[N]`** — at **`bad6edd84`** (`bad6edd84f928fe1e77a722edbdd829e0878377f`, 2026-08-28, "Merge pull request #174 from kordwarshuis/fix/fixed-spec-up-t-version"). 1,565 lines.
-- **`v1.1`** — the forward branch, marker **`[N1.1]`** — at **`65fd7518b`** (`65fd7518b6fa318ef3fc700a824b18112b8392e2`, 2026-08-26, "Merge pull request #172 from kordwarshuis/v1.1"). 1,634 lines. `main` and `v1.1` are **divergent**, not ancestor/descendant; their merge base is `7a6adca67`. Neither is reachable from the other.
+- **`main`** — the standardizing line, marker **`[spec]`** — at **`bad6edd84`** (`bad6edd84f928fe1e77a722edbdd829e0878377f`, 2026-08-28, "Merge pull request #174 from kordwarshuis/fix/fixed-spec-up-t-version"). 1,565 lines.
+- **`v1.1`** — the forward branch, marker **`[spec-next]`** — at **`65fd7518b`** (`65fd7518b6fa318ef3fc700a824b18112b8392e2`, 2026-08-26, "Merge pull request #172 from kordwarshuis/v1.1"). 1,634 lines. `main` and `v1.1` are **divergent**, not ancestor/descendant; their merge base is `7a6adca67`. Neither is reachable from the other.
 
-**Marker key for this note.** Most of this note predates tier marking and its claims are `[N]` — present on the standardizing line. Where a claim is marked explicitly, the marker is load-bearing and the distinction was checked at both pins in this pass. Unmarked claims in sections listed below as *re-anchored* are `[N]` at `bad6edd84`; unmarked claims in sections listed as *not re-read* still carry line hints from the retracted `d35125e` pin and should be treated as unverified line numbers with unverified tier, though their substance was not contradicted by anything read in this pass.
+**Marker key for this note.** Most of this note predates tier marking and its claims are `[spec]` — present on the standardizing line. Where a claim is marked explicitly, the marker is load-bearing and the distinction was checked at both pins in this pass. Unmarked claims in sections listed below as *re-anchored* are `[spec]` at `bad6edd84`; unmarked claims in sections listed as *not re-read* still carry line hints from the retracted `d35125e` pin and should be treated as unverified line numbers with unverified tier, though their substance was not contradicted by anything read in this pass.
 
 ## What the 2026-09-15 pass covered
 
@@ -82,15 +82,15 @@
   - `[0-9]` = selectors for the other 10 tables.
   - "The first character of any Primitive MUST be either a selector or a 1-character code type." (L484.)
 - **CRYPTO AGILITY doctrine — how a new algorithm claims an unused slot:** The derivation/type code encodes the crypto suite. "The CESR derivation code enables cryptographic digest algorithm agility in systems that use SAIDs as content addresses. Each serialization may use a different cryptographic digest algorithm as indicated by its derivation code. This provides interoperable future-proofing." (§Self-addressing identifier (SAID), L1180 at `main` `bad6edd84`, re-verified.) A new algorithm = a new *entry* (previously-unused code point) in a table; old parsers that don't know the code simply don't recognize that primitive but the *framing math is unchanged*, so the stream doesn't desync for primitives they DO know.
-- **Backward-compat semantics of adding codes `[N]` (§Protocol genus/version codes, L618–L622 at `main` `bad6edd84`, all three re-verified verbatim and unmoved):** this is the asymmetry the rest of the corpus leans on, and it is the reason §14a's post-quantum codes are a *minor* change rather than a major one, if and when they land.
+- **Backward-compat semantics of adding codes `[spec]` (§Protocol genus/version codes, L618–L622 at `main` `bad6edd84`, all three re-verified verbatim and unmoved):** this is the asymmetry the rest of the corpus leans on, and it is the reason §14a's post-quantum codes are a *minor* change rather than a major one, if and when they land.
   - "Any addition of a new code to the code table is backward-breaking in at least one direction... New implementations with the new codes can accept streams from old implementations, but old ones will break if they receive the new ones." (L618.)
   - **Major change** = "a code's meaning changes" → increment MAJOR version → breaks BOTH directions. (L620.)
   - **Minor change** = "a code is added to a table" → increment MINOR → only breaks new-sender→old-receiver; new receiver still handles old streams. (L622.) More minor room than major deliberately (4096 minor per major).
-- **Entry policy `[N]` (§Code table entry policy, L783 at `main` `bad6edd84`):** first-needed-first-entered; compact tables require ≥128-bit crypto strength — "This precludes the entry of many weak cryptographic suites into the compact tables." — and admit "only best-of-class cryptographic operations along with common non-Cryptographic Primitive types."
+- **Entry policy `[spec]` (§Code table entry policy, L783 at `main` `bad6edd84`):** first-needed-first-entered; compact tables require ≥128-bit crypto strength — "This precludes the entry of many weak cryptographic suites into the compact tables." — and admit "only best-of-class cryptographic operations along with common non-Cryptographic Primitive types."
   - On post-quantum, the standardizing line as of `bad6edd84` says only: "there is the expectation that the National Institute of Standards and Technology (NIST) soon will approve standardized post-quantum resistant cryptographic operations." Falcon is named once, as a candidate: "Falcon appears to be among the leading candidates with open-source code already available."
   - ~~Post-quantum FN-DSA (Falcon) primitives are being introduced "in successive updates" — chosen for most-compact PQ sigs/keys, "of particular interest to bandwidth-sensitive protocols such as KERI."~~ **SUPERSEDED 2026-09-15.** Both quoted fragments came from the unreachable `d35125e`, not from any branch tip, and neither string appears anywhere in `spec/spec-body.md` at `main` `bad6edd84`. The standardizing line's wording is *older*, not newer, than what this note recorded — it still anticipates NIST approval that in fact landed in August 2024. The forward branch replaced this paragraph outright with a scarcity argument and a normative placement rule; see §5a and §13a.
 
-### 5a. Compact-table scarcity as normative policy `[N1.1]` (v1.1 `65fd7518b`, §Code table entry policy, L785–L791)
+### 5a. Compact-table scarcity as normative policy `[spec-next]` (v1.1 `65fd7518b`, §Code table entry policy, L785–L791)
 
 This is new doctrine on the forward branch and has **no counterpart on `main` at `bad6edd84`**. It converts what was an aesthetic preference (§1, "minimally sufficient strength, no waste") into a normative allocation rule for the code-table namespace itself.
 
@@ -224,7 +224,7 @@ Two major raw-primitive types: **fixed-length** and **variable-length**. Plus co
 
 ## 13. Post-Quantum Security (doctrine + pre-rotation link)
 
-### 13a. The hash-firewall doctrine — this part is `[N]` and unchanged
+### 13a. The hash-firewall doctrine — this part is `[spec]` and unchanged
 
 Present verbatim on both branches. §Post-Quantum Security, L1501–L1506 at `main` `bad6edd84`; identical text at L1544–L1549 on `v1.1` `65fd7518b`.
 
@@ -249,7 +249,7 @@ Present verbatim on both branches. §Post-Quantum Security, L1501–L1506 at `ma
 
 **The general lesson, and it is not a small one.** A pin that resolves is not a pin that is citable. `git rev-parse` succeeds on any object still in the local store, including one on a deleted PR branch, and a mining pass that only checks "does this SHA resolve" will happily anchor a claim to a commit nobody else can fetch. The reachability check — `git branch -a --contains <sha>`, or `git for-each-ref --contains <sha>` — is the one that answers "can a reader get here". Run it on every pin before mining, not after.
 
-### 13c. The v1.1 post-quantum treatment `[N1.1]` (§Post-Quantum Cryptographic Primitives, L1551–L1559 at `65fd7518b`)
+### 13c. The v1.1 post-quantum treatment `[spec-next]` (§Post-Quantum Cryptographic Primitives, L1551–L1559 at `65fd7518b`)
 
 A subsection with no counterpart on `main`. Its argumentative shape matters as much as its codes: it opens by naming the limit of the hash firewall rather than by announcing new codes.
 
@@ -262,11 +262,11 @@ A subsection with no counterpart on `main`. Its argumentative shape matters as m
   2. **Fixed-field embedding.** "it prevents a signature from occupying a fixed-size field in an enclosing verifiable data structure."
   3. **A side channel, hedged.** "Signature length in the variable-length format has also been examined as a possible side channel, although the significance of that finding is contested." The spec's own hedge; repeat it as one.
   - The trade is priced: "A fixed encoding forecloses all three questions at a cost of at most a few hundred bytes," against a variable format that "would save a few percent on average."
-- **The MTU argument — why FN-DSA is first among the three.** "Its raw signatures, at 666 and 1280 bytes, are the only post-quantum signatures defined here that are smaller than a standard 1500-byte Ethernet MTU" (L1557); the same sentence adds that "the smallest ML-DSA signature is 2420 bytes." And: "This matters for protocols that aim to carry a signed message in a single datagram." (L1557.) This is the surviving, citable form of the retracted "of particular interest to bandwidth-sensitive protocols such as KERI" — same argument, `[N1.1]` rather than `[N]`, and with the number attached.
+- **The MTU argument — why FN-DSA is first among the three.** "Its raw signatures, at 666 and 1280 bytes, are the only post-quantum signatures defined here that are smaller than a standard 1500-byte Ethernet MTU" (L1557); the same sentence adds that "the smallest ML-DSA signature is 2420 bytes." And: "This matters for protocols that aim to carry a signed message in a single datagram." (L1557.) This is the surviving, citable form of the retracted "of particular interest to bandwidth-sensitive protocols such as KERI" — same argument, `[spec-next]` rather than `[spec]`, and with the number attached.
 - **Diversity of security argument is the reason to keep ML-DSA despite its size.** Its "Module-LWE construction with Fiat-Shamir-with-aborts rests on a different security argument than FN-DSA's NTRU-lattice hash-and-sign construction, so the two do not fail together." (L1557.) A cryptanalytic break of one lattice family is not assumed to take both.
 - **SLH-DSA is the conservative floor, priced out of the hot path.** It is "the most conservative of the three, resting only on the security of its underlying hash function" (L1557), "but its signatures range from 7,856 to 29,792 bytes in the parameter sets defined here" (L1557). The spec's own conclusion: "That makes it impractical for high-volume streams and appropriate mainly for long-lived, infrequently exercised keys." (L1557.)
 
-### 13d. No code for "digest of a post-quantum public key" — a deliberate refusal `[N1.1]` (L1559)
+### 13d. No code for "digest of a post-quantum public key" — a deliberate refusal `[spec-next]` (L1559)
 
 The clearest statement in either branch of CESR's separation between what a primitive *is* and what it is *for*, and directly relevant to how an AID over a large PQ key is meant to be built.
 
@@ -274,7 +274,7 @@ The clearest statement in either branch of CESR's separation between what a prim
 - **Reason one, layering.** "Introducing a code that means 'digest of a public key' would mix the semantics of a Primitive's use with the semantics of its cryptographic algorithm, which this specification otherwise avoids." (L1559.) The derivation code names the algorithm; context names the role. Compare §5's crypto-agility doctrine, which is the same separation seen from the other side.
 - **Reason two, and it is the sharper one: such a code would not buy what it appears to buy.** "A compact identifier derived from a large post-quantum public key is already available" (L1559). The identifier it means is one "whose derivation is a digest of an inception event, rather than a digest of a key" (L1559), which the spec says "is exactly as compact, requires no new code, and carries the key itself in an event that is already defined" (L1559). The self-addressing inception AID already solves "compact identifier for a large key"; a digest-of-key code would be a second, worse mechanism for a solved problem.
 
-### 13e. Open items the forward branch flags itself `[N1.1]`
+### 13e. Open items the forward branch flags itself `[spec-next]`
 
 Two `::: issue` blocks at the end of the PQ subsection, L1561–L1567 at `65fd7518b`:
 
@@ -283,7 +283,7 @@ Two `::: issue` blocks at the end of the PQ subsection, L1561–L1567 at `65fd75
 
 A third, older `::: issue` block — "[Post-quantum cryptographic operations]", <https://github.com/trustoverip/kswg-cesr-specification/issues/14> — sits in §Large Variable-length Raw-size Tables at **L559–L560 on both branches**, unchanged. It is the pre-existing placeholder; nothing in this pass closed it.
 
-### 13f. Bibliography additions `[N1.1]` (L1595–L1601 at `65fd7518b`)
+### 13f. Bibliography additions `[spec-next]` (L1595–L1601 at `65fd7518b`)
 
 Four normative entries with no counterpart on `main` (the string "FIPS" does not appear anywhere in `spec/spec-body.md` at `bad6edd84`):
 
@@ -296,7 +296,7 @@ Four normative entries with no counterpart on `main` (the string "FIPS" does not
 
 ## 14. Key code-table entries (KERI/ACDC genus `-_AAACAA`, v2.00)
 
-- **Genus/version codes `[N]`:** `-_AAABAA` = KERI/ACDC v1.00; `-_AAACAA` = v2.00. (§KERI/ACDC protocol genus version table, L865–L866 at `main` `bad6edd84`, re-verified.) "Hopefully, there will never be a Version 3.00 because 2.00 was designed properly." (L874, re-verified.)
+- **Genus/version codes `[spec]`:** `-_AAABAA` = KERI/ACDC v1.00; `-_AAACAA` = v2.00. (§KERI/ACDC protocol genus version table, L865–L866 at `main` `bad6edd84`, re-verified.) "Hopefully, there will never be a Version 3.00 because 2.00 was designed properly." (L874, re-verified.)
 - **Universal count codes (all genera MUST have):** overrideable — `-A`/`--A` generic pipeline, `-B`/`--B` message+attachments, `-C`/`--C` attachments-only. Non-overrideable — `-D` datagram stream segment, `-E` ESSR wrapper signable, `-F` native fixed-field signable, `-G` native field-map signable, `-H` enclosed non-native message, `-I` generic field map mixed types, `-J` generic list mixed types. (L826–854.)
 - **KERI/ACDC genus-specific count codes** (L909–L946; row inventory *not* re-read this pass, but the region was spot-checked at `main` `bad6edd84` and `-S#####` still sits at L926): `-K` indexed controller sig group, `-L` indexed witness sig group, `-M` nontransferable receipt couples (pre+sig), `-N` transferable receipt quadruples (pre+snu+dig+sig), `-O` first-seen replay couples (fnu+dt), `-P` pathed material group, `-Q` digest seal singles, `-R` Merkle tree root seal, `-S` issuer/delegator/transaction event seal source couple (snu+dig), `-T` anchoring event seal triple (pre+snu+dig), `-U` last event seal singles (aid+dig), `-V` backer registrar identifier seal couples (brid+dig), `-W` typed digest seal couples (type+dig), `-X` transferable indexed sig group, `-Y` transferable last indexed sig group, `-Z` ESSR/TSP payload, `-a`/`-b`/`-c` blinded state groups.
 - **Primitive matter codes (1-char, L951–L985 at `main` `bad6edd84`):** `A` Ed25519 seed, `B` Ed25519 non-transferable prefix pubkey, `C` X25519 enc key, `D` Ed25519 verification key, `E` Blake3-256 digest, `F` Blake2b-256, `G` Blake2s-256, `H` SHA3-256, `I` SHA2-256, `J` secp256k1 seed, `K` Ed448 seed, `L` X448 public encryption key, `O` X25519 private decryption key/seed, `P` X25519 cipher of qb64 seed, `Q` secp256r1 seed. `M/N/R/S/T/U` = various fixed b2 numbers; `V/W` = Label1/Label2; `X/Y/Z` = Tag3/Tag7/Tag11 special values; **`a` blinding factor is the last entry in the table.**
@@ -304,7 +304,7 @@ Four normative entries with no counterpart on `main` (the string "FIPS" does not
 - **2-char (L986–L1005 at `main` `bad6edd84`):** `0A` salt/seed/nonce/sn 128-bit, `0B` Ed25519 signature, `0C` secp256k1 sig, `0D` Blake3-512, `0E` Blake2b-512, `0F` SHA3-512, `0G` SHA2-512, `0H` long 4-byte number, `0I` secp256r1 signature, `0J`–`0O` tags, `0P`–`0S` gram heads. Table ends at `0S` on both branches; no PQ entries.
 - **4-char fixed, `1` selector, at `main` `bad6edd84` (L1007–L1011ff):** `1AAA`–`1AAN` are the pre-existing entries (secp256k1 and Ed448 keys/sigs, Tag4, DateTime, X25519 salt cipher, secp256r1 keys, Null, No, Yes, Tag8). `1AAO` and `1AAP` are consumed by the Variable Raw Size Codes group (escape code; empty value). **`1AAQ` onward is unassigned on `main`.** This is why the v1.1 PQ block starts at `1AAQ`.
 
-### 14a. Post-quantum code-table entries `[N1.1]` (v1.1 `65fd7518b`, §Master code table for genus/version `-_AAACAA`)
+### 14a. Post-quantum code-table entries `[spec-next]` (v1.1 `65fd7518b`, §Master code table for genus/version `-_AAACAA`)
 
 These rows exist **only on `v1.1`**. The last column is total qb64 length in characters, which is what a chapter should quote when it wants to make the size argument concrete. Table assignment follows raw-size-mod-3 per §5a, which is why a single algorithm's key and signature usually land in different tables.
 
@@ -351,7 +351,7 @@ These rows exist **only on `v1.1`**. The last column is total qb64 length in cha
 
 ## 16. Notable exact short quotes (<=25 words, with citation)
 
-### 16a. `[N]` — all re-verified verbatim at `main` `bad6edd84`, line hints current
+### 16a. `[spec]` — all re-verified verbatim at `main` `bad6edd84`, line hints current
 
 - "CESR is a dual text-binary encoding format that has the unique property of text-binary concatenation composability." — §Self-addressing Data (SAD) Path Signatures, L1390.
 - "All compliant encoded Primitives MUST be Composable. All compliant encoded Primitives MUST be self-framing." — §Composability, L5.
@@ -371,7 +371,7 @@ These rows exist **only on `v1.1`**. The last column is total qb64 length in cha
 - "A Major change occurs when a code's meaning changes. When a Major change occurs, the Major version number MUST be incremented." — §Protocol genus/version codes, L620.
 - "the parser MUST only treat the genus/version count code, especially as an override, when it appears as the first count code within the framed material" — §Universal Code table genus/version codes that allow genus/version override, L816.
 
-### 16b. `[N1.1]` — new at `v1.1` `65fd7518b`, absent from `main` at `bad6edd84`
+### 16b. `[spec-next]` — new at `v1.1` `65fd7518b`, absent from `main` at `bad6edd84`
 
 - "Post-quantum codes MUST therefore be placed in the four-character fixed tables given by the `1`, `2`, and `3` selectors" — §Code table entry policy, L785. The sentence continues "and MUST NOT consume entries in the one- or two-character tables"; quote whichever half the argument needs, since the full sentence runs 30 words.
 - "Which of the three four-character fixed tables a given Primitive occupies is not a matter of choice." — §Code table entry policy, L787.
@@ -423,10 +423,10 @@ For the sections **not** re-read this pass, use these observed offsets as a star
 
 ## Open questions and unresolved tensions
 
-1. **Does the `v1.1` post-quantum work reach `main`, and on what timetable?** The branches are divergent (merge base `7a6adca67`), and `main` was merged as recently as 2026-08-28 without any of it. Nothing read this pass states an intent to merge. Until it does, every PQ code in §14a is `[N1.1]` and **must not** be cited as normative. This is the single most likely place for a future refresh to over-claim.
+1. **Does the `v1.1` post-quantum work reach `main`, and on what timetable?** The branches are divergent (merge base `7a6adca67`), and `main` was merged as recently as 2026-08-28 without any of it. Nothing read this pass states an intent to merge. Until it does, every PQ code in §14a is `[spec-next]` and **must not** be cited as normative. This is the single most likely place for a future refresh to over-claim.
 2. **Why is the standardizing line's entry-policy paragraph *older* than reality?** At `bad6edd84` it still says NIST "soon will approve" post-quantum standards that were finalized in August 2024, and names Falcon as a candidate. That is not a stale line number; it is stale content on the branch the community is standardizing. Worth watching whether it is a merge oversight or a deliberate freeze.
 3. **The `f`-variant exclusion is an argument, not a measurement.** `v1.1` L791 rejects the SLH-DSA fast-signing variants because signatures are "transmitted and archived far more often than they are generated". That is plausible for KERI's event stream and much less obviously true for a high-frequency signer with constrained CPU. The spec states it as settled; the corpus should repeat it as the spec's reasoning, not as an established fact about all deployments.
 4. **The side-channel claim is hedged by the spec itself and must stay hedged.** L1555: the finding's "significance ... is contested". Do not let a chapter promote this to a reason the variable-length format is insecure.
 5. **What does an FN-DSA-keyed AID actually look like end to end?** §13d says the answer is an inception-event digest rather than a key digest, which is a design position with real consequences for non-transferable identifiers (a non-transferable prefix *is* the key, so a 1200-character FN-DSA key would be the whole AID). The spec does not work this case. Unresolved; flagged for the KERI-spec and keripy notes rather than settled here.
-6. **No implementation evidence was sought this pass.** Whether keripy or signify-ts recognizes any of the §14a codes is unknown and unclaimed. Nothing here is `[K]`.
+6. **No implementation evidence was sought this pass.** Whether keripy or signify-ts recognizes any of the §14a codes is unknown and unclaimed. Nothing here is `[code]`.
 7. **`d35125e` remains readable in one local clone only.** It is a dangling object in `/home/daniel/code/me/kswg-cesr-specification` and will disappear on any `git gc`. If the record of what it contained matters beyond the supersession notes in §13b and §14, it needs preserving deliberately; this note does not preserve the file, only the claims.

@@ -14,7 +14,7 @@
 
 This file is a new provenance class for the corpus, and it needs its own handling rules.
 
-**These are `[SAM-DIRECT]`, and that is why they matter.** `README.md`'s tier scheme notes that the corpus holds only two `[SAM-DIRECT]` instances — the keri.one site material and one personal communication about PQ integration — and that **neither touches registries**. Everything the corpus says about registries, blindable state, and bulk issuance is Sam-as-spec-author, relayed through `raw/03-acdc-spec.md`. The KERIcon talks are the first source in this corpus where Sam speaks about registries in his own voice, unmediated by spec prose. Three talks carry it: *The Digital Identity Tradespace*, *State of the KERI Suite*, and *The Future of KERI*.
+**These are `[architect]`, and that is why they matter.** `README.md`'s tier scheme notes that the corpus holds only two `[architect]` instances — the keri.one site material and one personal communication about PQ integration — and that **neither touches registries**. Everything the corpus says about registries, blindable state, and bulk issuance is Sam-as-spec-author, relayed through `raw/03-acdc-spec.md`. The KERIcon talks are the first source in this corpus where Sam speaks about registries in his own voice, unmediated by spec prose. Three talks carry it: *The Digital Identity Tradespace*, *State of the KERI Suite*, and *The Future of KERI*.
 
 **But the text is not his.** These are YouTube auto-generated captions that volunteers have hand-corrected. Three consequences, all of which bite:
 

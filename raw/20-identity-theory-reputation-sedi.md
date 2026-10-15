@@ -22,7 +22,7 @@ Mining date: 2026-10-14. Miner: mine-identity worker, against the coverage-gap r
 
 ### 0.1 Tiers
 
-Nothing in this note is `[N]` or `[N1.1]` except where a spec is quoted directly, and the spec quotes are almost all negative results (§9). Every Papers claim is `[P]`: Sam's position, or a co-authored position, stated in a whitepaper or slide deck. None of the identifier-theory, reputation or no-half-measures ideas below has reached the KERI or ACDC specification, and none is a keripy feature (§9 gives the grep evidence). The Utah statute is enacted law and is quoted as law, which is a different kind of authority from any tier marker: it binds the State of Utah and parties dealing with a state-endorsed digital identity, and says nothing about KERI by name.
+Nothing in this note is `[spec]` or `[spec-next]` except where a spec is quoted directly, and the spec quotes are almost all negative results (§9). Every Papers claim is `[proposal]`: Sam's position, or a co-authored position, stated in a whitepaper or slide deck. None of the identifier-theory, reputation or no-half-measures ideas below has reached the KERI or ACDC specification, and none is a keripy feature (§9 gives the grep evidence). The Utah statute is enacted law and is quoted as law, which is a different kind of authority from any tier marker: it binds the State of Utah and parties dealing with a state-endorsed digital identity, and says nothing about KERI by name.
 
 ### 0.2 The two Identifier Theory PDFs are one document
 
@@ -44,7 +44,7 @@ The 2025 SEDI decks are slides, extracted to text with diagrams flattened. Quote
 
 ## 1. Universal Identifier Theory: the identifier model KERI sits inside
 
-Status: `[P]`, Sam's whitepaper, v1.40. None of its named constructs (LID, the aid|lid couplet, primary/secondary/tertiary identifiers, trust basis, well-known reputational association, the PAC trilemma) appears in the KERI or ACDC specification at the pins (§9).
+Status: `[proposal]`, Sam's whitepaper, v1.40. None of its named constructs (LID, the aid|lid couplet, primary/secondary/tertiary identifiers, trust basis, well-known reputational association, the PAC trilemma) appears in the KERI or ACDC specification at the pins (§9).
 
 ### 1.1 Identity is an identifier plus attributes, and the identifier comes first
 
@@ -78,7 +78,7 @@ This is the same split the bible already rests on through Hardman's authenticity
 
 The paper confronts the bootstrap problem directly: a self-certifying identifier is unique but unrecognizable. "The process that establishes an AID as the root identifier with an organization may be called a well-known reputational association." (§1.6, p.9). Redundancy is the mechanism: "The strength of the well-known establishment is multiplied by the number of such associations, i.e., it provides a reputational source of trust." (§1.6, p.9), and "Consistent common knowledge is the root of reputational trust" (§1.6, p.10). It names RFC 8615 `/.well-known/` paths as one such mechanism (§1.6, p.10).
 
-This is the conceptual ancestor of the KERI specification's OOBI-with-MFA pattern, which the bible quotes at `bible/06-governance-ecosystems-and-interop.md`:41-43: the same AID published at several independently controlled `/.well-known/oobi/{aid}` locations, accepted only on threshold agreement `[N]` (KERI spec §OOBI with MFA, L2838 at `fbdd4a615`). The spec draws a boundary UIT does not draw as clearly. The spec says the arrangement governs only the recipient's willingness to bootstrap and leaves the trust model unchanged (bible 06:43). UIT calls the multiplied associations "a reputational source of trust" for the root AID. Both are right about different things. Which AID belongs to an entity is a reputational, Layer-2 question, and that is what UIT is answering. Whether a given event was signed by that AID's keys is Layer 1, and nothing in the well-known process touches it. The bible's §1 already enforces this boundary; this note adds that the spec's pattern is the formalization of a 2020 whitepaper idea.
+This is the conceptual ancestor of the KERI specification's OOBI-with-MFA pattern, which the bible quotes at `bible/06-governance-ecosystems-and-interop.md`:41-43: the same AID published at several independently controlled `/.well-known/oobi/{aid}` locations, accepted only on threshold agreement `[spec]` (KERI spec §OOBI with MFA, L2838 at `fbdd4a615`). The spec draws a boundary UIT does not draw as clearly. The spec says the arrangement governs only the recipient's willingness to bootstrap and leaves the trust model unchanged (bible 06:43). UIT calls the multiplied associations "a reputational source of trust" for the root AID. Both are right about different things. Which AID belongs to an entity is a reputational, Layer-2 question, and that is what UIT is answering. Whether a given event was signed by that AID's keys is Layer 1, and nothing in the well-known process touches it. The bible's §1 already enforces this boundary; this note adds that the spec's pattern is the formalization of a 2020 whitepaper idea.
 
 ### 1.8 The PAC trilemma, and what v1.40 changed
 
@@ -96,7 +96,7 @@ The paper names two authorization models after a key rotation, and the first is 
 
 ## 2. Reputation: the doctrine KERI was built to serve
 
-Status: `[P]` throughout. No spec or keripy artifact implements reputation computation, and the KERI and ACDC specs at the pins do not contain the word reputation (§9).
+Status: `[proposal]` throughout. No spec or keripy artifact implements reputation computation, and the KERI and ACDC specs at the pins do not contain the word reputation (§9).
 
 ### 2.1 The definition has been stable for a decade
 
@@ -136,7 +136,7 @@ The keri.one About page carries Sam's founding insight, which `raw/13-keri-one-w
 
 ## 3. Identity assurance and proofing
 
-Status: the statute is law; the rest is `[P]` or caption.
+Status: the statute is law; the rest is `[proposal]` or caption.
 
 ### 3.1 Assurance as accumulated weak bindings
 
@@ -154,7 +154,7 @@ The bible already holds the verifier-side version of point-in-time assurance: or
 
 ## 4. SEDI as law and policy
 
-Status: statute quotes are law at Chapter 436, 2026 General Session, effective 2026-05-06 (statute PDF, every section footer "Enacted by Chapter 436, 2026 General Session"; header "Effective 5/6/2026"). Talks are status and intent. Sam's decks are `[P]`.
+Status: statute quotes are law at Chapter 436, 2026 General Session, effective 2026-05-06 (statute PDF, every section footer "Enacted by Chapter 436, 2026 General Session"; header "Effective 5/6/2026"). Talks are status and intent. Sam's decks are `[proposal]`.
 
 ### 4.1 Which law, and a naming hazard
 
@@ -219,7 +219,7 @@ The statute requires "cross-context correlation protections" (§301(1)(a)) and d
 
 ## 5. The no-KERI-light doctrine
 
-Status: in writing, `[P]` in the SEDI decks, where the target is narrower than in speech. In speech, a position shared by Sam, Mayfield, Rayback, the closing panel and a Utah official, which is status and intent only.
+Status: in writing, `[proposal]` in the SEDI decks, where the target is narrower than in speech. In speech, a position shared by Sam, Mayfield, Rayback, the closing panel and a Utah official, which is status and intent only.
 
 ### 5.1 What the written sources actually say
 
@@ -249,7 +249,7 @@ The tell is a design that adopts some KERI mechanisms (a hash-chained log, pre-r
 
 ## 6. did:webs: KERI's bridge to the DID world
 
-Status: the spec text is a ToIP KSWG specification at v0.10.3, `main` at `2d84ef2b0`. It is not part of the KERI or ACDC spec lines this corpus tracks, so it has no tier marker of its own here; treat it as `[P]`-plus, a specification in its own standards track whose status the talk describes as final draft under review. The bible mentions did:webs nowhere (coverage report §2.9, verified by grep for this note).
+Status: the spec text is a ToIP KSWG specification at v0.10.3, `main` at `2d84ef2b0`. It is not part of the KERI or ACDC spec lines this corpus tracks, so it has no tier marker of its own here; treat it as `[proposal]`-plus, a specification in its own standards track whose status the talk describes as final draft under review. The bible mentions did:webs nowhere (coverage report §2.9, verified by grep for this note).
 
 ### 6.1 What it separates
 
@@ -273,7 +273,7 @@ Status in speech, April 2026: a final draft «being reviewed at under the KERI s
 
 ## 7. KERI's intellectual lineage, as the papers record it
 
-Status: the papers are `[P]` and dated; Sam's narrative of them is caption. Where the papers and the narrative differ, the papers are the record.
+Status: the papers are `[proposal]` and dated; Sam's narrative of them is caption. Where the papers and the narrative differ, the papers are the record.
 
 ### 7.1 Sam's own account
 
@@ -364,9 +364,9 @@ The material does not fit one chapter cleanly. I propose one new chapter for the
 
 ### A. New chapter 11, Identifiers, trust bases and reputation
 
-Reason: the identifier theory and the reputation doctrine are the layer the bible's Layer-1/Layer-2 split points to without populating (coverage report §2.10). They are a coherent body of `[P]` theory with a decade of continuity, and splitting them across 01 and 06 would separate the definition of reputational trust from its use. Standards.md §6 forbids creating a chapter unattended; this is a proposal for Daniel.
+Reason: the identifier theory and the reputation doctrine are the layer the bible's Layer-1/Layer-2 split points to without populating (coverage report §2.10). They are a coherent body of `[proposal]` theory with a decade of continuity, and splitting them across 01 and 06 would separate the definition of reputational trust from its use. Standards.md §6 forbids creating a chapter unattended; this is a proposal for Daniel.
 
-1. Thesis and status. Thesis: KERI secures identifiers, not identities, and everything human-meaningful or reputational is built on that in a trust domain. Status: entirely `[P]`; no construct here is in a spec (§9). Supports: UIT §1.1 quotes (§1.1 here); negative results (§9).
+1. Thesis and status. Thesis: KERI secures identifiers, not identities, and everything human-meaningful or reputational is built on that in a trust domain. Status: entirely `[proposal]`; no construct here is in a spec (§9). Supports: UIT §1.1 quotes (§1.1 here); negative results (§9).
 2. Identity as identifier plus attributes; security first. Supports: §1.1.
 3. Three trust bases. Supports: §1.2. Cross-link: 01 §2-3 (autonomic identity), 07 §4 (blockchain tells).
 4. The trust domain, LIDs and the aid|lid couplet; primary, secondary and tertiary identifiers. Supports: §1.3-§1.5, ISE aliases (§7.3). Cross-link: 07 §9.4 (aliases), and did:webs designated aliases in 06.
@@ -450,7 +450,7 @@ Not applied. The `smithsamuelm-papers` entry already exists as a `gh-repo` sourc
       - presentations/DuplicityGame_IIW_2020_A.pdf
     tier: cold
     branches:
-      - {name: master, role: standardizing, marker: "[P]",
+      - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: b47f21597, date: 2026-10-14},
          last_mined:   {commit: b47f21597, date: 2026-10-14}}
     feeds: [raw/20-identity-theory-reputation-sedi.md]
@@ -474,7 +474,7 @@ Not applied. The `smithsamuelm-papers` entry already exists as a `gh-repo` sourc
       Utah Code 63A-20, enacted by Chapter 436, 2026 General Session, effective 2026-05-06. Mined
       2026-10-14 from the official PDF C63A-20_2026050620260506.pdf in the private repo bakobo/sedi at
       91402ae99, NOT from this URL, which was not fetched; the first run should hash the page and
-      confirm the text matches before last_mined is recorded here. Law, not a tier: no [N]/[P] marker.
+      confirm the text matches before last_mined is recorded here. Law, not a tier: no [spec]/[proposal] marker.
       The talks call it SB 260; the bill number is unverified (raw/20 §4.1).
 
   - id: did-webs-spec
@@ -484,7 +484,7 @@ Not applied. The `smithsamuelm-papers` entry already exists as a `gh-repo` sourc
     watch: [spec/header.md, spec/body.md, spec/terms-definitions]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[P]",
+      - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 2d84ef2b0, date: 2026-10-14},
          last_mined:   {commit: 2d84ef2b0, date: 2026-10-14}}
     feeds: [raw/20-identity-theory-reputation-sedi.md]
@@ -492,7 +492,7 @@ Not applied. The `smithsamuelm-papers` entry already exists as a `gh-repo` sourc
     caveat: >-
       ToIP KSWG did:webs spec, v0.10.3 at this pin. Mined for its framing only (raw/20 §6); delegation,
       versionId, BADA and multisig rules are unread, so last_mined covers header.md and the cited
-      body.md passages, not the whole spec. Its own standards track, so the [N] marker would mislead.
+      body.md passages, not the whole spec. Its own standards track, so the [spec] marker would mislead.
 ```
 
 Proposed change to an existing entry, also not applied: `conf26-subtitles` should add `raw/20-identity-theory-reputation-sedi.md` to `feeds` and `"07"` to `chapters`, and its `last_scanned` should move to `006042d39`. Its `last_mined` stays `unknown` for the commit, because raw/14 was mined without one; this note was read at `006042d39`, which the reviewer may record if they accept the per-note pin.

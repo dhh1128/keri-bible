@@ -31,13 +31,13 @@ Coverage-gap report that motivated this note: `.ignored/coverage-gaps-2026-10.md
 
 ## 0. Provenance and status — read before citing
 
-Everything in the Papers repo is `[P]`: Sam's position, in his voice, at the pinned commit. Several of these papers say so about themselves. The SPAC paper opens its central claim with "In my opinion" (`SPAC_Message.md` §PAC Trilemma, L11). The PAC theorem is posited, not proved, and no paper here offers a proof.
+Everything in the Papers repo is `[proposal]`: Sam's position, in his voice, at the pinned commit. Several of these papers say so about themselves. The SPAC paper opens its central claim with "In my opinion" (`SPAC_Message.md` §PAC Trilemma, L11). The PAC theorem is posited, not proved, and no paper here offers a proof.
 
 The reach of each idea is different, and the differences are the most useful thing this note records.
 
-- ESSR as a construction reached two specifications. The CESR spec carries the ESSR count codes `-E##` and `-Z##` on both `main` and `v1.1` `[N]` (§11). The ToIP TSP draft adopts ESSR by name, with a modification for HPKE-Base (§11). The draft is an experimental implementor's draft, so its `[N]` marks in this note mean present in the line ToIP is standardizing, and that line is explicitly experimental.
+- ESSR as a construction reached two specifications. The CESR spec carries the ESSR count codes `-E##` and `-Z##` on both `main` and `v1.1` `[spec]` (§11). The ToIP TSP draft adopts ESSR by name, with a modification for HPKE-Base (§11). The draft is an experimental implementor's draft, so its `[spec]` marks in this note mean present in the line ToIP is standardizing, and that line is explicitly experimental.
 - SPAC's three-level nesting, routed mode, relationship forming and padding reached the ToIP TSP draft in recognizable form. The PAC trilemma, the three-party exploitation model, the covert/clandestine argument and the time-value-of-information argument did not reach any spec. The ACDC spec carries the three-party model and defers third-party protection to SPAC/TSP (`raw/03` §L1728, cited at `bible/06-governance-ecosystems-and-interop.md:73`).
-- keripy implements one ESSR sender path and the SPAC payload-type primitive `[K]` (§12). It implements no hop routing, no relationship forming, no padding payload and no `/essr/req` receive handler.
+- keripy implements one ESSR sender path and the SPAC payload-type primitive `[code]` (§12). It implements no hop routing, no relationship forming, no padding payload and no `/essr/req` receive handler.
 - The conference captions are edited auto-captions. Per `raw/14` §0 and `standards.md` §2 they support status and intent only. Section 13 paraphrases them and never puts them in quotation marks.
 
 Five source-handling facts bite.
@@ -52,7 +52,7 @@ Five source-handling facts bite.
 
 ## 1. The trade space: the PAC trilemma and its ordering
 
-Sam's statement of the trilemma, as of the SPAC paper `[P]`:
+Sam's statement of the trilemma, as of the SPAC paper `[proposal]`:
 
 > "One can have any two of the three (privacy, authenticity, confidentiality) at the highest level but not all three." (`SPAC_Message.md` §PAC Trilemma, L13)
 
@@ -60,7 +60,7 @@ The wording has moved, and the moves matter for anyone who cites it. The 2021 de
 
 The ordering comes from ToIP, not from Sam, and Sam distinguishes priority from layering. The ToIP design goals indicate "one should start with high authenticity, then high confidentiality, and then as high as possible privacy" (`SPAC_Message.md` §PAC Trilemma, L17). Priority does not fix the order of layers in a message (L29, too long to quote whole). The quotable form is: "the ordering of the ToIP design goals ... may be different from the ordering of layers that employ these three in a given protocol" (L31). Sam says this distinction "is a source of much confusion in prior discussions" (L33).
 
-Why privacy is last is argued as an asymmetry between two kinds of war `[P]`. "Authenticity and confidentiality are like a cold war." (§Cold War versus Hot War, L116). "In comparison, privacy is like a hot war." (L118). The cold war is winnable because "there need be no casualties in this cold war" (L116); the hot war is not, because "casualties are unavoidable" (L118). Hence: "In the hot war of privacy, we have to Pareto optimize protection mechanisms." (L128). The SPAC paper's subtitle states the design objective in one line: "The Best Privacy Possible Given the Strongest Authenticity and Confidentiality" (L3).
+Why privacy is last is argued as an asymmetry between two kinds of war `[proposal]`. "Authenticity and confidentiality are like a cold war." (§Cold War versus Hot War, L116). "In comparison, privacy is like a hot war." (L118). The cold war is winnable because "there need be no casualties in this cold war" (L116); the hot war is not, because "casualties are unavoidable" (L118). Hence: "In the hot war of privacy, we have to Pareto optimize protection mechanisms." (L128). The SPAC paper's subtitle states the design objective in one line: "The Best Privacy Possible Given the Strongest Authenticity and Confidentiality" (L3).
 
 The PAC deck of 2021 adds the reasoning that makes the trilemma bite between authenticity and privacy. "Non-repudiation means any party to conversation can proof to any other party exactly what was said by whom." (`KERI_PAC_Theorem.pdf` slide 9). "Transitive value transfer will violate complete privacy." (same slide). It also gives the only formal definitions of strong and weak privacy in the corpus: strong privacy is "un-correlated interactions over unbounded time and space", weak privacy is "un-correlated interactions over bounded time and space" (slide 12, "De nition" ligature-damaged in the source; the quoted spans are clean). The weak definition is the seed of the later time-value argument (§7).
 
@@ -68,7 +68,7 @@ The PAC deck of 2021 adds the reasoning that makes the trilemma bite between aut
 
 ## 2. Vocabulary: privacy is not confidentiality
 
-Sam's working definitions `[P]`, stable from the 2021 deck through the 2023 paper:
+Sam's working definitions `[proposal]`, stable from the 2021 deck through the 2023 paper:
 
 > "Privacy is primarily about control over the disclosure of who participated in the conversation (non-content meta-data = identifiers)." (`SPAC_Overview.web.pdf` slide 10)
 
@@ -76,29 +76,29 @@ Sam's working definitions `[P]`, stable from the 2021 deck through the 2023 pape
 
 The paper puts the same split in a sentence: "privacy is about protecting the knowledge of who is a party to a given conversation" and confidentiality is "about protecting the knowledge of what was said in that conversation" (`SPAC_Message.md` §Privacy and Confidentiality, L78). The paper's version of the privacy definition adds that identifiers include "conversation (interaction) identifiers" (L48), which is what later makes interaction IDs a privacy problem (§6).
 
-There are two definitions of privacy in play and Sam picks one for protocol design `[P]`. The ToIP definition is about the receiver honoring the sender's expectations; the surveillance definition is about the "correlatability of the publically viewable metadata included in the communication" (L57). "for the purposes of protocol design the definitions of confidentiality and privacy that are most suitable are the surveillance definitions" (L78). The legal footing is US Fourth Amendment doctrine, which Sam summarizes as "Relatively weak legal protection (subpoena) for identifiers" and "Relatively strong legal protection (warrant) for content" (L73, L75). Seven Privacies extends the legal history back through Katz (1967) and Entick (1765) (`SevenPrivacies.web.pdf` slides 9-11).
+There are two definitions of privacy in play and Sam picks one for protocol design `[proposal]`. The ToIP definition is about the receiver honoring the sender's expectations; the surveillance definition is about the "correlatability of the publically viewable metadata included in the communication" (L57). "for the purposes of protocol design the definitions of confidentiality and privacy that are most suitable are the surveillance definitions" (L78). The legal footing is US Fourth Amendment doctrine, which Sam summarizes as "Relatively weak legal protection (subpoena) for identifiers" and "Relatively strong legal protection (warrant) for content" (L73, L75). Seven Privacies extends the legal history back through Katz (1967) and Entick (1765) (`SevenPrivacies.web.pdf` slides 9-11).
 
-The three-party exploitation model frames everything else `[P]`. Privacy toward the third party "is protected if the 3rd party has no knowledge of the identifiers used by the 1st and 2nd parties" (`SPAC_Message.md` §Three-Party Exploitation Model, L142). "An intermediary may be considered a 1st, 2nd, or 3rd party depending on how and by whom it is trusted or not." (L140). The Sustainable Privacy paper widens first-party data on purpose: it "may or may not reference or be about the data subject" (`SustainablePrivacy.pdf` §1.1, p.1), and "any use of 1st party data by a 3rd party is, by definition, unpermissioned and therefore exploitative" (§1.1, p.2).
+The three-party exploitation model frames everything else `[proposal]`. Privacy toward the third party "is protected if the 3rd party has no knowledge of the identifiers used by the 1st and 2nd parties" (`SPAC_Message.md` §Three-Party Exploitation Model, L142). "An intermediary may be considered a 1st, 2nd, or 3rd party depending on how and by whom it is trusted or not." (L140). The Sustainable Privacy paper widens first-party data on purpose: it "may or may not reference or be about the data subject" (`SustainablePrivacy.pdf` §1.1, p.1), and "any use of 1st party data by a 3rd party is, by definition, unpermissioned and therefore exploitative" (§1.1, p.2).
 
-The vocabulary shifted toward the word confidential between 2023 and 2026, and that shift is the newest doctrine in this section `[P]`. The January 2026 fragment says of shared data that "the difference is in name only" between private and confidential (`ACDCConfidentialDataManagement.md` opening paragraph). It explains why the word matters: the word privacy "carries an emotional bonus compared to" the word confidentiality (second paragraph). And it draws the hard conclusion: "once shared, there is no technology that by itself protects the first party's interests" (§Three-Party Model). The Seven Privacies deck turns this into a taxonomy: "Information that is not-shared = private (one party data)" and "Information that is shared with restrictions = confidential" (`SevenPrivacies.web.pdf` slide 13). Its "Combinations" slide (slide 15) lists exactly seven states, from "not shared" through "shared cryptographically un-linkable but re-identifiable" to "private (not shared, not surveilled, and not identified)". Reading that list as the seven privacies of the deck's title is this note's inference; the deck does not number them. The deck's charge is equivocation: "Using privacy as a sledgehammer to imbue technology with the emotion of privacy but without the actual qualities of privacy" (slide 7).
+The vocabulary shifted toward the word confidential between 2023 and 2026, and that shift is the newest doctrine in this section `[proposal]`. The January 2026 fragment says of shared data that "the difference is in name only" between private and confidential (`ACDCConfidentialDataManagement.md` opening paragraph). It explains why the word matters: the word privacy "carries an emotional bonus compared to" the word confidentiality (second paragraph). And it draws the hard conclusion: "once shared, there is no technology that by itself protects the first party's interests" (§Three-Party Model). The Seven Privacies deck turns this into a taxonomy: "Information that is not-shared = private (one party data)" and "Information that is shared with restrictions = confidential" (`SevenPrivacies.web.pdf` slide 13). Its "Combinations" slide (slide 15) lists exactly seven states, from "not shared" through "shared cryptographically un-linkable but re-identifiable" to "private (not shared, not surveilled, and not identified)". Reading that list as the seven privacies of the deck's title is this note's inference; the deck does not number them. The deck's charge is equivocation: "Using privacy as a sledgehammer to imbue technology with the emotion of privacy but without the actual qualities of privacy" (slide 7).
 
 ---
 
 ## 3. Effective privacy: protect against exploitation, not correlation
 
-This is the move that makes the rest of SPAC tractable `[P]`:
+This is the move that makes the rest of SPAC tractable `[proposal]`:
 
 > "Protection against exploitation via correlation provides a more gentle trade space than mere protection against correlation." (`SPAC_Message.md` §Effective Privacy, L103)
 
 "The former is practical and amenable to cost-benefit analysis, but the latter is largely impractical." (same paragraph). The target becomes "exploitably correlatable identifiers" and the goal "effective privacy" (L101). Without the qualifier, any design loses to a sufficiently resourced adversary: "One can always play the equivalent of a trump card" (L122).
 
-Exploiters are ranked by incentive `[P]`. State actors are out of scope "for the time being" because "to attempt state-actor proof mitigations would likely take us down rabbit holes that we can never return from" (§Exploiters, L155). Identity thieves monetize through asset theft and "do not monetize aggregated content data or metadata" (§Identity Theft, L177). Aggregators sell to advertisers and come in third-party (search, cloud, ISP), second-party (platforms) and inadvertent first-party (cookies) forms (L160-169).
+Exploiters are ranked by incentive `[proposal]`. State actors are out of scope "for the time being" because "to attempt state-actor proof mitigations would likely take us down rabbit holes that we can never return from" (§Exploiters, L155). Identity thieves monetize through asset theft and "do not monetize aggregated content data or metadata" (§Identity Theft, L177). Aggregators sell to advertisers and come in third-party (search, cloud, ISP), second-party (platforms) and inadvertent first-party (cookies) forms (L160-169).
 
-The risk ranking that follows is the doctrinal punchline and it inverts the usual privacy-first ordering `[P]`. "Identity theft has very high harm magnitude with moderate likelihood but potentially low cost of mitigation via strong authentication and strong confidentiality" (`SPAC_Overview.web.pdf` slide 62). "The internet is broken primarily because of identity theft." (same slide). "The infrastructure changes needed to fix identity theft will enable easier adoption of the changes needed to better protect against aggregators." (same slide). The TSP deck adds that ToIP's TSP "can take mantle of teaching and leading in best practices for securing trust over the internet" (`TSPSlides20230308.web.pdf` slide 35).
+The risk ranking that follows is the doctrinal punchline and it inverts the usual privacy-first ordering `[proposal]`. "Identity theft has very high harm magnitude with moderate likelihood but potentially low cost of mitigation via strong authentication and strong confidentiality" (`SPAC_Overview.web.pdf` slide 62). "The internet is broken primarily because of identity theft." (same slide). "The infrastructure changes needed to fix identity theft will enable easier adoption of the changes needed to better protect against aggregators." (same slide). The TSP deck adds that ToIP's TSP "can take mantle of teaching and leading in best practices for securing trust over the internet" (`TSPSlides20230308.web.pdf` slide 35).
 
 The privilege-escalation argument places identity theft in authentication, not privacy: BOLA and BUA "are not privacy weaknesses but authentication-based authorization weaknesses" (`SPAC_Message.md` §Threats, L179). "a given trust domain is only as strong as the weakest connected trust domain" (L185). The mitigation: "any step that has strong authentication with individually signed requests for authorization will stop the attack from proceeding" (§Mitigations, L195). This connects to `bible/09` (KRAM) and to `bible/07`'s bearer-token row.
 
-Where SPAC fits in that ranking `[P]`: "the most fruitful application of SPAC-based protocols with regards to exploitably correlatable identifiers may be in improving VPNs" (§Summary Threats and Mitigations, L256), while "protection from 2nd party aggregators may be best provided by higher layer protocols that provide contractually protected disclosure" (same paragraph). Sam also writes, of WireGuard, "We should not reinvent that wheel." (L109). The SPAC paper goes on to design intermediated routing anyway (§6), so the VPN remark should be read as an endorsement of the delivery-van model, not as advice to use a VPN and stop there.
+Where SPAC fits in that ranking `[proposal]`: "the most fruitful application of SPAC-based protocols with regards to exploitably correlatable identifiers may be in improving VPNs" (§Summary Threats and Mitigations, L256), while "protection from 2nd party aggregators may be best provided by higher layer protocols that provide contractually protected disclosure" (same paragraph). Sam also writes, of WireGuard, "We should not reinvent that wheel." (L109). The SPAC paper goes on to design intermediated routing anyway (§6), so the VPN remark should be read as an endorsement of the delivery-van model, not as advice to use a VPN and stop there.
 
 ---
 
@@ -106,7 +106,7 @@ Where SPAC fits in that ranking `[P]`: "the most fruitful application of SPAC-ba
 
 ### 4.1 Building blocks
 
-The baseline is chosen for adoptability: "only highly adoptable, well-proven, cryptographic operations from broadly supported libraries be used" (`SPAC_Message.md` §Adoptability via Dumb Crypto, L323). In this paper "we only consider pre-quantum safe algorithms" (L327). For signing, "the baseline for strong authenticity is to use the libsodium Ed25519 signature scheme" (§Best Authenticity, L343), because it has SUF-CMA where "the popular ECDSA signature scheme only has the weaker EUF-CMA" (L331). For encryption, the baseline is the libsodium sealed box, an IND-CCA2 ECIES with "the end-only viewability of asymmetric public key encryption" (§Best Confidentiality, L351). The sealed box "has equivalent properties to RFC-9180 base mode" (L356). All of this is `[P]`; the claims about ECDSA, Ed25519 and sealed-box security are relayed from the cited literature, which this note did not read.
+The baseline is chosen for adoptability: "only highly adoptable, well-proven, cryptographic operations from broadly supported libraries be used" (`SPAC_Message.md` §Adoptability via Dumb Crypto, L323). In this paper "we only consider pre-quantum safe algorithms" (L327). For signing, "the baseline for strong authenticity is to use the libsodium Ed25519 signature scheme" (§Best Authenticity, L343), because it has SUF-CMA where "the popular ECDSA signature scheme only has the weaker EUF-CMA" (L331). For encryption, the baseline is the libsodium sealed box, an IND-CCA2 ECIES with "the end-only viewability of asymmetric public key encryption" (§Best Confidentiality, L351). The sealed box "has equivalent properties to RFC-9180 base mode" (L356). All of this is `[proposal]`; the claims about ECDSA, Ed25519 and sealed-box security are relayed from the cited literature, which this note did not read.
 
 ### 4.2 Why HPKE alone is not enough
 
@@ -118,9 +118,9 @@ Sam relays RFC 9180 §9.1.1: all HPKE variants are "vulnerable to key-compromise
 
 Encrypt-then-sign is not enough either: "An attacker can strip the signature and resign the ciphertext with the attacker's key but has never seen the plaintext of the cipher." (§Best Combined Authenticity and Confidentiality, L366). The fix binds both ends: "we must not only bind the recipient's public key to the signature in plaintext but also bind the sender's public key inside the ciphertext" (L366). That construction is ESSR, "Encrypt Sender's key and then Sign Receiver's key" (§Modified ESSR, L370), from An, ePrint 2001/079.
 
-The property table (L378-381) is the citation to carry: encrypt-then-sign provides TUF-PTXT, TUF-CTXT and RUF-CTXT; ESSR provides all four. In words: "Simply using the encrypt then sign approach provides TUF-PTXT, TUF-CTXT, and RUF-CTXT but not RUF-PTXT." (L372). The claim is Sam's reading of An's paper `[P]`; the ToIP TSP spec states the same result independently and more carefully (§11.3).
+The property table (L378-381) is the citation to carry: encrypt-then-sign provides TUF-PTXT, TUF-CTXT and RUF-CTXT; ESSR provides all four. In words: "Simply using the encrypt then sign approach provides TUF-PTXT, TUF-CTXT, and RUF-CTXT but not RUF-PTXT." (L372). The claim is Sam's reading of An's paper `[proposal]`; the ToIP TSP spec states the same result independently and more carefully (§11.3).
 
-The strongest form of the claim, and the one most likely to be challenged, is in the "too clever by half" appendix `[P]`:
+The strongest form of the claim, and the one most likely to be challenged, is in the "too clever by half" appendix `[proposal]`:
 
 > "The ESSR framework basically tells us that there is really only one secure approach to mixing encryption with signatures." (§Appendix: Using Crypto in a way that is Too-Clever-By-Half, L1165)
 
@@ -134,7 +134,7 @@ The AID substitution has a cost the SPAC paper does not discuss and the ToIP spe
 
 ### 4.5 Variants and what each gives up
 
-The paper treats every departure from full ESSR as an explicit trade `[P]`. "Any variation from the full ESSR policy may make a security trade-off induced by removing one of its protections." (§KERI ESSR Summary, L435).
+The paper treats every departure from full ESSR as an explicit trade `[proposal]`. "Any variation from the full ESSR policy may make a security trade-off induced by removing one of its protections." (§KERI ESSR Summary, L435).
 
 - Plaintext-sourceless. Dropping the plaintext sender AID trades DDoS protection and public verifiability for privacy: "DDOS or firewall protection (security) could be traded for not exposing the sender's AID (privacy) without compromising the authenticity or confidentiality of the message" (§Plaintext Sourceless Variant, L401). With a one-relationship-identifier policy (OORI), "a given receiver AID, is only used for one given sender AID" (L407), and public verifiability can be restored by sharing the mapping upstream.
 - Sourceless. Removing the sender from the ciphertext too, even under OORI, "still exposes the receiver to an attack when the approved sender is malicious" (§Sourceless Variant, L411).
@@ -144,19 +144,19 @@ Replay is left open in the base construction. The simple mechanism is to "adopt 
 
 ### 4.6 End-verifiability and end-only-viewability
 
-The architectural principle predates SPAC and is restated here `[P]`: "If the edges (ends) are secure, then the security of the middle doesn't matter." (§End-Verifiabilty and End-Only-Viewability, L282). The confidentiality dual of ambient verifiability is "end-only viewability", under which confidential data "is only viewable one-where, one-time by one-other-body" (L297). The authenticity overlay must underpin the confidentiality overlay, not merely sit beside it: "the encryption key state must be securely attributable to the intended identifier for confidentiality to work" (`TSPSlides20230308.web.pdf` slide 15; also `SPAC_Overview.web.pdf` slide 73).
+The architectural principle predates SPAC and is restated here `[proposal]`: "If the edges (ends) are secure, then the security of the middle doesn't matter." (§End-Verifiabilty and End-Only-Viewability, L282). The confidentiality dual of ambient verifiability is "end-only viewability", under which confidential data "is only viewable one-where, one-time by one-other-body" (L297). The authenticity overlay must underpin the confidentiality overlay, not merely sit beside it: "the encryption key state must be securely attributable to the intended identifier for confidentiality to work" (`TSPSlides20230308.web.pdf` slide 15; also `SPAC_Overview.web.pdf` slide 73).
 
 The paper lists six properties of strong end-only-viewable confidentiality (L313-318). The one with no counterpart elsewhere in the corpus is 1st-party non-viewability. Public-key encryption lets the encryptor delete the plaintext and keep only ciphertext it cannot read: "This is the zero-trust principle of encrypted-at-rest, not merely encrypted-in-motion." (§Appendix: 1st Party Non-Viewability, L1175). Applied to a distributed first party, "it can enforce on itself a policy of end-part-only viewability by using PKE" (L1177).
 
 ### 4.7 DDoS efficiency as a design constraint
 
-The appendix makes DDoS cost a first-class constraint on how encryption and signatures may nest `[P]`. "Any protocol that requires decryption in order to make a drop decision can only make that drop decision at the edge host" (§DDOS Protection Efficiency, L1135). Nesting multiplies the cost: "So multiplying nesting layers directly impacts DDOS efficiency." (L1133). The conclusion favors signatures in plaintext: "if no decrypt must be done in order to drop (as in at end-only-viewability) then we can have very efficient DDOS protection" (L1137). The same appendix argues mix networks lower DDoS efficiency and are open to sleeper attacks (§Security-by-obscurity, L1145), and gives JSON-LD URDNA-2015 as an amplification-attack example (§Amplification Attacks, L1152). The JSON-LD claim is Sam's; the bible already has adjacent material in chapter 07.
+The appendix makes DDoS cost a first-class constraint on how encryption and signatures may nest `[proposal]`. "Any protocol that requires decryption in order to make a drop decision can only make that drop decision at the edge host" (§DDOS Protection Efficiency, L1135). Nesting multiplies the cost: "So multiplying nesting layers directly impacts DDOS efficiency." (L1133). The conclusion favors signatures in plaintext: "if no decrypt must be done in order to drop (as in at end-only-viewability) then we can have very efficient DDOS protection" (L1137). The same appendix argues mix networks lower DDoS efficiency and are open to sleeper attacks (§Security-by-obscurity, L1145), and gives JSON-LD URDNA-2015 as an amplification-attack example (§Amplification Attacks, L1152). The JSON-LD claim is Sam's; the bible already has adjacent material in chapter 07.
 
 ---
 
 ## 5. Relationships, contexts and partitions
 
-This section contains the formal core of the SPAC privacy model `[P]`, given as a list of properties (`SPAC_Message.md` §Relationships, L471-485; identical text on `SPAC_Overview.web.pdf` slide 31).
+This section contains the formal core of the SPAC privacy model `[proposal]`, given as a list of properties (`SPAC_Message.md` §Relationships, L471-485; identical text on `SPAC_Overview.web.pdf` slide 31).
 
 - "A cryptonym is a cryptographically derived pseudonym with at least 128 bits of entropy in the derivation." (L471)
 - "A relationship is a pairing of two AIDs, one each from a different controller." (L473)
@@ -171,13 +171,13 @@ The doctrinal consequence is that the identifier is not the correlator; the cont
 
 Relationship direction matters. A relationship may be bidirectional or one-way, and "for any two AIDs there are three different relationships" (L442). One-way relationships let A-to-B and B-to-A traffic use different routes, which the paper later exploits (L863).
 
-Every protocol needs at least one out-of-band authentication factor `[P]`. Any secure protocol "requires at least one out-of-band-authentication (OOBA) factor in order to protect against a man-in-the-middle (MITM) attack" (§OOB Setup, L573). The same factor answers cheap pseudonymity: "Requiring an OOBA factor for any given identifier makes that identifier relatively expensive." (L577). And it need not cost privacy: "an OOBA (out-of-band-authentication) may be simultaneously strongly authentic, confidential, and private" (L579). This is the SPAC paper's version of `bible/07`'s OOBA material and agrees with it: OOBA raises the cost of a fresh identifier; it does not create a binding.
+Every protocol needs at least one out-of-band authentication factor `[proposal]`. Any secure protocol "requires at least one out-of-band-authentication (OOBA) factor in order to protect against a man-in-the-middle (MITM) attack" (§OOB Setup, L573). The same factor answers cheap pseudonymity: "Requiring an OOBA factor for any given identifier makes that identifier relatively expensive." (L577). And it need not cost privacy: "an OOBA (out-of-band-authentication) may be simultaneously strongly authentic, confidential, and private" (L579). This is the SPAC paper's version of `bible/07`'s OOBA material and agrees with it: OOBA raises the cost of a fresh identifier; it does not create a binding.
 
 ---
 
 ## 6. The protocols: from direct to triple-nested
 
-The paper builds the protocol in five steps `[P]`. Each deck slide ends with a one-line verdict, and the verdicts are the summary.
+The paper builds the protocol in five steps `[proposal]`. Each deck slide ends with a one-line verdict, and the verdicts are the summary.
 
 1. Direct. ESSR between `A0` and `B0` with IP addresses in clear. "Strongly Authentic and Confidential but not Private" (`SPAC_Overview.web.pdf` slide 36).
 2. Direct protocol as wrapper. A business-deal relationship `(A1, <>, B1)` is carried inside the ciphertext of the communication relationship `(A0, <>, B0)`. "No 3rd party observer can view that there is a relationship" (`SPAC_Message.md` §Direct Protocol as Wrapper, L630). Verdict: "Strongly Authentic and Confidential and Somewhat Private" (slide 37). The paper names the two kinds of context here: a hop-wise communication context and an end-wise interaction context (L632).
@@ -187,7 +187,7 @@ The paper builds the protocol in five steps `[P]`. Each deck slide ends with a o
 
 The final step nests a third relationship `(A3, <>, B3)` inside the end-wise routed one, so that even the intermediaries cannot see it. "This makes the existence of this new end-wise relationship (A3, <>, B3) hidden from not just 3rd parties but also the 2nd party trusted intermediaries." (§Cross Relationship Context Interaction Contexts, L865, with the italics markers of the source dropped). The paper names the result "a three-level nested communication protocol" (L873) and walks it hop by hop in a shorthand notation (§Shorthand Notation, §Three-Level Nested Protocol, L877-1041). The deck verdict for this case drops the qualifier: "Strongly Authentic and Confidential and Private" (slide 44).
 
-Routing splits into two halves that no single party holds `[P]`. "The non-shared intermediary protocols above use a combination of both source vector routing and table routing." (§Combined Source Vector and Table Routing as Dead Drop, L1045). The far-side intermediary becomes "a dead drop controlled by the far-side destination" (L1049).
+Routing splits into two halves that no single party holds `[proposal]`. "The non-shared intermediary protocols above use a combination of both source vector routing and table routing." (§Combined Source Vector and Table Routing as Dead Drop, L1045). The far-side intermediary becomes "a dead drop controlled by the far-side destination" (L1049).
 
 Interaction identifiers get the same treatment as AIDs. Using the SAID of a nonce-salted first message as the interaction ID makes it "cryptographically universally unique to a given interaction" (§iSAIDs as IIDs, L813), and putting it inside the ciphertext makes interactions private: "if the relationship context is private, then any of its interaction contexts are also private (QED)" (§Privacy by Isolating Interaction Contexts, L827). Chained iSAIDs are preferred over a repeated one: "the latter form is more secure" (L832).
 
@@ -199,25 +199,25 @@ Multisig is sketched, not specified. For encryption "each key in a multi-sig pro
 
 ### 7.1 The time value of information
 
-Sam's answer to the objection that everything leaks eventually is economic, not cryptographic `[P]`. "In general, privacy dissipates over time." (`SPAC_Message.md` §Time Value of Information, L1064). But the value of correlated information decays too, so there is "a sweet spot for sustainable privacy protection that is governed by the time constant of the time value of exploitable correlation" (L1066). Partitioned contexts make that time constant controllable: "Once a context has become leaky, however, a new isolated context can be created that restarts the clock on time value correlatability." (L1068). The 2026 Sustainable Privacy paper names TSP as the protocol that does this: "The TSP protocol enables control over the exploitable time window of the correlatable information that can be leaked from a given context." (`SustainablePrivacy.pdf` §3.3, p.9).
+Sam's answer to the objection that everything leaks eventually is economic, not cryptographic `[proposal]`. "In general, privacy dissipates over time." (`SPAC_Message.md` §Time Value of Information, L1064). But the value of correlated information decays too, so there is "a sweet spot for sustainable privacy protection that is governed by the time constant of the time value of exploitable correlation" (L1066). Partitioned contexts make that time constant controllable: "Once a context has become leaky, however, a new isolated context can be created that restarts the clock on time value correlatability." (L1068). The 2026 Sustainable Privacy paper names TSP as the protocol that does this: "The TSP protocol enables control over the exploitable time window of the correlatable information that can be leaked from a given context." (`SustainablePrivacy.pdf` §3.3, p.9).
 
-The decision rule is symmetric `[P]`: "If the cost of protection exceeds the cost due to the harm of exploitation, then it's not worth protecting" and "If the cost of correlation in order to exploit exceeds the time value return of exploitation, then it's not worth exploiting" (`SPAC_Message.md` L1066). No paper estimates either time constant for any real market. The argument is qualitative. Open question 3.
+The decision rule is symmetric `[proposal]`: "If the cost of protection exceeds the cost due to the harm of exploitation, then it's not worth protecting" and "If the cost of correlation in order to exploit exceeds the time value return of exploitation, then it's not worth exploiting" (`SPAC_Message.md` L1066). No paper estimates either time constant for any real market. The argument is qualitative. Open question 3.
 
 ### 7.2 Covert versus clandestine
 
-This is the analogy Sam leans on most in 2026, and it originates in the SPAC paper `[P]`. A covert operative has a public cover identity; a clandestine operative has none. "As a result, a given clandestine operation is unsustainable long-term." (§Sustainable Management of Contexts, L1084). Internet privacy tools "have tended to look like clandestine operations where the whole operation must be concealed" (L1086), which makes them fragile. The prescription is to nest: The long-term generic communication and routed contexts are the covert layers, and they "provide nested covers to the really valuable private short-term interaction contexts (clandestine)" (L1088). The deck compresses it to "Use Covert to hide in plain sight." and "Nest clandestine contexts inside covert contexts" (`SPAC_Overview.web.pdf` slide 51).
+This is the analogy Sam leans on most in 2026, and it originates in the SPAC paper `[proposal]`. A covert operative has a public cover identity; a clandestine operative has none. "As a result, a given clandestine operation is unsustainable long-term." (§Sustainable Management of Contexts, L1084). Internet privacy tools "have tended to look like clandestine operations where the whole operation must be concealed" (L1086), which makes them fragile. The prescription is to nest: The long-term generic communication and routed contexts are the covert layers, and they "provide nested covers to the really valuable private short-term interaction contexts (clandestine)" (L1088). The deck compresses it to "Use Covert to hide in plain sight." and "Nest clandestine contexts inside covert contexts" (`SPAC_Overview.web.pdf` slide 51).
 
 The covert model has a herd requirement that is easy to miss. If most of an intermediary's users use it only for things they want hidden, "they make the mere use of C itself a correlatable signal" (`SPAC_Message.md` L1086). A covert intermediary is only as good as its legitimate traffic.
 
 ### 7.3 Re-identification and the contextual linkability attack
 
-The SPAC paper introduced, and Sustainable Privacy develops, a named attack on selective disclosure `[P]`:
+The SPAC paper introduced, and Sustainable Privacy develops, a named attack on selective disclosure `[proposal]`:
 
 > "the use of a set of non-selectively disclosed attributes obtained from the context of the disclosure that is sufficient to re-identify the discloser" (`SPAC_Message.md` §Contextual Linkability Re-identification Attack, L1101)
 
 Sam frames selective disclosure as self-administered k-anonymity: "Correctly understood, selective disclosure is a naive form of K-anonymity performed by the discloser (presenter)." (L1104). The act of presenting singles out the presenter, so "the receiver of bare, selectively disclosed data must treat it as personal data or may be in violation of GDPR" (L1104). The 2026 paper softens the legal half to a normative claim: selective disclosure "should not provide a safe harbor", and "Unfortunately, current regulatory policy does not respect this distinction." (`SustainablePrivacy.pdf` §2.3, p.5). That is a correction the bible should carry: the 2023 text reads as if GDPR already requires this, and the 2026 text says it does not yet.
 
-The 2026 paper adds two arguments the 2023 paper lacks `[P]`.
+The 2026 paper adds two arguments the 2023 paper lacks `[proposal]`.
 
 - ZKP selective disclosure has a security cost, not just a weak privacy benefit. If the issuer's ZKP signing key is compromised, "This creates a largely undetectable impersonation attack on the issuer." (`SustainablePrivacy.pdf` §2.4, p.7). And the bounded cryptoperiod caps a bare ZKP credential's lifespan: "at most, a bare ZKP VC can be used only for applications with a VC lifespan of no more than two years" (§2.4, p.7). The bible already carries the detectability half from discussion #1098 (`bible/07-shibboleths-and-anti-patterns.md:388`, :499); the cryptoperiod half is new.
 - Not all de-identification is broken. K-anonymity is, but "The only allowable de-identification approach is either a differential privacy or a synthetic data privacy-based mechanism." (§1.2, p.3). This applies to aggregated data from many first parties; for non-aggregated data the answer remains contractual (§3.1, p.8).
@@ -226,7 +226,7 @@ The 2025 Seven Privacies deck pushes the selective-disclosure critique to its sh
 
 ### 7.4 Accountability as the remedy: chain-link confidentiality and data loyalty
 
-The constructive half of sustainable privacy is legal `[P]`. "the only sustainable privacy protection mechanism for 1st-party data disclosed to a 2nd party" ... "is some form of contractually protected disclosure" (`SustainablePrivacy.pdf` §3.1, p.8). The SPAC paper's 2023 version of this sentence names only chain-link confidentiality (`SPAC_Message.md` L1110, where the sentence is printed twice, a duplication in the source); the 2026 version adds the duty of data loyalty.
+The constructive half of sustainable privacy is legal `[proposal]`. "the only sustainable privacy protection mechanism for 1st-party data disclosed to a 2nd party" ... "is some form of contractually protected disclosure" (`SustainablePrivacy.pdf` §3.1, p.8). The SPAC paper's 2023 version of this sentence names only chain-link confidentiality (`SPAC_Message.md` L1110, where the sentence is printed twice, a duplication in the source); the 2026 version adds the duty of data loyalty.
 
 Data loyalty is defined by reference to Hartzog and Richards: "The 2nd party data holder must act as a loyal agent of the 1st party." (`SustainablePrivacy.pdf` §4, p.10). Consent is not the mechanism, because "the act of consent can be easily socially engineered against the best interests of the consenter" (§4, p.10). The fiduciary framing reaches dark patterns: "Exploitation also includes using data for nudging and manipulation, or incorporating dark patterns into system design" (§4, p.10). The 2026 IIW deck quotes Hartzog and Richards directly, including "Data loyalty has three key features—it is a (1) relational duty (2) that prohibits self-dealing (3) at the expense of a trusting party." (`BulkIssuanceSynergyDataLoyalty.pdf` slide 2; a quotation of the law review article, not Sam's words). The same deck extends chain-link from confidentiality to loyalty via contractual privity (slide 3).
 
@@ -236,7 +236,7 @@ Accountability, not hiding, is the 2026 thesis. "Any interaction system that doe
 
 ## 8. Bulk-issuance privacy (IIW, April 2026)
 
-The two IIW decks are the newest material here and the least developed `[P]`. They connect bulk issuance to "Control over Context", which the talks call RAP-C3 (§13). The threats are named on slide 2 of `BulkIssuancePrivacy.pdf`: identity theft, attention theft, intimidation. The mitigations on slide 3 include "Control over Context".
+The two IIW decks are the newest material here and the least developed `[proposal]`. They connect bulk issuance to "Control over Context", which the talks call RAP-C3 (§13). The threats are named on slide 2 of `BulkIssuancePrivacy.pdf`: identity theft, attention theft, intimidation. The mitigations on slide 3 include "Control over Context".
 
 What is new relative to the ACDC spec's bulk-issuance section (mined in `raw/03`, summarized at `bible/05-acdc-and-verifiable-data.md:215`):
 
@@ -252,7 +252,7 @@ None of this is in keripy beyond the blindable-state machinery the bible already
 
 ## 9. Positioning against other approaches
 
-These are Sam's comparisons `[P]` and should be cited as his.
+These are Sam's comparisons `[proposal]` and should be cited as his.
 
 - Onion and mix routing. The SPAC paper lists TOR and DIDComm routing as mitigations but says a decentralized overlay "is difficult to incentivize and as a result, may have relatively low adoptability when compared to a VPN" (`SPAC_Message.md` §Aggregation, L232). Sustainable Privacy adds that TOR is "vulnerable to timing attacks" (§2.3, p.5).
 - DIDComm. "This seems to be the area where some of the patterns in DIDComm would benefit from being recast from an AID discovery or setup perspective." (§Relationship Discovery Protocols, L1118). That is the only constructive mention of DIDComm in the corpus.
@@ -265,7 +265,7 @@ The hourglass argument is the TSP deck's reason for existing, and it reached the
 
 ## 10. The CESR wire format in the papers
 
-Both `SPAC_Message.md` (§Appendix: CESR Implementation, L1183 onward) and `TSP_CESR_Implementation.md` specify the same wrapper `[P]`. SPAC is "a tunneling routing protocol that is meant to be transparent to any other message protocol that is tunneled as a payload" (L1187). Its native fields are fixed-field CESR; "all tunneled payload messages (i.e. non-native SPAC payloads) are encoded as sniffable CESR streams" (L1191).
+Both `SPAC_Message.md` (§Appendix: CESR Implementation, L1183 onward) and `TSP_CESR_Implementation.md` specify the same wrapper `[proposal]`. SPAC is "a tunneling routing protocol that is meant to be transparent to any other message protocol that is tunneled as a payload" (L1187). Its native fields are fixed-field CESR; "all tunneled payload messages (i.e. non-native SPAC payloads) are encoded as sniffable CESR streams" (L1191).
 
 The structure is head, body, tail. The head is plaintext and deliberately uniform: "This is by design so that the head contains no correlatable metadata besides the source and destination AIDs." (§Head, L1207). The wrapper count code is `-E##` or `--E#####`; the payload group is `-Z##` or `--Z#####`. The body is either ciphertext or a plaintext payload group, and a parser tells them apart by the first character: if it is `-` the payload is a plaintext group, otherwise a cipher primitive (§Determining if the payload field value is a ciphertext CESR primitive or a plaintext CESR group, L1549). Every control payload carries a pad field "to pad the total packet size to some desired minimum length" (§Padding Control Message Payloads, L1265), and a whole `PAD` payload type exists to "whiten the stream of packets by injecting pad packets" (§Pad Payload, L1485). Relationship formation needs no replay protection because "relationship formations are treated as idempotent actions" (§Replay Attack, L1436).
 
@@ -284,11 +284,11 @@ The `HOP` payload has a proposed variant, explicitly "for Discussion", that encr
 
 ## 11. What reached a specification
 
-### 11.1 CESR codes `[N]`
+### 11.1 CESR codes `[spec]`
 
 The CESR master table on both branches carries the wrapper code: "| `-E##` | ESSR wrapper signable up to 4,095 quadlets/triplets |" (`kswg-cesr-specification` `spec/spec-body.md` L842 @`main` `bad6edd84`; L850 @`v1.1` `65fd751`). The payload group is named for TSP: "ESSR (TSP) Payload `version+messagtype+...` up to 4,095 quadlets/triplets" (L939 @`main`; L947 @`v1.1`; "messagtype" sic). The X25519 sealed-box cipher codes `4C`-`9AAC` and HPKE-Base codes `4F`-`9AAF` are present (L1028-1050 @`main`). One drift: the CESR spec describes `4F` as "HPKE Base cipher bytes of QB2 plaintext" (L1046 @`main`), while both papers describe it as "HPKE Base cipher bytes of sniffable stream plaintext" (`SPAC_Message.md` L1316). Which one the TSP spec means is not stated; it refers to its codes only by prefix. Open question 6.
 
-### 11.2 The ToIP TSP draft: status and shape `[N]`, experimental
+### 11.2 The ToIP TSP draft: status and shape `[spec]`, experimental
 
 Status, verbatim: "Experimental Implementor's Draft Rev 3 with Errata (September 30, 2026)" (`tswg-tsp-specification` `spec/spec.md` L4 @`5599b4556`). The version on the wire is 0.2: "The current experimental draft's version is `0.2`." (L245).
 
@@ -315,7 +315,7 @@ Relationship forming became mandatory before application traffic, which SPAC did
 
 ### 11.5 What the spec says TSP does not do
 
-The spec is more candid than the papers about limits, and these sentences belong in the bible as stated `[N]`.
+The spec is more candid than the papers about limits, and these sentences belong in the bible as stated `[spec]`.
 
 - No forward secrecy. "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (§Limits, L1515).
 - Metadata privacy is not cryptographic. "The properties that require no judgement about an operator are authenticity and confidentiality, which are cryptographic." Then: "Metadata privacy and availability in routed mode are not among them." (§What An Intermediary Is Trusted For, L1558).
@@ -331,7 +331,7 @@ Identifier syntax is the sharpest friction. "we require that the VID format be e
 
 ---
 
-## 12. What reached keripy `[K]` @`927c0cb87`
+## 12. What reached keripy `[code]` @`927c0cb87`
 
 keripy has a `keri.spac` package containing one primitive, the payload-type tag: `PayloadTypes = PayloadTypage(HOP='HOP', RFI='RFI', RFA='RFA', RFD='RFD', SCS='SCS')` (`src/keri/spac/payloading.py`:15). It omits `CTL` and `PAD`, which both papers and the ToIP spec define. It was added by Fergal O'Connor in `a6e12a74b` (2025-09-02, commit message `feat: SPAC message types and optionally encrypted StreamPoster (#1068)`).
 
@@ -344,7 +344,7 @@ The same commit added an ESSR send path to `StreamPoster` (`src/keri/app/forward
 - It signs an outer `exn` on route `/essr/req` whose modifiers name both ends, `modifiers=dict(src=hab.pre, dest=ctrl)` (:423), and whose body carries a Blake3 digest of the ciphertext, `diger = Diger(ser=raw, code=MtrDex.Blake3_256)` (:420). The signature therefore covers the destination AID and the ciphertext; the sender AID is inside the ciphertext. That is ESSR in shape.
 - It attaches the ciphertext under the `ESSRPayloadGroup` count code (:427).
 
-Four boundaries on that `[K]`, each checked at the pin:
+Four boundaries on that `[code]`, each checked at the pin:
 
 1. It is not the SPAC/TSP wire format. The outer wrapper is a KERI `exn` built by `specialExchange` with `version=Vrsn_1_0` (:421-425), not the `-E##` ESSR wrapper with a `SPAC` or `TSP` version field. keripy's codex defines `ESSRWrapperGroup: str = '-E'` (`src/keri/core/counting.py`:210) but `forwarding.py` does not use it.
 2. Multisig receivers are not handled. Only `verfers[0]` is used, so a multi-key receiver gets one ciphertext to one key, not the per-key list the SPAC paper's multisig extension calls for (§6).
@@ -381,7 +381,7 @@ These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotatio
 5. The SPAC paper's `-K##` hop-list code (L1377) contradicts its own tables and the ToIP spec. Probably a typo; worth a one-line fix upstream.
 6. `4F`: QB2 plaintext (CESR spec) or sniffable-stream plaintext (papers)? The two describe different payloads under the same code.
 7. Is the destinationless ESSR variant (§4.5) sound? The birthday-attack argument is sketched, not made.
-8. keripy's ESSR receive path. The KERIA PR named in the talks was not located or read. Until it is, the statement that ESSR is implemented holds for the send side only `[K]`.
+8. keripy's ESSR receive path. The KERIA PR named in the talks was not located or read. Until it is, the statement that ESSR is implemented holds for the send side only `[code]`.
 9. The Seven Privacies title. The deck never enumerates seven privacies; this note's mapping to the "Combinations" slide is an inference and should be checked with Sam before the bible uses the phrase as a defined term.
 10. Gaps in reading, recorded as such: the TSP spec's test-vector appendix and the 2021 PAC deck's slides 33-78 and 93-228 (KERI tutorial material) were skimmed by title only. No other source in the assignment went unread.
 
@@ -405,7 +405,7 @@ These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotatio
 
 ## Proposed chapter outline
 
-A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secure-channels.md`. Per `standards.md` §6 this is a proposal for the PR body, not an action. Status paragraph: almost everything is `[P]`; the ESSR codes are `[N]` in CESR; the TSP draft is `[N]` but experimental; keripy is `[K]` for direct-mode ESSR send only.
+A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secure-channels.md`. Per `standards.md` §6 this is a proposal for the PR body, not an action. Status paragraph: almost everything is `[proposal]`; the ESSR codes are `[spec]` in CESR; the TSP draft is `[spec]` but experimental; keripy is `[code]` for direct-mode ESSR send only.
 
 1. Thesis and status. KERI's privacy argument begins where key state ends: strongest authenticity and confidentiality first, then the best privacy those allow, defended by contexts and accountability rather than by hiding. Supports: §1 (L3, L13), §3 (L103), §7.4 (slide 24). Cross-link 06 §4.
 2. The trade space. PAC trilemma, its wording history, priority versus layering, cold war versus hot war. Supports: §1. Flag open question 1.
@@ -445,7 +445,7 @@ Not applied. `smithsamuelm-papers` exists with `watch: [whitepapers/kram.md]`; t
       - presentations/BulkIssuanceSynergyDataLoyalty.pdf
     tier: warm
     branches:
-      - {name: master, role: standardizing, marker: "[P]",
+      - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: b47f21597, date: 2026-10-14},
          last_mined:   {commit: b47f21597, date: 2026-10-14}}
     feeds: [raw/15-kram.md, raw/17-spac-tsp-privacy.md]
@@ -465,13 +465,13 @@ Not applied. `smithsamuelm-papers` exists with `watch: [whitepapers/kram.md]`; t
     watch: [spec/spec.md]
     tier: warm
     branches:
-      - {name: main, role: standardizing, marker: "[N]",
+      - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 5599b4556, date: 2026-10-14},
          last_mined:   {commit: 5599b4556, date: 2026-10-14}}
     feeds: [raw/17-spac-tsp-privacy.md]
     chapters: ["04", "06", "07"]
     caveat: >-
-      Experimental Implementor's Draft Rev 3 with Errata (2026-09-30); wire version 0.2. [N] here
+      Experimental Implementor's Draft Rev 3 with Errata (2026-09-30); wire version 0.2. [spec] here
       means present in the line ToIP is standardizing, and that line calls itself experimental.
       Not cloned under ~/code; read from a shallow clone on 2026-10-14. Only spec/spec.md is
       rendered (specs.json markdown_paths); the other spec/*.md files are template residue. The

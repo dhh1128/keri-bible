@@ -13,7 +13,7 @@ Source set (all authored by Daniel Hardman, repo `/home/daniel/code/me/papers/`;
 
 These are the author's *own* framing — analogies, the "why," and honest tradeoffs are load-bearing and preserved.
 
-**Provenance caveat, load-bearing.** Everything in this note is an **authored position, not normative text**. `refresh/sources.yaml` marks this source `[N]`; that marker is wrong for this source in the specification sense and the field is unused here. Nothing below is evidence about what the KERI, ACDC or CESR specifications say, and nothing below is evidence about what any implementation does. Chapters citing this note must attribute to Hardman by name and keep doing so. Where a paper's confidence exceeds what the surveyed sources support, that gap is recorded in §9 rather than smoothed over.
+**Provenance caveat, load-bearing.** Everything in this note is an **authored position, not normative text**. `refresh/sources.yaml` marks this source `[spec]`; that marker is wrong for this source in the specification sense and the field is unused here. Nothing below is evidence about what the KERI, ACDC or CESR specifications say, and nothing below is evidence about what any implementation does. Chapters citing this note must attribute to Hardman by name and keep doing so. Where a paper's confidence exceeds what the surveyed sources support, that gap is recorded in §9 rather than smoothed over.
 
 ## What the 2026-10 pass covered, and what it did not
 
