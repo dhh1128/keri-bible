@@ -47,15 +47,22 @@ def strip_literals(line: str) -> str:
 
 
 def prose_lines(text: str):
-    """Yield (lineno, line, in_fence) for every line, tracking fenced code blocks."""
-    fence = False
+    """Yield (lineno, line, in_fence) for every line, tracking fenced code blocks as CommonMark
+    does: a fence opens with three or more backticks or tildes (an info string allowed) indented
+    at most three spaces, and closes only with a bare run of the same character at least as long."""
+    fence = None  # (char, length) of the open fence
     for n, line in enumerate(text.split("\n"), 1):
-        if line.lstrip().startswith("```"):
-            fence = not fence
+        m = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if fence is None and m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
+            fence = (m.group(1)[0], len(m.group(1)))
             yield n, line, True
             continue
-        yield n, line, fence
-
+        if fence is not None:
+            if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip():
+                fence = None
+            yield n, line, True
+            continue
+        yield n, line, False
 
 def check_wrap(path: str, text: str) -> list[str]:
     out, prev = [], ""
@@ -118,7 +125,9 @@ def check_published(path: str, text: str, anchors_by_file: dict[str, set[str]]) 
             out.append(f"{path}:1: skeleton: the first H2 must be Thesis")
         if not h2 or h2[-1] != "Sources":
             out.append(f"{path}:1: skeleton: the last H2 must be Sources")
-        sources_line = next((n for n, lvl, t in heading_info(text) if lvl == 2 and ANCHOR_AT_END.sub("", t).strip() == "Sources"), None)
+        # The skeleton requires Sources to be the last H2, so the body ends at the last one: an
+        # earlier "Sources" heading, in a fence, an HTML block or anywhere else, cannot shorten it.
+        sources_line = next((n for n, lvl, t in reversed(list(heading_info(text))) if lvl == 2 and ANCHOR_AT_END.sub("", t).strip() == "Sources"), None)
         lines = text.split("\n")
         body_words = len(" ".join(lines[: sources_line - 1] if sources_line else lines).split())
         if body_words > BODY_LIMIT:
