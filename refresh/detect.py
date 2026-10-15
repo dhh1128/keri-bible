@@ -271,10 +271,28 @@ def gh_repo_commits(repo: str, branch: str, since_date: str, watch: list[str]):
     return hits
 
 
-def page_hash(url: str):
+def fetch_page(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "keri-bible-refresh/1"})
     with urllib.request.urlopen(req, timeout=30) as r:
-        body = r.read().decode("utf-8", "replace")
+        return r.read().decode("utf-8", "replace")
+
+
+def page_hash(url: str, match: str | None = None):
+    """Content hash of a page: its visible text, or only what `match` selects from the raw HTML.
+
+    Visible text is the default because a cache-buster or a rotating nonce in a script must not read
+    as a change. Some pages keep the fact worth watching inside a script, though: le.utah.gov serves
+    each Code chapter as a shell whose version list is JavaScript, so an amendment leaves the visible
+    text untouched. For those, `match` names the fragment to hash, and a pattern that matches nothing
+    is an error rather than a hash of the empty string, so a redesigned page cannot go quiet.
+    """
+    body = fetch_page(url)
+    if match:
+        found = re.findall(match, body, re.S)
+        if not found:
+            raise SourceError(f"{url}: watch pattern {match!r} matched nothing; the page has changed shape")
+        picked = "\n".join(f if isinstance(f, str) else "".join(f) for f in found)
+        return hashlib.sha256(picked.encode()).hexdigest()[:16]
     # Strip scripts/styles and collapse whitespace so a cache-buster or a rotating nonce does not
     # read as a content change.
     body = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", body)
@@ -427,8 +445,10 @@ def main():
                 if prev and (prev / "webhashes.json").exists():
                     prev_hashes = json.loads((prev / "webhashes.json").read_text()).get(src["id"], {})
                 cur = {}
-                for url in src["urls"]:
-                    cur[url] = page_hash(url)
+                for u in src["urls"]:
+                    # A URL is a string, or {url, match} to hash only what the pattern selects.
+                    url, match = (u, None) if isinstance(u, str) else (u["url"], u.get("match"))
+                    cur[url] = page_hash(url, match)
                     if prev_hashes.get(url) and prev_hashes[url] != cur[url]:
                         entry["items"].append({"url": url, "was": prev_hashes[url], "now": cur[url]})
                         entry["material"] = True

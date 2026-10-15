@@ -13,6 +13,9 @@
 #                 The other kinds are watched for change by detect.py and are invisible to it.
 #   path          repo location relative to $CODE_ROOT (default ~/code), per ~/code/repos.yaml
 #   repo, repos   owner/name of a GitHub source; gh-issues takes either one `repo` or a `repos` list
+#   urls          web sources: each a URL, hashed on its visible text, or {url, match}, hashed on
+#                 what the regex `match` selects from the raw HTML, for a page whose changing part is
+#                 inside a script
 #   since         gh-* conversation sources: report items updated on or after this date
 #   primary_authors  gh-discussions and gh-issues: logins whose threads are flagged, and for
 #                 gh-issues the only threads that make the source material
@@ -631,7 +634,9 @@ sources:
   - id: utah-sedi-statute
     kind: web
     urls:
-      - https://le.utah.gov/xcode/Title63A/Chapter20/63A-20.html
+      # The version list is JavaScript, so the visible text would never change; hash it instead.
+      - url: https://le.utah.gov/xcode/Title63A/Chapter20/63A-20.html
+        match: 'var versionArr = \[.*?\];|var versionDefault="[^"]*"'
     check: quarterly
     feeds: [raw/20-identity-theory-reputation-sedi.md]
     chapters: ["06"]
@@ -639,9 +644,8 @@ sources:
       Utah Code 63A-20, State-Endorsed Digital Identity, enacted by Chapter 436, 2026 General Session,
       effective 2026-05-06. Law, not a kind of evidence the markers name, so this source has no branch and
       no marker. raw/20 mines the official PDF C63A-20_2026050620260506.pdf held in the private repo
-      bakobo/sedi at 91402ae99, not this page. The page resolves (HTTP 200) but is a script shell: the
-      statute text loads from a versioned file, and its version list, which names
-      C63A-20_2026050620260506 as the only and current version, sits inside a script block that
-      detect.py strips before hashing. So the content hash does not move when the statute is amended;
-      check the version list by hand. The talks call the bill SB 260; the bill number is unverified
-      (raw/20 §4.1). Invisible to freshness.py.
+      bakobo/sedi at 91402ae99, not this page. The page is a script shell: the statute text loads from a
+      versioned file, and the version list naming it, which holds C63A-20_2026050620260506 as the only and
+      current version, is JavaScript. So this source hashes that list rather than the visible text, and an
+      amendment, which adds a version, moves the hash while a site banner does not. The talks call the
+      bill SB 260; the bill number is unverified (raw/20 §4.1). Invisible to freshness.py.

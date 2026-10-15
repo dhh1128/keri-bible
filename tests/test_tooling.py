@@ -172,6 +172,33 @@ class GhIssues(unittest.TestCase):
                 detect.issues_since("o/r", "2026-10-14", set())
 
 
+class PageHash(unittest.TestCase):
+    """detect.page_hash: a match pattern watches what a script holds, and fails loud when lost."""
+
+    PAGE = ('<html><head><script>var versionArr = [[\'C63A-20_{v}.html\',\'Current Version\']];\n'
+            'var versionDefault="C63A-20_{v}";</script></head><body>{banner} Chapter 20</body></html>')
+    MATCH = r'var versionArr = \[.*?\];|var versionDefault="[^"]*"'
+
+    def h(self, body, match=None):
+        from unittest import mock
+        with mock.patch.object(detect, "fetch_page", return_value=body):
+            return detect.page_hash("https://example.test/", match)
+
+    def test_visible_text_hash_misses_a_script_only_change(self):
+        a = self.PAGE.format(v="2026", banner="")
+        b = self.PAGE.format(v="2027", banner="")
+        self.assertEqual(self.h(a), self.h(b))
+
+    def test_match_sees_the_version_change_and_ignores_the_banner(self):
+        a = self.PAGE.format(v="2026", banner="")
+        self.assertNotEqual(self.h(a, self.MATCH), self.h(self.PAGE.format(v="2027", banner=""), self.MATCH))
+        self.assertEqual(self.h(a, self.MATCH), self.h(self.PAGE.format(v="2026", banner="Playback down today"), self.MATCH))
+
+    def test_match_that_finds_nothing_is_an_error(self):
+        with self.assertRaises(detect.SourceError):
+            self.h("<html>redesigned</html>", self.MATCH)
+
+
 class Checks(unittest.TestCase):
     """detect.selected_checks: monthly always, quarterly in the quarter months, --check overrides."""
 
