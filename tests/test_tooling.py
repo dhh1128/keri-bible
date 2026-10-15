@@ -157,6 +157,24 @@ class GhIssues(unittest.TestCase):
                 detect.issues_since("o/r", "2026-10-14", set())
 
 
+class Checks(unittest.TestCase):
+    """detect.selected_checks: monthly always, quarterly in the quarter months, --check overrides."""
+
+    def pick(self, month, check=None):
+        from datetime import datetime
+        from types import SimpleNamespace
+        return detect.selected_checks(SimpleNamespace(check=check), datetime(2026, month, 1))
+
+    def test_default_by_month(self):
+        self.assertEqual(self.pick(2), {"monthly"})
+        self.assertEqual(self.pick(10), {"monthly", "quarterly"})
+
+    def test_override_and_rejects_unknown(self):
+        self.assertEqual(self.pick(2, "quarterly"), {"quarterly"})
+        with self.assertRaises(SystemExit):
+            self.pick(2, "hot")
+
+
 class Manifest(unittest.TestCase):
     """Every source in refresh/sources.yaml is a kind detect.py handles, with the keys it reads."""
 
@@ -170,6 +188,7 @@ class Manifest(unittest.TestCase):
                 "gh-issues": {"since"}, "web": {"urls"}}
         for s in m["sources"]:
             self.assertIn(s["kind"], need, s["id"])
+            self.assertIn(s.get("check"), detect.CHECKS, s["id"])
             self.assertEqual(need[s["kind"]] - set(s), set(), s["id"])
             if s["kind"] == "gh-issues":
                 self.assertTrue(s.get("repo") or s.get("repos"), s["id"])

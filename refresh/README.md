@@ -50,7 +50,7 @@ Phases 1 and 6 are shell on purpose. The model edits files and writes a report; 
 ## What the job may not do unattended
 
 - **Create a `bible/` chapter.** That is a structural decision about what the bible is. It proposes; you decide. A new `raw/` note for a newly found topic is fine.
-- **Retarget its own manifest.** `branches`, `chapters` and `cadence` are reviewed fields. Untracked branches newer than the tracked ones are reported, never adopted.
+- **Retarget its own manifest.** `branches`, `chapters` and `check` are reviewed fields. Untracked branches newer than the tracked ones are reported, never adopted.
 - **Advance `last_mined` for a source it did not re-read.** `last_scanned` advances every run; `last_mined` only where a note was genuinely re-read. Under-claim, always.
 - **Write to a WebOfTrust or trustoverip conversation.** Nothing here files an issue, comments on a discussion, or opens a PR anywhere but `dhh1128/keri-bible`. Findings worth raising upstream go in the PR body for Daniel to raise himself.
 

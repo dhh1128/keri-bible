@@ -310,38 +310,45 @@ def previous_state_dir(current: Path):
     return dirs[-1] if dirs else None
 
 
-def selected_cadences(args, now):
-    if args.cadences:
-        return set(args.cadences.split(","))
-    cadences = {"hot", "warm"}
+CHECKS = {"monthly", "quarterly"}
+
+
+def selected_checks(args, now):
+    if args.check:
+        chosen = set(args.check.split(","))
+        if chosen - CHECKS:
+            raise SystemExit(f"--check takes {', '.join(sorted(CHECKS))}; got {args.check}")
+        return chosen
+    checks = {"monthly"}
     if now.month in QUARTER_MONTHS:
-        cadences.add("cold")
-    return cadences
+        checks.add("quarterly")
+    return checks
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-fetch", action="store_true", help="skip git fetch (offline / testing)")
-    ap.add_argument("--cadences", help="comma list, e.g. hot,warm,cold (default hot,warm + cold quarterly)")
+    ap.add_argument("--check", help="comma list of monthly,quarterly (default monthly, plus quarterly "
+                                   "in Jan/Apr/Jul/Oct)")
     ap.add_argument("--run", help="state directory name (default YYYY-MM)")
     args = ap.parse_args()
 
     now = datetime.now(timezone.utc)
     manifest = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
     code_root = Path(os.path.expanduser(os.environ.get("CODE_ROOT", manifest["code_root"])))
-    cadences = selected_cadences(args, now)
+    checks = selected_checks(args, now)
 
     run_dir = STATE / (args.run or now.strftime("%Y-%m"))
     (run_dir / "crossdiff").mkdir(parents=True, exist_ok=True)
     prev = previous_state_dir(run_dir)
 
-    report = {"generated": now.isoformat(timespec="seconds"), "cadences": sorted(cadences),
+    report = {"generated": now.isoformat(timespec="seconds"), "check": sorted(checks),
               "previous_run": prev.name if prev else None, "sources": [], "errors": []}
 
     for src in manifest["sources"]:
-        if src.get("cadence", "hot") not in cadences:
+        if src.get("check", "monthly") not in checks:
             continue
-        entry = {"id": src["id"], "kind": src["kind"], "cadence": src.get("cadence"),
+        entry = {"id": src["id"], "kind": src["kind"], "check": src.get("check", "monthly"),
                  "feeds": src.get("feeds", []), "chapters": src.get("chapters", []),
                  "caveat": src.get("caveat", ""), "branches": [], "items": [],
                  "new_branches": [], "marker_changes": [], "material": False}
@@ -467,7 +474,7 @@ def main():
 
 def render(r) -> str:
     L = [f"# Refresh delta — {r['generated'][:10]}", "",
-         f"Cadences scanned: {', '.join(r['cadences'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
+         f"Checks run: {', '.join(r['check'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
 
     if r["errors"]:
         L += ["## Errors — read these first", "",

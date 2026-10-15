@@ -18,7 +18,7 @@
 #                 gh-issues the only threads that make the source material
 #   remote        git remote to fetch and resolve branches against
 #   watch         paths within the repo that carry doctrine; changes elsewhere are noise
-#   cadence       hot = every run | warm = every run | cold = quarterly (Jan/Apr/Jul/Oct)
+#   check         monthly = every run | quarterly = only runs in Jan/Apr/Jul/Oct
 #   branches      one entry per tracked line. Specs carry TWO, and they are not interchangeable:
 #                   role: standardizing  — what the community is standardizing now. Marker [spec].
 #                   role: forward        — new thinking likely, not certain, to fold into the
@@ -31,7 +31,7 @@
 #   caveat        free text; anything the pins would otherwise over-claim
 #
 # REVIEWED FIELDS — a refresh run may PROPOSE changes to these in the PR body, never apply them
-# itself: `branches` (which lines are tracked), `chapters` (the propagation map), `cadence`.
+# itself: `branches` (which lines are tracked), `chapters` (the propagation map), `check`.
 # Rationale: on 2026-09-15 the ACDC spec's v1.1 branch was 491 lines of spec-body.md ahead of
 # main and nothing tracked it. A job that silently retargets its own sources can drift the same
 # way without anyone noticing it happened.
@@ -50,7 +50,7 @@ sources:
     path: wot/kswg-keri-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/termdefs.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: fbdd4a615, date: 2026-10-03},
@@ -71,7 +71,7 @@ sources:
     path: me/kswg-cesr-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: bad6edd84, date: 2026-10-03},
@@ -92,7 +92,7 @@ sources:
     path: me/kswg-acdc-specification
     remote: upstream
     watch: [spec/spec-body.md, spec/terms-and-definitions-intro.md, spec/terms-definitions]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: f0bd097de, date: 2026-10-03},
@@ -112,7 +112,7 @@ sources:
     path: me/kswg-dossier-specification
     remote: upstream
     watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 3ff1b3202, date: 2026-10-03},
@@ -127,7 +127,7 @@ sources:
     path: wot/keripy
     remote: upstream
     watch: [src/keri]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 80f77b73b, date: 2026-10-03},
@@ -152,7 +152,7 @@ sources:
     path: wot/keripy-knowledge
     remote: origin
     watch: ["."]
-    cadence: warm
+    check: monthly
     branches:
       - {name: knowledge, role: standardizing, marker: "[code]",
          last_scanned: {commit: 9489ac9bd, date: 2026-10-03},
@@ -171,7 +171,7 @@ sources:
     path: wot/keria
     remote: upstream
     watch: [src/keria]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 928ce26a4, date: 2026-10-03},
@@ -187,7 +187,7 @@ sources:
     path: wot/signify-ts
     remote: upstream
     watch: [src]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 5a174b545, date: 2026-10-03},
@@ -210,7 +210,7 @@ sources:
     path: me/papers
     remote: origin
     watch: ["*.md"]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 68a5e2f76, date: 2026-10-03},
@@ -227,7 +227,7 @@ sources:
     path: wot/keri-security-analysis
     remote: origin
     watch: ["*.md"]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 149fa6c35, date: 2026-10-03},
@@ -291,7 +291,7 @@ sources:
       - presentations/SEDI_Tradeoff.web.pdf
       - presentations/SecurityThreatsMitigationsSEDI.web.pdf
       - presentations/DuplicityGame_IIW_2020_A.pdf
-    cadence: warm
+    check: monthly
     branches:
       - {name: master, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: b47f21597, date: 2026-10-14},
@@ -323,7 +323,7 @@ sources:
     path: wot/tswg-tsp-specification
     remote: origin
     watch: [spec/spec.md]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
          last_scanned: {commit: 5599b4556, date: 2026-10-14},
@@ -341,7 +341,7 @@ sources:
     path: wot/kswg-did-method-webs-specification
     remote: origin
     watch: [spec/header.md, spec/body.md, spec/terms-definitions]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 2d84ef2b0, date: 2026-10-14},
@@ -362,7 +362,7 @@ sources:
     path: wot/witness-hk
     remote: origin
     watch: [README.md, docs, ansible/README.md, src/witopnet]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 39e1c3fc7, date: 2026-10-14},
@@ -378,7 +378,7 @@ sources:
     path: wot/watcher-hk
     remote: origin
     watch: [README.md, docs, src/watopnet]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 9be717f8a, date: 2026-10-14},
@@ -394,7 +394,7 @@ sources:
     path: wot/kf-boot
     remote: origin
     watch: [README.md, setup-guide.md, docs]
-    cadence: warm
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
          last_scanned: {commit: 14c8f616e, date: 2026-10-14},
@@ -409,7 +409,7 @@ sources:
     path: wot/kf-observer
     remote: origin
     watch: [README.md, src]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
          last_scanned: {commit: d6368aef9, date: 2026-10-14},
@@ -426,7 +426,7 @@ sources:
     path: wot/kf-registrar
     remote: origin
     watch: [README.md, src]
-    cadence: hot
+    check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
          last_scanned: {commit: bf14eac4d, date: 2026-10-14},
@@ -444,7 +444,7 @@ sources:
       - https://keri.foundation/
       - https://keri.foundation/about/services/
       - https://keri.foundation/faq/
-    cadence: cold
+    check: quarterly
     feeds: [raw/18-infrastructure-ops.md]
     chapters: ["11"]
     caveat: >-
@@ -456,7 +456,7 @@ sources:
   - id: keripy-discussions
     kind: gh-discussions
     repo: WebOfTrust/keripy
-    cadence: hot
+    check: monthly
     since: 2026-10-03
     primary_authors: [SmithSamuelM]
     feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md, raw/21-sam-rulings.md]
@@ -473,7 +473,7 @@ sources:
   - id: keripy-prs
     kind: gh-prs
     repo: WebOfTrust/keripy
-    cadence: hot
+    check: monthly
     since: 2026-10-03
     feeds: []
     chapters: ["03", "04", "05", "08", "09", "10"]
@@ -484,7 +484,7 @@ sources:
   - id: keripy-issues
     kind: gh-issues
     repo: WebOfTrust/keripy
-    cadence: hot
+    check: monthly
     since: 2026-10-14
     primary_authors: [SmithSamuelM]
     feeds: [raw/21-sam-rulings.md]
@@ -501,7 +501,7 @@ sources:
       - trustoverip/kswg-keri-specification
       - trustoverip/kswg-acdc-specification
       - trustoverip/kswg-cesr-specification
-    cadence: hot
+    check: monthly
     since: 2026-10-14
     primary_authors: [SmithSamuelM]
     feeds: [raw/21-sam-rulings.md]
@@ -518,7 +518,7 @@ sources:
     path: wot/CONF26-subtitles
     remote: origin
     watch: [subtitles, subtitles-interviews]
-    cadence: cold
+    check: quarterly
     branches:
       - {name: main, role: standardizing, marker: "[proposal]",
          last_scanned: {commit: 006042d39, date: 2026-10-14},
@@ -528,7 +528,7 @@ sources:
     chapters: ["05", "06", "07", "08", "10", "11", "12", "13", "14"]
     caveat: >-
       Edited auto-captions of spoken talks. A WEAK provenance class: near-wording only, never exact.
-      See raw/14 §0 before any quote reaches a chapter. A conference corpus is near-static, hence cold.
+      See raw/14 §0 before any quote reaches a chapter. A conference corpus is near-static, hence checked quarterly.
       raw/18, raw/19 and raw/20 read the talks they cite at 006042d39; raw/14 records no commit, so
       last_mined stays unknown. freshness.py reads the .srt files with cues joined, so a quote must
       match the captions as they read, not a cleaned-up transcript.
@@ -538,7 +538,7 @@ sources:
     path: wot/recordings-and-subtitles
     remote: origin
     watch: [subtitles/sam-smith]
-    cadence: cold
+    check: quarterly
     branches:
       - {name: main, role: standardizing, marker: "[architect]",
          last_scanned: {commit: bef1cdb0e, date: 2026-10-15},
@@ -560,7 +560,7 @@ sources:
     path: bakobo/schema
     remote: origin
     watch: ["."]
-    cadence: cold
+    check: quarterly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cfcbdcc7a, date: 2026-10-03},
@@ -573,7 +573,7 @@ sources:
     path: provenant/public-schema
     remote: origin
     watch: ["."]
-    cadence: cold
+    check: quarterly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: 95a07e544, date: 2026-10-03},
@@ -586,7 +586,7 @@ sources:
     path: provenant/origin-platform
     remote: origin
     watch: [docs]
-    cadence: cold
+    check: quarterly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
          last_scanned: {commit: cb758b1b5, date: 2026-10-03},
@@ -603,7 +603,7 @@ sources:
       - https://keri.one/
       - https://keri.one/keri-resources/
       - https://keri.one/131-2/
-    cadence: cold
+    check: quarterly
     feeds: [raw/13-keri-one-web.md]
     chapters: ["01", "06"]
     caveat: >-
@@ -614,7 +614,7 @@ sources:
     kind: web
     urls:
       - https://le.utah.gov/xcode/Title63A/Chapter20/63A-20.html
-    cadence: cold
+    check: quarterly
     feeds: [raw/20-identity-theory-reputation-sedi.md]
     chapters: ["06"]
     caveat: >-
