@@ -34,6 +34,10 @@ nav = [
     "bible/08-presentation-architectures-and-ipex.md",
     "bible/09-kram-and-request-authentication.md",
     "bible/10-presentation-registries.md",
+    "bible/11-infrastructure-and-operations.md",
+    "bible/12-confidentiality-and-secure-messaging.md",
+    "bible/13-authority-authorization-and-agents.md",
+    "bible/14-identifiers-trust-bases-and-reputation.md",
   ] },
 ]
 
