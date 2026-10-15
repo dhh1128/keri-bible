@@ -100,6 +100,14 @@ class ConvertedFormats(unittest.TestCase):
         text = freshness.pdf_text(tiny_pdf("Duplicity is detectable by any validator"))
         self.assertIn("Duplicity is detectable by any validator", text)
 
+    def test_pdf_ligatures_spelled_out_and_line_hyphens_rejoined(self):
+        from unittest import mock
+        out = mock.Mock(returncode=0, stdout="more \ufb02exibility, contractually pro-\n  tected and self-\ndealing".encode())
+        with mock.patch.object(freshness.subprocess, "run", return_value=out):
+            corpus = freshness.norm(freshness.pdf_text(b"%PDF-stub"))
+        for quote in ("more flexibility", "contractually protected", "self-dealing", "selfdealing"):
+            self.assertIn(freshness.norm(quote), corpus)
+
     @unittest.skipUnless(shutil.which("pdftotext"), "pdftotext (poppler-utils) not installed")
     def test_pdf_and_srt_read_from_a_git_ref(self):
         with tempfile.TemporaryDirectory() as d:

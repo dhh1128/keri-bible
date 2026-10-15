@@ -43,7 +43,7 @@ MINLEN = 24                      # skip short quoted spans: terms and framings, 
 # one, which then reports a whole paragraph as drifted. That false positive buried the real signal
 # in the bash predecessor — 2,039 of 3,331 quotes "missing", nearly all of them artifacts.
 MAXLEN = 320
-EXTS = {".md", ".py", ".ts", ".txt", ".json"}
+EXTS = {".md", ".rst", ".py", ".ts", ".txt", ".json"}
 # Formats that are not plain text and go through a converter before they join the corpus. Sam's
 # papers and decks are PDFs and the conference talks are SubRip captions; with only EXTS above,
 # every quote from either reported missing however faithfully it was taken.
@@ -78,6 +78,12 @@ def norm(s: str) -> str:
     return _WS.sub(" ", s)
 
 
+# Typographic ligatures pdftotext passes through as single code points (ﬁ, ﬂ, ﬀ, ﬃ, ﬄ, ﬅ, ﬆ). A
+# quotation spells them out, so "ﬂexibility" in the extracted text would never match "flexibility".
+_LIGATURES = str.maketrans({"\ufb00": "ff", "\ufb01": "fi", "\ufb02": "fl", "\ufb03": "ffi",
+                            "\ufb04": "ffl", "\ufb05": "st", "\ufb06": "st"})
+# A word broken across a line with a hyphen: "contractually pro-\n  tected".
+_LINE_HYPHEN = re.compile(r"(\w)-[ \t]*\n[ \t]*(\w)")
 _SRT_INDEX = re.compile(r"^\d+$")
 _SRT_TIME = re.compile(r"^\d{1,2}:\d{2}:\d{2}[,.]\d{1,3}\s*-->")
 _SRT_TAG = re.compile(r"</?[a-zA-Z][^>]*>|\{\\[^}]*\}")
@@ -117,7 +123,13 @@ def pdf_text(data: bytes) -> str:
         raise RuntimeError("pdftotext not installed (poppler-utils)") from e
     if p.returncode != 0:
         raise RuntimeError(f"pdftotext exit {p.returncode}: {p.stderr.decode(errors='replace')[:200]}")
-    return p.stdout.decode("utf-8", errors="replace")
+    text = p.stdout.decode("utf-8", errors="replace").translate(_LIGATURES)
+    # Typeset prose hyphenates at line ends, and a quotation rejoins the word. Whether a given break
+    # split one word or ended a real compound ("self-\ndealing") cannot be told from the text, so
+    # every reading goes into the corpus: as extracted, with the hyphen dropped, and with it kept.
+    if not _LINE_HYPHEN.search(text):
+        return text
+    return "\n".join([text, _LINE_HYPHEN.sub(r"\1\2", text), _LINE_HYPHEN.sub(r"\1-\2", text)])
 
 
 _CONVERTED_CACHE: dict[str, str] = {}
