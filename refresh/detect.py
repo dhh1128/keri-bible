@@ -301,7 +301,10 @@ def fetch_page(url: str) -> str:
         return r.read().decode("utf-8", "replace")
 
 
-def page_hash(url: str, match=None):
+_NO_MATCH = object()
+
+
+def page_hash(url: str, match=_NO_MATCH):
     """Content hash of a page: its visible text, or only what `match` selects from the raw HTML.
 
     Visible text is the default because a cache-buster or a rotating nonce in a script must not read
@@ -312,13 +315,16 @@ def page_hash(url: str, match=None):
     more than one means it is ambiguous which is live, and either is an error rather than a hash,
     so a redesigned page cannot go quiet behind a stale assignment.
     """
-    if match is not None and not match:
-        raise SourceError(f"{url}: `match` is present but empty; give a pattern or remove the key")
+    if match is not _NO_MATCH:
+        patterns = [match] if isinstance(match, str) else match
+        if not isinstance(patterns, list) or not patterns or not all(
+                isinstance(q, str) and q.strip() for q in patterns):
+            raise SourceError(f"{url}: `match` must be a non-blank pattern or a non-empty list of them")
     body = fetch_page(url)
-    if match:
+    if match is not _NO_MATCH:
         live = re.sub(r"(?s)<!--.*?-->", " ", body)
         picked = []
-        for pattern in ([match] if isinstance(match, str) else match):
+        for pattern in patterns:
             found = {f if isinstance(f, str) else "".join(f) for f in re.findall(pattern, live, re.S)}
             if len(found) != 1:
                 raise SourceError(f"{url}: watch pattern {pattern!r} matched {len(found)} distinct values, "
@@ -426,6 +432,8 @@ def main():
                                    "in Jan/Apr/Jul/Oct)")
     ap.add_argument("--run", help="state directory name (default YYYY-MM)")
     args = ap.parse_args()
+    if args.run and not re.fullmatch(r"\d{4}-\d{2}", args.run):
+        ap.error("--run must be YYYY-MM, so that run directories sort in time order")
 
     now = datetime.now(timezone.utc)
     manifest = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
@@ -523,7 +531,7 @@ def main():
                 cur = {}
                 for u in src["urls"]:
                     # A URL is a string, or {url, match} to hash only what the pattern selects.
-                    url, match = (u, None) if isinstance(u, str) else (u["url"], u.get("match"))
+                    url, match = (u, _NO_MATCH) if isinstance(u, str) else (u["url"], u.get("match", _NO_MATCH))
                     cur[url] = page_hash(url, match)
                     if prev_hashes.get(url) and prev_hashes[url] != cur[url]:
                         entry["items"].append({"url": url, "was": prev_hashes[url], "now": cur[url]})

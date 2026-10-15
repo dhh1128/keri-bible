@@ -182,7 +182,17 @@ class PageHash(unittest.TestCase):
     def h(self, body, match=None):
         from unittest import mock
         with mock.patch.object(detect, "fetch_page", return_value=body):
+            if match is None:
+                return detect.page_hash("https://example.test/")
             return detect.page_hash("https://example.test/", match)
+
+    def test_null_or_blank_match_is_a_config_error(self):
+        for bad in ([""], ["  "], "", []):
+            with self.assertRaises(detect.SourceError):
+                self.h(self.PAGE.format(v="2026", banner=""), bad)
+        from unittest import mock
+        with mock.patch.object(detect, "fetch_page", return_value="x"), self.assertRaises(detect.SourceError):
+            detect.page_hash("https://example.test/", None)
 
     def test_visible_text_hash_misses_a_script_only_change(self):
         a = self.PAGE.format(v="2026", banner="")
