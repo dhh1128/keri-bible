@@ -147,7 +147,7 @@ def untracked_branches(path: Path, remote: str, tracked: set[str], newest_tracke
 def cross_branch_diff(path: Path, remote: str, standardizing: str, forward: str, watch: list[str]):
     """Diff of the standardizing line against the forward line, over watched paths only.
 
-    Comparing this run's diff with the previous run's is what detects a TIER UPGRADE: text that
+    Comparing this run's diff with the previous run's is what detects a MARKER CHANGE: text that
     left the diff has (almost always) landed in the standardizing branch. The word 'almost' is
     why the report says 'verify' rather than asserting it — the hunk could equally have been
     dropped from the forward branch, and only reading it tells you which.
@@ -223,6 +223,65 @@ def merged_prs_since(repo: str, since: str):
              "merged": (r.get("closedAt") or "")[:10]} for r in rows]
 
 
+def issues_since(repo: str, since: str, primary: set[str]):
+    """Issues and pull requests in `repo` updated on or after `since`, newest first.
+
+    The REST issues endpoint returns pull requests too, which is wanted: rulings land in PR review
+    threads as often as in issues. `primary` marks a thread a primary author is involved in at all
+    (author, commenter, mention), because a ruling is usually a reply in someone else's thread and
+    an author test alone would miss it.
+    """
+    q = (f"repos/{repo}/issues?state=all&sort=updated&direction=desc&per_page=100"
+         f"&since={since}T00:00:00Z")
+    out = run(["gh", "api", "--paginate", q, "--jq",
+               ".[] | {number, title, url: .html_url, updated: .updated_at, created: .created_at, "
+               "author: .user.login, pr: (.pull_request != null), comments}"])
+    hits = []
+    for line in out.split("\n"):
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError as e:
+            raise SourceError(f"gh returned non-JSON for {q}: {line[:200]}") from e
+        hits.append({"number": r["number"], "title": r["title"], "url": r["url"],
+                     "updated": (r["updated"] or "")[:10], "updated_at": r["updated"] or "",
+                     "created": (r["created"] or "")[:10],
+                     "author": r.get("author") or "?", "pr": bool(r.get("pr")),
+                     "comments": r.get("comments", 0)})
+    involved = set()
+    for who in sorted(primary):
+        rows = gh_json(["search", "issues", "--repo", repo, "--involves", who, "--include-prs",
+                        "--updated", f">={since}", "--limit", "1000", "--json", "number"])
+        involved |= {r["number"] for r in rows}
+    for h in hits:
+        h["primary"] = h["number"] in involved or h["author"] in primary
+    return hits
+
+
+def mark_changed(items, seen_before: dict) -> dict:
+    """Mark each issue item `changed` unless the previous run saw it in the same state.
+
+    A gh-issues source lists everything updated since a fixed date, so without this a thread Sam
+    commented on once would make the source material on every run until someone moved `since`.
+    The state is the update time plus the comment count and a digest of the title: GitHub's
+    updated_at has one-second resolution, and the other two catch a second revision inside that
+    second where they can. An item with no update time is always changed and is not recorded, so
+    a malformed response cannot silence the next run. Returns this run's state for the next run.
+    With no previous state every item counts as changed, which is right for a first run.
+    """
+    seen = {}
+    for h in items:
+        key = f"{h.get('repo', '')}#{h['number']}"
+        if not h.get("updated_at"):
+            h["changed"] = True
+            continue
+        title = hashlib.sha1(str(h.get("title", "")).encode()).hexdigest()[:8]
+        seen[key] = f"{h['updated_at']}|{h.get('comments', 0)}|{title}"
+        h["changed"] = seen_before.get(key) != seen[key]
+    return seen
+
+
 def gh_repo_commits(repo: str, branch: str, since_date: str, watch: list[str]):
     hits = []
     for p in (watch or [""]):
@@ -236,10 +295,42 @@ def gh_repo_commits(repo: str, branch: str, since_date: str, watch: list[str]):
     return hits
 
 
-def page_hash(url: str):
+def fetch_page(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "keri-bible-refresh/1"})
     with urllib.request.urlopen(req, timeout=30) as r:
-        body = r.read().decode("utf-8", "replace")
+        return r.read().decode("utf-8", "replace")
+
+
+_NO_MATCH = object()
+
+
+def page_hash(url: str, match=_NO_MATCH):
+    """Content hash of a page: its visible text, or only what `match` selects from the raw HTML.
+
+    Visible text is the default because a cache-buster or a rotating nonce in a script must not read
+    as a change. Some pages keep the fact worth watching inside a script, though: le.utah.gov serves
+    each Code chapter as a shell whose version list is JavaScript, so an amendment leaves the visible
+    text untouched. For those, `match` is a regex, or a list of them, run over the HTML with comments
+    removed. Each must match exactly one distinct value: none means the page has changed shape, and
+    more than one means it is ambiguous which is live, and either is an error rather than a hash,
+    so a redesigned page cannot go quiet behind a stale assignment.
+    """
+    if match is not _NO_MATCH:
+        patterns = [match] if isinstance(match, str) else match
+        if not isinstance(patterns, list) or not patterns or not all(
+                isinstance(q, str) and q.strip() for q in patterns):
+            raise SourceError(f"{url}: `match` must be a non-blank pattern or a non-empty list of them")
+    body = fetch_page(url)
+    if match is not _NO_MATCH:
+        live = re.sub(r"(?s)<!--.*?-->", " ", body)
+        picked = []
+        for pattern in patterns:
+            found = {f if isinstance(f, str) else "".join(f) for f in re.findall(pattern, live, re.S)}
+            if len(found) != 1:
+                raise SourceError(f"{url}: watch pattern {pattern!r} matched {len(found)} distinct values, "
+                                  f"not one; the page has changed shape")
+            picked.append(found.pop())
+        return hashlib.sha256("\n".join(picked).encode()).hexdigest()[:16]
     # Strip scripts/styles and collapse whitespace so a cache-buster or a rotating nonce does not
     # read as a content change.
     body = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", body)
@@ -275,41 +366,94 @@ def previous_state_dir(current: Path):
     return dirs[-1] if dirs else None
 
 
-def selected_tiers(args, now):
-    if args.tiers:
-        return set(args.tiers.split(","))
-    tiers = {"hot", "warm"}
+def last_state(run_dir: Path, name: str, src_id: str) -> dict:
+    """A source's entry in this run's own `name` file (webhashes.json, issuestate.json) if a
+    rerun already wrote one, else in the newest earlier run's file that has one.
+
+    The run's own file first, because a rerun in the same month has already reported what it
+    holds; comparing with last month would report the same change twice.
+
+    Not just the immediately previous run's: a quarterly source is absent from the monthly runs in
+    between, so reading only the last run would leave January with no baseline and report an
+    amended page as a first sighting.
+    """
+    # Only runs that sort before this one: a backdated --run must not read a later run's state.
+    earlier = sorted((d for d in STATE.glob("*") if d.is_dir() and d.name < run_dir.name), reverse=True)
+    for d in [run_dir] + earlier:
+        f = d / name
+        if f.exists():
+            got = json.loads(f.read_text()).get(src_id)
+            if got is not None:
+                return got
+    return {}
+
+
+def write_state(path: Path, fresh: dict):
+    """Write this run's state over any a rerun of the same run left, keeping the sources this
+    rerun did not check, so a narrower rerun does not erase their baseline."""
+    old = json.loads(path.read_text()) if path.exists() else {}
+    path.write_text(json.dumps({**old, **fresh}, indent=2, sort_keys=True))
+
+
+def write_outputs(run_dir: Path, report: dict):
+    """Write delta.json and delta.md, and only then the state the next run compares against.
+
+    State says "this change has been reported". Written first, a run that died before its report
+    would leave the change marked seen with no report of it, and the retry would call it quiet.
+    """
+    issuestate = {s["id"]: s.pop("seen") for s in report["sources"] if "seen" in s}
+    webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
+    (run_dir / "delta.json").write_text(json.dumps(report, indent=2))
+    (run_dir / "delta.md").write_text(render(report))
+    for name, fresh in (("issuestate.json", issuestate), ("webhashes.json", webhashes)):
+        if fresh:
+            write_state(run_dir / name, fresh)
+
+
+CHECKS = {"monthly", "quarterly"}
+
+
+def selected_checks(args, now):
+    if args.check:
+        chosen = set(args.check.split(","))
+        if chosen - CHECKS:
+            raise SystemExit(f"--check takes {', '.join(sorted(CHECKS))}; got {args.check}")
+        return chosen
+    checks = {"monthly"}
     if now.month in QUARTER_MONTHS:
-        tiers.add("cold")
-    return tiers
+        checks.add("quarterly")
+    return checks
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-fetch", action="store_true", help="skip git fetch (offline / testing)")
-    ap.add_argument("--tiers", help="comma list, e.g. hot,warm,cold (default hot,warm + cold quarterly)")
+    ap.add_argument("--check", help="comma list of monthly,quarterly (default monthly, plus quarterly "
+                                   "in Jan/Apr/Jul/Oct)")
     ap.add_argument("--run", help="state directory name (default YYYY-MM)")
     args = ap.parse_args()
+    if args.run and not re.fullmatch(r"\d{4}-\d{2}", args.run):
+        ap.error("--run must be YYYY-MM, so that run directories sort in time order")
 
     now = datetime.now(timezone.utc)
     manifest = yaml.safe_load((REPO / "refresh" / "sources.yaml").read_text())
     code_root = Path(os.path.expanduser(os.environ.get("CODE_ROOT", manifest["code_root"])))
-    tiers = selected_tiers(args, now)
+    checks = selected_checks(args, now)
 
     run_dir = STATE / (args.run or now.strftime("%Y-%m"))
     (run_dir / "crossdiff").mkdir(parents=True, exist_ok=True)
     prev = previous_state_dir(run_dir)
 
-    report = {"generated": now.isoformat(timespec="seconds"), "tiers": sorted(tiers),
+    report = {"generated": now.isoformat(timespec="seconds"), "check": sorted(checks),
               "previous_run": prev.name if prev else None, "sources": [], "errors": []}
 
     for src in manifest["sources"]:
-        if src.get("tier", "hot") not in tiers:
+        if src.get("check", "monthly") not in checks:
             continue
-        entry = {"id": src["id"], "kind": src["kind"], "tier": src.get("tier"),
+        entry = {"id": src["id"], "kind": src["kind"], "check": src.get("check", "monthly"),
                  "feeds": src.get("feeds", []), "chapters": src.get("chapters", []),
                  "caveat": src.get("caveat", ""), "branches": [], "items": [],
-                 "new_branches": [], "tier_upgrades": [], "material": False}
+                 "new_branches": [], "marker_changes": [], "material": False}
         try:
             if src["kind"] == "git":
                 path = resolve_path(src, code_root)
@@ -347,7 +491,7 @@ def main():
                     if old and old.exists():
                         gone = hunk_headers(old.read_text()) - hunk_headers(diff)
                         if gone:
-                            entry["tier_upgrades"] = sorted(gone)[:25]
+                            entry["marker_changes"] = sorted(gone)[:25]
                             entry["material"] = True
                     entry["crossdiff_size"] = len(diff.splitlines())
 
@@ -358,6 +502,17 @@ def main():
                     h["primary"] = h["author"] in primary
                 entry["items"] = hits
                 entry["material"] = bool(hits)
+
+            elif src["kind"] == "gh-issues":
+                primary = set(src.get("primary_authors", []))
+                for repo in src.get("repos") or [src["repo"]]:
+                    for h in issues_since(repo, str(src["since"]), primary):
+                        h["repo"] = repo
+                        entry["items"].append(h)
+                seen_before = last_state(run_dir, "issuestate.json", src["id"])
+                entry["seen"] = mark_changed(entry["items"], seen_before)
+                fresh = [h for h in entry["items"] if h["changed"]]
+                entry["material"] = any(h["primary"] for h in fresh) if primary else bool(fresh)
 
             elif src["kind"] == "gh-prs":
                 hits = merged_prs_since(src["repo"], str(src["since"]))
@@ -372,12 +527,12 @@ def main():
                 entry["material"] = bool(hits)
 
             elif src["kind"] == "web":
-                prev_hashes = {}
-                if prev and (prev / "webhashes.json").exists():
-                    prev_hashes = json.loads((prev / "webhashes.json").read_text()).get(src["id"], {})
+                prev_hashes = last_state(run_dir, "webhashes.json", src["id"])
                 cur = {}
-                for url in src["urls"]:
-                    cur[url] = page_hash(url)
+                for u in src["urls"]:
+                    # A URL is a string, or {url, match} to hash only what the pattern selects.
+                    url, match = (u, _NO_MATCH) if isinstance(u, str) else (u["url"], u.get("match", _NO_MATCH))
+                    cur[url] = page_hash(url, match)
                     if prev_hashes.get(url) and prev_hashes[url] != cur[url]:
                         entry["items"].append({"url": url, "was": prev_hashes[url], "now": cur[url]})
                         entry["material"] = True
@@ -399,11 +554,6 @@ def main():
 
         report["sources"].append(entry)
 
-    # persist web hashes for the next run's comparison
-    webhashes = {s["id"]: s["hashes"] for s in report["sources"] if "hashes" in s}
-    if webhashes:
-        (run_dir / "webhashes.json").write_text(json.dumps(webhashes, indent=2))
-
     report["freshness"] = freshness(REPO)
     if report["freshness"].get("status") in ("error", "missing"):
         report["errors"].append({"id": "freshness", "error": report["freshness"].get("detail", "")})
@@ -411,8 +561,7 @@ def main():
                           or bool(report["freshness"].get("new"))
                           or bool(report["errors"]))
 
-    (run_dir / "delta.json").write_text(json.dumps(report, indent=2))
-    (run_dir / "delta.md").write_text(render(report))
+    write_outputs(run_dir, report)
     print(f"wrote {run_dir / 'delta.md'}")
     print(f"material={report['material']} errors={len(report['errors'])}")
 
@@ -421,9 +570,28 @@ def main():
     return 0 if report["material"] else 10
 
 
+ITEM_CAP = 40
+
+
+def shown_items(items, cap=ITEM_CAP):
+    """Items to print: every primary-author item, first, then others up to `cap` in all.
+
+    A primary item is what makes a conversation source material, and triage reads delta.md, so a
+    primary item left off the page is a ruling nobody is pointed at. Only the noise is capped; when
+    some is cut, the count of what was cut ends the list.
+    """
+    primary = [it for it in items if it.get("primary")]
+    rest = [it for it in items if not it.get("primary")]
+    room = max(cap - len(primary), 0)
+    out = primary + rest[:room]
+    if len(rest) > room:
+        out.append(len(rest) - room)
+    return out
+
+
 def render(r) -> str:
     L = [f"# Refresh delta — {r['generated'][:10]}", "",
-         f"Tiers scanned: {', '.join(r['tiers'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
+         f"Checks run: {', '.join(r['check'])}. Previous run: {r['previous_run'] or 'none'}.", ""]
 
     if r["errors"]:
         L += ["## Errors — read these first", "",
@@ -431,7 +599,7 @@ def render(r) -> str:
               "config look identical from the outside, and only one of them is good news.", ""]
         L += [f"- **{e['id']}** — {e['error']}" for e in r["errors"]] + [""]
 
-    ups = [(s, s["tier_upgrades"]) for s in r["sources"] if s.get("tier_upgrades")]
+    ups = [(s, s["marker_changes"]) for s in r["sources"] if s.get("marker_changes")]
     if ups:
         L += ["## Marker change — forward text that left the standardizing diff", "",
               "Each hunk below was in the `main`↔`v1.1` diff last run and is not now. Usually that "
@@ -474,11 +642,15 @@ def render(r) -> str:
             L.append(f"- **Untracked branch** `{nb['branch']}` ({nb['date']}) is newer than "
                      f"anything tracked here. Propose adding it in the PR body; do not retarget "
                      f"automatically.")
-        for it in s.get("items", [])[:40]:
-            if "number" in it:
+        for it in shown_items(s.get("items", [])):
+            if isinstance(it, int):
+                L.append(f"- …and {it} more, none of them by a primary author")
+            elif "number" in it:
                 star = " ⭐primary" if it.get("primary") else ""
                 when = it.get("updated") or it.get("merged")
                 edited = f", edited {it['edited']}" if it.get("edited") else ""
+                if it.get("changed") is False:
+                    edited += ", unchanged since the last run"
                 L.append(f"- [#{it['number']}]({it['url']}) {it['title']} — {it['author']}, "
                          f"{when}{edited}{star}")
             elif "sha" in it:

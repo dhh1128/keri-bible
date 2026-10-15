@@ -54,7 +54,7 @@ Adversarial, and the phase that protects the standard. Use a fresh subagent that
 
 For **every new or changed quote** in the working tree: re-read the source at its pinned commit and confirm the quote is verbatim, the `§heading` exists, and the surrounding text supports the use it is being put to. A quote that cannot be confirmed is **cut**, and the cut is recorded. Then:
 
-- Confirm every tier marker change against the evidence class the standards require.
+- Confirm every marker change against the evidence class the standards require.
 - Sweep for assertions that gained no citation.
 - Run `refresh/snapshot-discussions.py` and report any DRIFT lines — an in-place edit to a discussion invalidates quotes with no commit anywhere.
 - Run `python3 refresh/freshness.py` and check the NEW-miss list, which is the actionable part; the standing backlog in `refresh/freshness-baseline.json` is known. If you re-anchored citations, refresh the baseline with `--update-baseline` and say in the report how many healed.

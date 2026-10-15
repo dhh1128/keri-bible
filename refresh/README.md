@@ -41,7 +41,7 @@ Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff
 1. **detect** — shell. Fetch every source, diff against its pin, query GitHub for discussions and merged PRs, hash the web sources, run the quote-drift check. Gate: nothing material → log and exit, no PR, no tokens.
 2. **triage** — one agent. Classify each candidate: doctrinal, corroborative, marker change, re-anchor, noise. This is the budget valve; most of a hundred keripy commits are noise and saying so is the job.
 3. **mine** — one agent per affected `raw/` note, ≤4 concurrent, disjoint file sets. Re-read the **primary source** at the new commit, never the diff alone.
-4. **synthesize** — one agent per affected `bible/` chapter, same isolation. Tier markers re-evaluated, `@commit` stamps refreshed, `keri-doctrine.md` touched only where a load-bearing claim actually moves.
+4. **synthesize** — one agent per affected `bible/` chapter, same isolation. Markers re-evaluated, `@commit` stamps refreshed, `keri-doctrine.md` touched only where a load-bearing claim actually moves.
 5. **verify** — a fresh agent that did not do the mining. Every new or changed quote re-read at its pinned commit; anything unconfirmable is **cut**, not reworded. Then `freshness.py`, `snapshot-discussions.py`, and `build-bible.py`.
 6. **deliver** — shell. Rebuild, commit signed off, push, open a draft PR, notify over confer.
 
@@ -50,7 +50,7 @@ Phases 1 and 6 are shell on purpose. The model edits files and writes a report; 
 ## What the job may not do unattended
 
 - **Create a `bible/` chapter.** That is a structural decision about what the bible is. It proposes; you decide. A new `raw/` note for a newly found topic is fine.
-- **Retarget its own manifest.** `branches`, `chapters` and `tier` are reviewed fields. Untracked branches newer than the tracked ones are reported, never adopted.
+- **Retarget its own manifest.** `branches`, `chapters` and `check` are reviewed fields. Untracked branches newer than the tracked ones are reported, never adopted.
 - **Advance `last_mined` for a source it did not re-read.** `last_scanned` advances every run; `last_mined` only where a note was genuinely re-read. Under-claim, always.
 - **Write to a WebOfTrust or trustoverip conversation.** Nothing here files an issue, comments on a discussion, or opens a PR anywhere but `dhh1128/keri-bible`. Findings worth raising upstream go in the PR body for Daniel to raise himself.
 
