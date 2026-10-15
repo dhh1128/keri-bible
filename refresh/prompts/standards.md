@@ -16,11 +16,13 @@ A claim may only carry the marker its citation actually supports. Moving `[spec-
 
 Spoken and first-hand report needs care. Edited auto-captions of conference talks (`raw/14`) preserve near-wording, never exact speech. They may be quoted, but only as the captions read, with a caption locator giving speaker, talk and time (`docs/house-style.md`, Citations), and only as evidence of status, intent and framing, never of a design detail. A first-hand account of a call (`raw/16`, section 0) preserves neither wording nor detail: it is usable for status and intent only and is never quoted. Do not launder either into a stronger citation by finding similar words in a written source.
 
-## 3. Append and correct; never silently rewrite
+## 3. Files hold what is true now; git holds the history
 
-When a source now contradicts something the corpus says, the old claim does not vanish. Mark it superseded, dated, with what replaced it and why. `raw/16 §8` item 3 is the model: the question struck through, the resolution underneath, and the general lesson drawn out ("a dead discussion thread is not evidence of a dead idea"). The record of having believed something, and of what changed, is part of what a reader is buying.
+When a source now contradicts something the corpus says, rewrite the claim to say what is true now and say why in the commit message. Do not keep the old claim struck through, mark it superseded, stamp it with the date it was added or re-read, or narrate how the corpus came to believe it. Git is the record of what the corpus used to say.
 
-The same applies to an open question that closes, a residual that resolves, and a shibboleth that stops being one.
+The one exception is a note that prevents a likely misreading. If a reader will meet the old claim elsewhere (an older source, an unedited discussion body, a spec branch that still carries it), say so in the present tense: what that source says, and why it is not the current position. That is guidance about the sources, not history about the corpus.
+
+The same applies to an open question that closes, a conceded weakness that resolves, and a shibboleth that stops being one: rewrite, and let git remember.
 
 ## 4. Hedged register, conditional guarantees
 

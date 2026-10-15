@@ -27,12 +27,12 @@ A marker says what kind of evidence a claim rests on. Each kind answers a differ
 - `[spec-next]`, forward branch. The text is in a specification's `v1.1` branch and not in `main`. It is new thinking that is likely, not certain, to become normative, and it binds nobody today.
 - `[code]`, implemented. An implementation (keripy unless named otherwise) behaves this way at a named commit. Code is evidence about code, not about what the specification requires.
 - `[proposal]`, proposed. A design stated in a discussion, issue, pull request, whitepaper or code on an unmerged branch, and in no specification. However confident its author, it binds nobody.
-- `[practice]`, vendor or deployment practice. What one organization's product, service, schema set or deployment does. Evidence of how the doctrine survives contact with practice; never evidence of what KERI is. This absorbs the corpus's current unmarked "deployment evidence" and "applied schema corpus" classes.
+- `[practice]`, vendor or deployment practice. What one organization's product, service, schema set or deployment does. Evidence of how the doctrine survives contact with practice; never evidence of what KERI is. It covers deployment evidence and applied schema sets such as bakobo/schema.
 - `[architect]`, Sam Smith in his own voice outside a specification: keri.one, his conference talks, and personal communications. It carries his intent, which is often exactly what a reviewer needs, and it is not normative.
 
 Unmarked text has one meaning everywhere. A specification citation with no marker is to that specification's standardizing line, and so means `[spec]`. A claim with neither a marker nor a citation is the chapter's own synthesis, the weakest kind of evidence in it.
 
-`[K-fork]` is retired. It marked code that exists only on an unmerged personal fork (in practice, Daniel's post-quantum branch of signify-ts, `raw/10` section 11). Code nobody else runs is a proposal made in code, so it is cited as `[proposal]`, with the fork, branch and commit in the locator.
+Code that exists only on an unmerged fork is a proposal made in code, so it is cited as `[proposal]`, with the fork, branch and commit in the locator. Older raw notes call this `[K-fork]`.
 
 ---
 

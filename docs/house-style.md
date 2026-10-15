@@ -1,6 +1,6 @@
 # House style {#house-style}
 
-Status: adopted 2026-10-14. Changes to this file are proposed and argued in their own commit, never folded into a content change.
+Changes to this file are proposed and argued in their own commit, never folded into a content change.
 
 This file says how the corpus is written. `refresh/prompts/standards.md` says what may be claimed and on what evidence, and it stays the citation contract; where its section 5 talks about form, this file replaces it. CI checks every rule below that a script can check, and each rule says whether it is checked.
 
@@ -28,6 +28,10 @@ In order: the H1; `## Thesis {#thesis}`; `## Status {#status}`, only where the c
 
 Chapters carry no marker key and no "how to read" section. The marker legend below is generated once into the assembled `keri-bible.md` (by `build-bible.py`) and onto a legend page of the published site that every page links to, so a reader or model arriving at one chapter cold still has it. A caveat about one source goes in that source's Sources entry; a caveat about how far the whole chapter is from normative goes in Status.
 
+### Length {#length}
+
+A chapter is a distillation that a reviewer loads whole, so its body (everything before Sources) stays within 6,000 words, and the linter fails a chapter whose body passes 7,500. Each claim carries one quotation, the strongest, and each topic lives in one chapter, with other chapters linking to it rather than restating it. A chapter holds only what is true now: no superseded passages, no "added on" or "re-read on" stamps, no account of how the corpus came to believe something (standards section 3). Checked.
+
 ### Paragraphs and punctuation {#punctuation}
 
 One line per paragraph, never hard-wrapped, in every markdown file in the repo. Checked.
@@ -44,12 +48,12 @@ A marker says what kind of evidence a claim rests on. Each kind answers a differ
 - `[spec-next]`, forward branch. The text is in a specification's `v1.1` branch and not in `main`. It is new thinking that is likely, not certain, to become normative, and it binds nobody today.
 - `[code]`, implemented. An implementation (keripy unless named otherwise) behaves this way at a named commit. Code is evidence about code, not about what the specification requires.
 - `[proposal]`, proposed. A design stated in a discussion, issue, pull request, whitepaper or code on an unmerged branch, and in no specification. However confident its author, it binds nobody.
-- `[practice]`, vendor or deployment practice. What one organization's product, service, schema set or deployment does. Evidence of how the doctrine survives contact with practice; never evidence of what KERI is. This absorbs the corpus's current unmarked "deployment evidence" and "applied schema corpus" classes.
+- `[practice]`, vendor or deployment practice. What one organization's product, service, schema set or deployment does. Evidence of how the doctrine survives contact with practice; never evidence of what KERI is. It covers deployment evidence and applied schema sets such as bakobo/schema.
 - `[architect]`, Sam Smith in his own voice outside a specification: keri.one, his conference talks, and personal communications. It carries his intent, which is often exactly what a reviewer needs, and it is not normative.
 
 Unmarked text has one meaning everywhere. A specification citation with no marker is to that specification's standardizing line, and so means `[spec]`. A claim with neither a marker nor a citation is the chapter's own synthesis, the weakest kind of evidence in it.
 
-`[K-fork]` is retired. It marked code that exists only on an unmerged personal fork (in practice, Daniel's post-quantum branch of signify-ts, `raw/10` section 11). Code nobody else runs is a proposal made in code, so it is cited as `[proposal]`, with the fork, branch and commit in the locator.
+Code that exists only on an unmerged fork is a proposal made in code, so it is cited as `[proposal]`, with the fork, branch and commit in the locator. Older raw notes call this `[K-fork]`.
 
 ## Citations {#citations}
 
@@ -79,12 +83,8 @@ Each section is citable by its anchor URL on the published site, and by a commit
 
 ## Sources sections {#sources-sections}
 
-Today two chapters have one (01 and 08), and both are bulleted lists in an ad hoc form. ACM and similar styles do not fit: they assume published works with venues and years, and most of this corpus's sources are repositories read at a commit. Every chapter's Sources section is instead a bulleted list, one entry per short name the chapter uses, in this form:
+ACM and similar styles do not fit this corpus: they assume published works with venues and years, and most of its sources are repositories read at a commit. Every chapter's Sources section is a bulleted list, one entry per short name the chapter uses, in this form:
 
 `- KERI spec — Key Event Receipt Infrastructure (KERI) specification, Trust Over IP. trustoverip/kswg-keri-specification, spec/spec-body.md, main @fbdd4a615 (2026-08-28). Mined in raw/01.`
 
 That is: the short name, an em dash, the title and author or body, the location (repository and path, or URL), the pin with its date, and the raw note it was mined in. A source read at two pins gets both, each saying which claims it supports. Entries are sorted by short name. This is the only place pins live.
-
-## What this would change {#what-changed}
-
-Measured on 2026-10-14: about 1,600 bold spans across the ten chapters, of which about 760 open a paragraph and would become H4 headings; about 730 italic spans; no explicit anchors anywhere; at least four different citation-locator forms; section signs throughout; ampersands in four chapter titles; Sources sections in two chapters of ten; and lettered subsections (`§3a`, `§5a`) in chapters 04 and 08, which `keri-review-panel/personas/cesr-wire-serialization-engineer.md` cites by number and would need updating with them. It also removes the ten "How to read this chapter" sections, moving their caveats into Sources and Status. Sections 2 and 5 of `standards.md` change to match.

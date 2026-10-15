@@ -33,7 +33,7 @@ Each agent: open the **primary source at the new commit** and read the passages 
 
 - Update the header: source, pinned commit, mining date, and what this pass covered.
 - Add claims in the note's existing register — verbatim quote ≤25 words, `file §heading`, line hint, commit.
-- Mark superseded claims superseded with the date and what replaced them. Do not delete.
+- Rewrite superseded claims to say what is true now, and explain the change in the commit message (standards section 3). Keep a present-tense note only where a reader will meet the old claim in a source.
 - Record what you looked for and did not find. A negative result at a named commit is a real finding and this corpus already uses them ("no code recognizes the three-part presentation-registry signal").
 - Add unresolved tensions to the note's open-questions section rather than smoothing them over.
 
