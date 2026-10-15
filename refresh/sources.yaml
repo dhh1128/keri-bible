@@ -438,6 +438,24 @@ sources:
       README.md only. It is not the older keri-foundation/registrar repo, which is a placeholder; raw/14 §5's
       "placeholder" status refers to that one.
 
+  - id: kf-profile
+    kind: git
+    path: wot/keri-foundation-dotgithub
+    remote: origin
+    watch: [profile/README.md]
+    check: quarterly
+    branches:
+      - {name: main, role: standardizing, marker: "[practice]",
+         last_scanned: {commit: 68a0d8883, date: 2026-10-15},
+         last_mined:   {commit: 68a0d8883, date: 2026-10-14}}
+    feeds: [raw/18-infrastructure-ops.md]
+    chapters: ["11"]
+    caveat: >-
+      The KERI Foundation's GitHub organization profile, the keri-foundation/.github repo, cloned under a
+      name without the leading dot. It states the Foundation's 5 Ws framing and its plans in its own voice,
+      so it is evidence of what the Foundation intends, not of what KERI is. profile/README.md has not
+      changed since 2024-07-20.
+
   - id: keri-foundation-web
     kind: web
     urls:
