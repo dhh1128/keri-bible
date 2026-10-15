@@ -218,6 +218,23 @@ class IssueState(unittest.TestCase):
         self.assertTrue(later[0]["changed"])
 
 
+class StateCarry(unittest.TestCase):
+    def test_quarterly_source_finds_its_baseline_past_monthly_runs(self):
+        import json
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            for run, data in [("2026-10", {"utah": {"u": "old"}, "kf": {"k": "1"}}),
+                              ("2026-11", {"kf": {"k": "2"}}), ("2026-12", {"kf": {"k": "3"}})]:
+                (d / run).mkdir()
+                (d / run / "webhashes.json").write_text(json.dumps(data))
+            (d / "2027-01").mkdir()
+            with mock.patch.object(detect, "STATE", d):
+                self.assertEqual(detect.last_state(d / "2027-01", "webhashes.json", "utah"), {"u": "old"})
+                self.assertEqual(detect.last_state(d / "2027-01", "webhashes.json", "kf"), {"k": "3"})
+                self.assertEqual(detect.last_state(d / "2027-01", "webhashes.json", "none"), {})
+
+
 class ReportItems(unittest.TestCase):
     def test_primary_item_past_the_cap_is_still_shown(self):
         items = [{"number": i, "primary": False} for i in range(45)] + [{"number": 99, "primary": True}]

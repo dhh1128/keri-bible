@@ -345,6 +345,23 @@ def previous_state_dir(current: Path):
     return dirs[-1] if dirs else None
 
 
+def last_state(run_dir: Path, name: str, src_id: str) -> dict:
+    """A source's entry in the newest earlier run's `name` file (webhashes.json, issuestate.json)
+    that has one.
+
+    Not just the immediately previous run's: a quarterly source is absent from the monthly runs in
+    between, so reading only the last run would leave January with no baseline and report an
+    amended page as a first sighting.
+    """
+    for d in sorted((d for d in STATE.glob("*") if d.is_dir() and d.name != run_dir.name), reverse=True):
+        f = d / name
+        if f.exists():
+            got = json.loads(f.read_text()).get(src_id)
+            if got is not None:
+                return got
+    return {}
+
+
 CHECKS = {"monthly", "quarterly"}
 
 
@@ -442,9 +459,7 @@ def main():
                     for h in issues_since(repo, str(src["since"]), primary):
                         h["repo"] = repo
                         entry["items"].append(h)
-                seen_before = {}
-                if prev and (prev / "issuestate.json").exists():
-                    seen_before = json.loads((prev / "issuestate.json").read_text()).get(src["id"], {})
+                seen_before = last_state(run_dir, "issuestate.json", src["id"])
                 entry["seen"] = mark_changed(entry["items"], seen_before)
                 fresh = [h for h in entry["items"] if h["changed"]]
                 entry["material"] = any(h["primary"] for h in fresh) if primary else bool(fresh)
@@ -462,9 +477,7 @@ def main():
                 entry["material"] = bool(hits)
 
             elif src["kind"] == "web":
-                prev_hashes = {}
-                if prev and (prev / "webhashes.json").exists():
-                    prev_hashes = json.loads((prev / "webhashes.json").read_text()).get(src["id"], {})
+                prev_hashes = last_state(run_dir, "webhashes.json", src["id"])
                 cur = {}
                 for u in src["urls"]:
                     # A URL is a string, or {url, match} to hash only what the pattern selects.
