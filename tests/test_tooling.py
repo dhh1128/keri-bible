@@ -39,6 +39,9 @@ class QuotePairing(unittest.TestCase):
         text = '"short bit... the longer fragment of the elided quotation"'
         self.assertEqual(self.needles(text), ["the longer fragment of the elided quotation"])
 
+    def test_unicode_ellipsis_splits_like_three_dots(self):
+        self.assertEqual(self.needles('"short bit… the longer fragment of the elided quotation"'), ["the longer fragment of the elided quotation"])
+
     def test_editorial_insertion_is_removed_from_needle(self):
         needle, _ = freshness.quoted_needles('"the Issuer [sic] anchors the credential in a registry"')[0]
         self.assertNotIn("sic", needle)
@@ -83,6 +86,14 @@ class Lint(unittest.TestCase):
     def test_broken_link(self):
         self.assertTrue(self.published(self.CHAPTER + "\nSee [section 9](#nine).\n"))
         self.assertEqual(self.published(self.CHAPTER + "\nSee [section 1](#one).\n"), [])
+
+    def test_chapter_over_length_limit(self):
+        long = self.CHAPTER.replace("## Sources", ("word " * 7600) + "\n\n## Sources")
+        self.assertTrue(any("length" in p for p in self.published(long)))
+
+    def test_fenced_sources_heading_does_not_end_the_body(self):
+        long = self.CHAPTER.replace("## Sources", "```\n## Sources (quoted example)\n```\n\n" + ("word " * 7600) + "\n\n## Sources")
+        self.assertTrue(any("length" in p for p in self.published(long)))
 
     def test_hard_wrap(self):
         self.assertTrue(lint_corpus.check_wrap("x.md", "A paragraph that\ncontinues here.\n"))
