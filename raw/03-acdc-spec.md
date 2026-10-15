@@ -4,10 +4,10 @@
 
 **Pinned commits.** The spec now has two live lines and they have diverged, so every citation in this note must name its branch.
 
-- **`main` — the standardizing line, tier `[N]` — at `f0bd097de`** (long form of the `f0bd097` pin already used in `raw/16`; `main` has not moved since that pin). 5258 lines.
-- **`v1.1` — the forward line, tier `[N1.1]` — at `2362e48a1`** ("Merge pull request #214 from dhh1128/v11-parity-with-main"). 5459 lines. `v1.1` is ahead of `main` by 346 insertions / 145 deletions in `spec-body.md`.
+- **`main` — the standardizing line, tier `[spec]` — at `f0bd097de`** (long form of the `f0bd097` pin already used in `raw/16`; `main` has not moved since that pin). 5258 lines.
+- **`v1.1` — the forward line, tier `[spec-next]` — at `2362e48a1`** ("Merge pull request #214 from dhh1128/v11-parity-with-main"). 5459 lines. `v1.1` is ahead of `main` by 346 insertions / 145 deletions in `spec-body.md`.
 
-**How to read this note.** Sections 1–20 were mined from `main` and are `[N]` unless a marker says otherwise. Sections 21–22 are `v1.1`-only and are `[N1.1]` throughout: **new thinking that is likely, not certain, to fold into the next standard.** Nothing in §21–22 may be cited as normative today. Section 23 is `[N]` material that is new to this note but already in `main`. Sections 24–25 hold negative results and unresolved tensions.
+**How to read this note.** Sections 1–20 were mined from `main` and are `[spec]` unless a marker says otherwise. Sections 21–22 are `v1.1`-only and are `[spec-next]` throughout: **new thinking that is likely, not certain, to fold into the next standard.** Nothing in §21–22 may be cited as normative today. Section 23 is `[spec]` material that is new to this note but already in `main`. Sections 24–25 hold negative results and unresolved tensions.
 
 **Mining pass of 2026-09-15 — what was actually re-read, and at which pin.** Under-claimed deliberately.
 
@@ -32,6 +32,7 @@
 ## 2. Top-level structure, fields, invariants
 
 **Top-level field order (MUST):** `[v, t, d, u, i, rd, s, a, A, e, r]` (§Field Ordering, L32).
+
 **Required fields (MUST appear):** `[v, d, i, s]` (§Required Fields, L36). (Note: CESR-native `acm` variant lists required as `[v,t,d,i,s]`, L2970.)
 
 Field meanings (§Top-Level Fields, L16-28):
@@ -292,9 +293,9 @@ Re-anchored 2026-09-15: the four rows above are verbatim in `main` @`f0bd097de` 
 
 ---
 
-## 21. Disclosure Paths and the `dp` field — `[N1.1]`, `v1.1` @`2362e48a1` only
+## 21. Disclosure Paths and the `dp` field — `[spec-next]`, `v1.1` @`2362e48a1` only
 
-**Tier warning.** Every claim in this section is `[N1.1]`. `## Disclosure Paths` does not exist on `main` at `f0bd097de` — the string "Disclosure Paths" occurs zero times there. This is the largest single addition in `v1.1`: a new `##`-level major section, `v1.1` L1809-1986, sitting between §Contractually Protected Disclosure and §IPEX. The bible's chapter 08 currently carries this construct at the `[P]` tier from keripy discussion #1627; **this section is the evidence that upgrades it to `[N1.1]`, and no further.**
+**Tier warning.** Every claim in this section is `[spec-next]`. `## Disclosure Paths` does not exist on `main` at `f0bd097de` — the string "Disclosure Paths" occurs zero times there. This is the largest single addition in `v1.1`: a new `##`-level major section, `v1.1` L1809-1986, sitting between §Contractually Protected Disclosure and §IPEX. The bible's chapter 08 currently carries this construct at the `[proposal]` tier from keripy discussion #1627; **this section is the evidence that upgrades it to `[spec-next]`, and no further.**
 
 The section declares its own normativity: "This section is normative. It defines the path syntax that designates the parts of an ACDC, or of a DAG of chained ACDCs" (§Disclosure Paths, `v1.1` L1811). It is explicit that this is a separation of concerns from IPEX: the IPEX section "which is non-normative, binds the `dp` field to particular messages," and "The syntax and semantics defined here apply wherever a `dp` field appears" (L1811).
 
@@ -355,7 +356,7 @@ This is the semantic core, and the part most likely to be misread.
   - **Optional edges force explicit prefixes.** Where a Schema makes an Edge or Edge-group optional, "a party that knows only the Schema cannot generate a total ordering… The ordering then has gaps. In that case the prefix of every element after the zeroth MUST be non-empty" (L1911).
 - **Solicited response** (§Solicited Response, L1915-1917): "an empty list, `[]`, means that the answering path list is the same as the one it answers." (L1917). "Where the answering list differs, or where the message is unsolicited, the `dp` value MUST NOT be an empty list." (L1917).
 
-### 21.7 `dp` in the IPEX exchange — `[N1.1]` (§Disclosure Paths in `apply` and `offer`, `v1.1` L2013-2019)
+### 21.7 `dp` in the IPEX exchange — `[spec-next]` (§Disclosure Paths in `apply` and `offer`, `v1.1` L2013-2019)
 
 Chapter 08 material. This is the only place `dp` touches a wire protocol, and the subsection sits inside the **non-normative** IPEX section, so its normativity is inherited from §Disclosure Paths, not asserted here.
 
@@ -381,7 +382,7 @@ The prose on closures for that request is the clearest statement of what a path 
 
 The DAG-absolute form of the same request differs only in the prefixes (`/`, `/e/accreditation/_/`, `/e/reports/research/_/`, `/e/reports/project/_/`) — "the route to each ACDC has been factored out of its paths and into its prefix" (L1962). "Were the transcript Schema to make any of the three Edges optional, a non-empty prefix would be REQUIRED" (L1973).
 
-## 22. Other `v1.1`-only changes — `[N1.1]`, `v1.1` @`2362e48a1`
+## 22. Other `v1.1`-only changes — `[spec-next]`, `v1.1` @`2362e48a1`
 
 ### 22.1 Field Label Restrictions — a new `###` section, and a new reserved label `_`
 
@@ -413,9 +414,9 @@ The DAG-absolute form of the same request differs only in the prefixes (`/`, `/e
 
 **This is a rename and nothing more.** The two paragraphs of substance (rainbow/dictionary attack on the power set of schema-allowed values; `u` as blinding factor; top-level `u` blinding the whole ACDC) are word-for-word identical on both branches once "UUID" is swapped for "unique-entropy". §3's UUID doctrine therefore stands unchanged; only the name moves. The same substitution runs through the Edge, Edge-group and Rule sections (`##### Unique Entropy, `u` field` in `v1.1` L1171 vs `##### UUID, `u` field` in `main`).
 
-## 23. Worked lifecycle and graduated-disclosure examples — `[N]`, `main` @`f0bd097de`
+## 23. Worked lifecycle and graduated-disclosure examples — `[spec]`, `main` @`f0bd097de`
 
-**Tier correction, recorded 2026-09-15.** These two subsections are new *to this note*, and new since the note's `11832a3` pin, but they are **not** `v1.1`-only: both are present in `main` at `f0bd097de` and are substantively identical on `v1.1` (the only deltas in the region are the UUID→UE substitutions of §22.3). Cite them as `[N]`. They sit in the Annex's Working ACDC Examples region — `main` L4852-4986 and L4988-5098 respectively, `v1.1` L5053-5187 and L5189-5299. Chapters 05 and 10 need them.
+**Tier correction, recorded 2026-09-15.** These two subsections are new *to this note*, and new since the note's `11832a3` pin, but they are **not** `v1.1`-only: both are present in `main` at `f0bd097de` and are substantively identical on `v1.1` (the only deltas in the region are the UUID→UE substitutions of §22.3). Cite them as `[spec]`. They sit in the Annex's Working ACDC Examples region — `main` L4852-4986 and L4988-5098 respectively, `v1.1` L5053-5187 and L5189-5299. Chapters 05 and 10 need them.
 
 ### 23.1 §Registry-Dependent Issuance Lifecycle (`main` L4852-4986)
 
@@ -452,10 +453,10 @@ A negative result is a finding. Each of these was checked by full-text search of
 
 ## 25. Open questions and unresolved tensions
 
-1. **Will `dp` land in the standardizing line, and in what shape?** `## Disclosure Paths` is a ~180-line normative section living only on `v1.1` at `2362e48a1`. The bible's chapter 08 may now describe it at `[N1.1]`. **Nothing here licenses `[N]`.** Re-check `main` every refresh; the moment the section appears there, §21 gets re-tiered wholesale and this note's §14 IPEX table must be rewritten rather than annotated.
+1. **Will `dp` land in the standardizing line, and in what shape?** `## Disclosure Paths` is a ~180-line normative section living only on `v1.1` at `2362e48a1`. The bible's chapter 08 may now describe it at `[spec-next]`. **Nothing here licenses `[spec]`.** Re-check `main` every refresh; the moment the section appears there, §21 gets re-tiered wholesale and this note's §14 IPEX table must be rewritten rather than annotated.
 2. **`dp` is normative but its only binding is non-normative.** §Disclosure Paths declares itself normative (L1811), yet the sole place it meets a wire format is §Disclosure Paths in `apply` and `offer`, inside the IPEX section that opens "This section is non-normative" (L1990). So the syntax is normative and its use is not. Worth naming in chapter 08 rather than smoothing over.
 3. **The `_` reservation is a backward-incompatible constraint on existing ACDCs.** `v1.1` L65 says a field "MUST NOT be labeled with a single `_`", and L63 says no label may contain `-`. Any already-issued ACDC with such a label becomes non-conforming under `v1.1`. The spec argues the cost is low but does not address migration. Unresolved.
-4. **`E1E` has no implementation evidence in this note.** It is `[N1.1]` on the spec side only; whether keripy recognizes it is a `[K]` question this pass did not touch. Chapter 07's operator-family material should not imply support.
+4. **`E1E` has no implementation evidence in this note.** It is `[spec-next]` on the spec side only; whether keripy recognizes it is a `[code]` question this pass did not touch. Chapter 07's operator-family material should not imply support.
 5. **Aggregate-section label pathing assumes uniqueness the Schema must enforce.** §Aggregate Section Pathing (L1923) rests on each blinded block carrying "a field whose label appears in no other block", but nothing quoted states *who* guarantees that or what happens when it fails. The expansion from `A/over21` to an offset is undefined if two blocks share a label.
 6. **Blinded-block label pathing sits awkwardly against the aggregate's anti-correlation design.** §7 records that in the Aggregate Section "Field labels themselves are blinded" and `anyOf` ordering "is not correlated to the actual order". A `dp` path that names `A/over21` presupposes the requester knows that label. The two claims are reconcilable (the label is known from the Schema, not from the instance) but the spec does not reconcile them in either place, and a reader of chapter 07 plus chapter 08 will hit the seam.
 7. **`raw/16 §8` item 2 remains open** — see §24.1. `v1.1` at `2362e48a1` settles nothing about nested-`rd` disambiguation.
@@ -464,9 +465,9 @@ A negative result is a finding. Each of these was checked by full-text search of
 
 ## Exact short quotes (<=25 words) with citations
 
-**Every quote in the first list below is from `main`, tier `[N]`, and its line hint is at `11832a3` unless this pass re-anchored it (see the header). The second list is `v1.1` only, tier `[N1.1]`, at `2362e48a1`; the third is `main` at `f0bd097de`. Never move a quote between lists without the text in the destination branch at a named commit.**
+**Every quote in the first list below is from `main`, tier `[spec]`, and its line hint is at `11832a3` unless this pass re-anchored it (see the header). The second list is `v1.1` only, tier `[spec-next]`, at `2362e48a1`; the third is `main` at `f0bd097de`. Never move a quote between lists without the text in the destination branch at a named commit.**
 
-### `main` — `[N]` (line hints at `11832a3`)
+### `main` — `[spec]` (line hints at `11832a3`)
 - "no top-level field types exist in an ACDC… the Schema, `s`, field itself is the type field." — §Type-is-schema, L182
 - "type information is metadata, not data." — §Type-is-schema, L182
 - "ACDCs MUST use insertion-ordered field maps for canonical serialization/deserialization." — §Ordered Nested Field Maps, L10
@@ -489,7 +490,7 @@ A negative result is a finding. Each of these was checked by full-text search of
 - "This satisfies the KERI design ethos of 'minimally sufficient means.'" — §Basic selective disclosure, L686
 - "any use of 1st party data by a 3rd party is likewise, by definition, exploitive." — §Three-party, L1718
 
-### `v1.1` — `[N1.1]` only, at `2362e48a1`. **MUST NOT be cited as normative.**
+### `v1.1` — `[spec-next]` only, at `2362e48a1`. **MUST NOT be cited as normative.**
 - "This section is normative. It defines the path syntax that designates the parts of an ACDC, or of a DAG of chained ACDCs" — §Disclosure Paths, L1811
 - "The `dp` field is not an ACDC field. It appears in the messages that negotiate a disclosure, not in the ACDCs that are disclosed." — §Disclosure Paths, L1813
 - "That DAG MUST have exactly one source node, called the origin node." — §DAG of ACDCs, L1821
@@ -540,7 +541,7 @@ A negative result is a finding. Each of these was checked by full-text search of
 - "both the ACDC in which the Edge resides and the node to which the Edge points MUST be Targeted ACDCs" — §Edge, L1223
 - "`E1E` binds them as being about the same subject, a relationship the delegative `I2I` Operator cannot express" — §Edge, L1223
 
-### `main` — `[N]`, re-anchored or newly mined at `f0bd097de`
+### `main` — `[spec]`, re-anchored or newly mined at `f0bd097de`
 - "a registry SAID, `rd` field that appears nested in the Attributed, `a`, or Aggregate, `A`, section MAY be used for some other registry" — §Registry SAID Field, L85 (**identical at `v1.1` L96**)
 - "The inception commits to no credential state: it is a vacuous placeholder that reveals nothing about what will later be issued." — §Registry-Dependent Issuance Lifecycle, L4865-4867
 - "Because the SAID is derived from the credential's content, it is not known in advance; it is produced by issuance, not assumed." — §Registry-Dependent Issuance Lifecycle, L4890-4892

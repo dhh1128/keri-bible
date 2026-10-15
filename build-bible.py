@@ -16,7 +16,7 @@ HEADING = re.compile(r'^# (.*?)\s*\{#([a-z0-9-]+)\}\s*$')
 
 def legend():
     style = open('docs/house-style.md', encoding='utf-8').read()
-    body = style.split('\n## Provenance markers\n', 1)[1].split('\n## ', 1)[0]
+    body = re.split(r'\n## Provenance markers[^\n]*\n', style, maxsplit=1)[1].split('\n## ', 1)[0]
     body = body.replace(' This section is the legend that `build-bible.py` and the site generate from.', '')
     return '## Provenance markers {#legend}\n' + body.rstrip('\n') + '\n'
 

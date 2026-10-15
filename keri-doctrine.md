@@ -6,7 +6,7 @@ Status: DRAFT, pending Daniel's endorsement rule by rule. Rewritten 2026-10-15 f
 
 This file makes a reviewer reason in KERI's own terms before reading anything else. It is not a summary of KERI and not a source. Every rule links to the bible section that grounds it; cite that section, or the primary source it quotes, never this file. Pins, commit-level behavior and the state of designs still in motion live in the bible, which is refreshed monthly. This file should not need to change when they do.
 
-The provenance markers used in the bible (`[N]`, `[N1.1]`, `[K]`, `[P]`, `[V]`, `[SAM-DIRECT]`) are defined in the legend at the top of `keri-bible.md`.
+The provenance markers used in the bible (`[spec]`, `[spec-next]`, `[code]`, `[proposal]`, `[practice]`, `[architect]`) are defined in the legend at the top of `keri-bible.md`.
 
 ## Trust and identity {#trust}
 
@@ -76,7 +76,7 @@ The provenance markers used in the bible (`[N]`, `[N1.1]`, `[K]`, `[P]`, `[V]`, 
 
 ## Evidence discipline {#evidence-discipline}
 
-28. Tiers are never upgraded for convenience. A discussion is not a specification, a forward branch is not the standard, an implementation is evidence about the implementation, and a vendor's practice is evidence about that vendor. The newest and most contested material in the bible (presentation, request authentication, presentation registries) is exactly where this rule matters most; read those chapters at review time and check their dates. [chapter 08, status](bible/08-presentation-architectures-and-ipex.md#status)
+28. Every claim carries the marker of the evidence it actually rests on: [spec] for a specification's standardizing branch, [spec-next] for its forward branch, [code] for an implementation at a named commit, [proposal] for a discussion, issue, pull request, whitepaper or unmerged code, [practice] for one vendor's or deployer's practice, [architect] for Sam Smith's own voice outside a specification. Each answers a different question, and only [spec] says what conformance requires. A claim never borrows a stronger kind of evidence than it has, even when a specification editor makes it in a discussion. Chapters whose material is still moving carry a Status section; read them at review time. [chapter 08, status](bible/08-presentation-architectures-and-ipex.md#status)
 
 29. When the specification and the reference implementation disagree, neither silently wins. The specification governs what conformance requires; the code governs what deployed software actually does; and the disagreement itself is a finding, a bug in one or a gap in the other, to be reported rather than resolved by assumption. Prose describing either, including a code comment describing the specification, is checked against what it describes before it is believed. [chapter 07, section 12](bible/07-shibboleths-and-anti-patterns.md#verify-the-code)
 

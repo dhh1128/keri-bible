@@ -1,7 +1,9 @@
 # Doctrine Mining: keri.one (the web)
 
 **Source:** https://keri.one (homepage, /keri-resources/, /131-2/ About Samuel Smith, /keri-in-production-for-gleifs-vlei/, keynote archive pages)
+
 **Mining date:** 2026-07-17. **Re-verified 2026-10-03** against the live pages (homepage, /131-2/, /keri-resources/, /keri-in-production-for-gleifs-vlei/) — the first pass to record content hashes (`refresh/state/2026-10/webhashes.json`), so this is a re-anchor, not a delta: whether a page changed between 2026-07-17 and 2026-10-03 cannot be told. Every quote in this note was string-checked against the fetched page text; see §11 for what failed and what was done about it.
+
 **Character of the site:** keri.one is a small WordPress site authored by Samuel M. Smith. Its **original doctrinal content is thin and concentrated on the homepage plus the About page**; the bulk of the site (`/keri-resources/`) is a **curated outbound-link directory** pointing to the very whitepapers, specs, presentations, and third-party explainers that a synthesis project will already have from primary sources. Treat this file as: (a) the homepage's compressed marketing-grade doctrine statements (useful as quotable, canonical one-liners in Sam Smith's own site voice), and (b) a **map of what keri.one considers canonical reading** (the resource directory), so a synthesizer can see the officially-blessed corpus and spot anything not yet covered.
 
 ---

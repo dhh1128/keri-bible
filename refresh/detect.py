@@ -433,10 +433,10 @@ def render(r) -> str:
 
     ups = [(s, s["tier_upgrades"]) for s in r["sources"] if s.get("tier_upgrades")]
     if ups:
-        L += ["## Tier movement — forward text that left the standardizing diff", "",
+        L += ["## Marker change — forward text that left the standardizing diff", "",
               "Each hunk below was in the `main`↔`v1.1` diff last run and is not now. Usually that "
               "means it landed in the standardizing branch and the claim resting on it moves "
-              "`[N1.1]` → `[N]`. It can also mean the hunk was dropped from the forward branch, "
+              "`[spec-next]` → `[spec]`. It can also mean the hunk was dropped from the forward branch, "
               "which moves the claim the other way. Read it before marking it.", ""]
         for s, hunks in ups:
             L.append(f"### {s['id']} → chapters {', '.join(s['chapters'])}")

@@ -10,9 +10,9 @@ Primary means the source itself. A diff is not the source. A commit message is n
 
 ## 2. Provenance classes are load-bearing and never upgraded for convenience
 
-The provenance markers (`[N]`, `[N1.1]`, `[K]`, `[P]`, `[V]`, `[SAM-DIRECT]`) are defined in `docs/house-style.md`, and their order is a real ordering.
+The provenance markers (`[spec]`, `[spec-next]`, `[code]`, `[proposal]`, `[practice]`, `[architect]`) are defined in `docs/house-style.md`. Each names a kind of evidence and answers a different question; they are not a ranking.
 
-A claim may only be marked at the tier its citation actually supports. Moving `[N1.1]` → `[N]` requires the text in the standardizing branch at a named commit, not an expectation that it will land. Moving `[P]` → `[K]` requires the code, not a merged PR title.
+A claim may only carry the marker its citation actually supports. Moving `[spec-next]` → `[spec]` requires the text in the standardizing branch at a named commit, not an expectation that it will land. Moving `[proposal]` → `[code]` requires the code, not a merged PR title.
 
 Spoken and first-hand report needs care. Edited auto-captions of conference talks (`raw/14`) preserve near-wording, never exact speech. They may be quoted, but only as the captions read, with a caption locator giving speaker, talk and time (`docs/house-style.md`, Citations), and only as evidence of status, intent and framing, never of a design detail. A first-hand account of a call (`raw/16`, section 0) preserves neither wording nor detail: it is usable for status and intent only and is never quoted. Do not launder either into a stronger citation by finding similar words in a written source.
 

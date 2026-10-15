@@ -14,12 +14,12 @@ The finding that shaped the design, measured 2026-09-15: the ACDC specification'
 
 `main`/v1.0 is what the community is actively standardizing: that is what "normative" means today. `v1.1` is new thinking, likely but not certain to fold into the next standard. A claim resting on v1.1 is stronger than a GitHub discussion and weaker than the standardizing text, so it gets its own marker:
 
-    [K]  implementation behaves this way at a named commit
-    [P]  proposed in a discussion or whitepaper
-    [N1.1]  in the v1.1 branch, not yet in the standardizing line
-    [N]  in the line being standardized
+    [code]  implementation behaves this way at a named commit
+    [proposal]  proposed in a discussion or whitepaper
+    [spec-next]  in the v1.1 branch, not yet in the standardizing line
+    [spec]  in the line being standardized
 
-Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff is recomputed every run. **Text that leaves that diff has landed** — a `[N1.1]` → `[N]` tier upgrade, mechanically detectable, and the single most valuable thing this job catches. (It can also mean the hunk was dropped from `v1.1`, which moves the claim the other way, so the report says "verify" rather than asserting.)
+Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff is recomputed every run. **Text that leaves that diff has landed** — a `[spec-next]` → `[spec]` marker change, mechanically detectable, and the single most valuable thing this job catches. (It can also mean the hunk was dropped from `v1.1`, which moves the claim the other way, so the report says "verify" rather than asserting.)
 
 ## The pieces
 
@@ -39,7 +39,7 @@ Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff
 ## The six phases
 
 1. **detect** — shell. Fetch every source, diff against its pin, query GitHub for discussions and merged PRs, hash the web sources, run the quote-drift check. Gate: nothing material → log and exit, no PR, no tokens.
-2. **triage** — one agent. Classify each candidate: doctrinal, corroborative, tier movement, re-anchor, noise. This is the budget valve; most of a hundred keripy commits are noise and saying so is the job.
+2. **triage** — one agent. Classify each candidate: doctrinal, corroborative, marker change, re-anchor, noise. This is the budget valve; most of a hundred keripy commits are noise and saying so is the job.
 3. **mine** — one agent per affected `raw/` note, ≤4 concurrent, disjoint file sets. Re-read the **primary source** at the new commit, never the diff alone.
 4. **synthesize** — one agent per affected `bible/` chapter, same isolation. Tier markers re-evaluated, `@commit` stamps refreshed, `keri-doctrine.md` touched only where a load-bearing claim actually moves.
 5. **verify** — a fresh agent that did not do the mining. Every new or changed quote re-read at its pinned commit; anything unconfirmable is **cut**, not reworded. Then `freshness.py`, `snapshot-discussions.py`, and `build-bible.py`.
