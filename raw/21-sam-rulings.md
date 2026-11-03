@@ -1,4 +1,4 @@
-# Doctrine Mining: Samuel M. Smith's rulings on GitHub, 2025-10-14 to 2026-10-14
+# Doctrine Mining: Samuel M. Smith's rulings on GitHub, 2025-10-14 to 2026-11-03
 
 Sources: every issue, pull request, PR review, PR review comment and discussion in which GitHub user SmithSamuelM authored the item or a comment during the window, across four repositories: `WebOfTrust/keripy`, `trustoverip/kswg-keri-specification`, `trustoverip/kswg-acdc-specification` and `trustoverip/kswg-cesr-specification`.
 
@@ -8,9 +8,11 @@ Specification pins, all equal to the upstream branch heads on 2026-10-14 (checke
 
 Implementation pins: keripy `main` @`80f77b73b` (the `sources.yaml` pin, read from the local clone at `~/code/wot/keripy`). keripy upstream `main` had moved to `c102367ea` (2026-10-14); where a ruling bears on code that changed after the pin, the file was read at `c102367ea` through the GitHub contents API and the citation says so.
 
-Mining date: 2026-10-14.
+Mining dates: 2026-10-14 for the full window to that date; 2026-11-03 for the incremental scan from 2026-10-14 to 2026-11-03.
 
-Scope statistics: the issue search returned 212 distinct issues and PRs (66 issues, 146 PRs) where SmithSamuelM authored, commented or reviewed and the item was updated in the window; GraphQL returned 36 discussions updated in the window. Of these 248 items, 224 carry at least one Sam text created or edited in the window, and those texts number 362 (bodies, comments, replies, reviews and review comments). Most are review mechanics on the 2026 database refactor ("Please resolve conflicts", "Looks good") and carry no ruling. Rulings kept: 78, numbered R-001 to R-078 below. Five large Sam bodies were not re-mined in depth because other notes own them: #1095 and #1613 (`raw/16`), #1627 (`raw/16`, `bible/08`), #1299 (its body is the KRAM whitepaper v0.7.6, owned by `raw/15`) and #934 (`raw/15`; no Sam comment in it falls in the window).
+The incremental scan read a pre-fetched candidate set of 22 threads updated since the last scan (`.ignored/sam_threads.txt`, assembled by the refresh orchestrator, not by this note's miner). Three of them carry Sam text, and each was re-fetched in full with `gh api` (issue comments, PR review comments and reviews) on 2026-11-03 and quoted from that fetch: `trustoverip/kswg-keri-specification#327` (R-079, new), `WebOfTrust/keripy#1681` (R-080, new) and `trustoverip/kswg-cesr-specification#175` (re-read for R-020; no new Sam text). The specification pins above are unchanged at the 2026-11-03 scan per `refresh/sources.yaml`. The new rulings' code cross-checks are at keripy `main` @`94f5423a3` (2026-10-30, the `sources.yaml` scan pin), read from the local clone.
+
+Scope statistics for the window to 2026-10-14: the issue search returned 212 distinct issues and PRs (66 issues, 146 PRs) where SmithSamuelM authored, commented or reviewed and the item was updated in the window; GraphQL returned 36 discussions updated in the window. Of these 248 items, 224 carry at least one Sam text created or edited in the window, and those texts number 362 (bodies, comments, replies, reviews and review comments). Most are review mechanics on the 2026 database refactor ("Please resolve conflicts", "Looks good") and carry no ruling. Rulings kept: 80, numbered R-001 to R-080 below, of which R-079 and R-080 come from the 2026-11-03 scan. Five large Sam bodies were not re-mined in depth because other notes own them: #1095 and #1613 (`raw/16`), #1627 (`raw/16`, `bible/08`), #1299 (its body is the KRAM whitepaper v0.7.6, owned by `raw/15`) and #934 (`raw/15`; no Sam comment in it falls in the window).
 
 ---
 
@@ -89,6 +91,25 @@ Ruling: "in general a controller should be able to send a signed receipt of one 
 Question settled: whether `processReceipt`'s refusal of a receipt in which the receiptor is the event's own controller is correct. Sam reads the refusal as an assumption that "controller would always sign locally so a remote receipt must be a fraud attempt", and rules the assumption too narrow.
 
 Cross-check: `[proposal]`, an open issue. Not in the bible. Not checked in code. Low priority.
+
+### R-079 A signed out-of-order key event is escrowed; only an unsigned one is dropped
+
+Ruling: "No that is misreading it." And: "If an event has at least one signature but is out of order, there is no way to verify the signature" and "so it goes to out-of-order escrow." And: "If it has no signature then out of order or not it is unverifiable so is dropped." Comment https://github.com/trustoverip/kswg-keri-specification/issues/327#issuecomment-6595373100, created and updated 2026-11-03T04:21:19Z. It is the only comment on the issue.
+
+Question settled: dhh1128's issue #327 (opened 2026-11-03T04:09:51Z, open) asked whether the KERI spec's MUST-drop rule for a message without "at least one verifiable Controller signature", read with the Verifier definition's requirement of every prior establishment event, forbids out-of-order escrow, which would make keripy's escrow non-conformant. The issue reports, without naming it, that one implementation has removed its out-of-order escrow on that reading; that report was not checked. Sam rules the reading wrong. The drop test is whether the event carries a signature at all, not whether the signature can be verified yet; a signed event that cannot yet be verified waits in out-of-order escrow.
+
+Cross-check against the KERI spec: the text does not say what Sam says, on either branch. The four passages the issue cites read identically on `main` @`fbdd4a615` and `v1.1` @`3753f3797`, one line apart:
+
+- `main` L1266, `v1.1` L1265 (Signing and sealing KERI data structures > Indexed Signatures). A signature set short of the thresholds "SHOULD escrow the event while waiting for other signatures to arrive", but a message that "does not have attached at least one verifiable Controller signature MUST drop that message (i.e., not escrow or otherwise accept it)". The reason given: "This protects the Validator from a DDoS attack with spurious unsigned messages."
+- `main` L1737, `v1.1` L1736 (Annex A > Validation > Verifier). For a transferable AID, establishing control "requires a complete copy of the sequence of key operation events (inception and all rotations) for the identifier up to and including the issued event", and "any reference to the verification of an event or verification of an event's signatures refers to the complete process described above".
+- `main` L541, `v1.1` L540 (Key event messages): "A Validator MAY drop any provided key event message body that does not have at least one attached signature from the current controlling key state"
+- `main` L1286, `v1.1` L1285 (Signing and sealing KERI data structures > Receipt Signatures): "A Validator that receives a Receipt for an event that the Validator has not yet received can escrow the Receipt and its attached signatures."
+
+Neither branch's `spec-body.md` contains "out-of-order" or "out of order"; "escrow" occurs only at `main` L1266, L1286 and L1503 (key escrow under Reserve Rotation, unrelated). So the spec provides no out-of-order escrow for key events, and its one MUST on the case turns on "verifiable", which L1737 ties to the complete verification process. On this note's reading, Sam's ruling takes "verifiable" at L1266 to mean "a signature that can be verified once key state is in hand", which the text does not say. The stated DDoS reason ("spurious unsigned messages") and L1286's receipt escrow support his reading; L1737 cuts against it. L1737 sits under `## Annex A`, whose normative status `spec-body.md` does not declare (the other spec files were not checked). No text change has landed on either branch and the issue is open, so this is a ruling not yet landed (T-13).
+
+`[code]` keripy `94f5423a3` matches the ruling. The parser drops a key event with no attached controller signature before key-state processing: "if not exts['sigers']: # sigers:", raising "Missing attached signature(s) for evt" (keripy core/parsing.py, Parser.msgProcess, L1565-1569). Kevery then escrows a signed event without verifying it when it is ahead of key state, "if sn > sno:  # sn later than sno so out of order escrow" (keripy core/eventing.py, Kevery.processEvent, L4327), and escrows a first-seen non-inception event for an unknown prefix: "not inception so can't verify sigs etc, add to out-of-order escrow" (L4284). The escrow ages out after `TimeoutOOE` (L6053), and the unescrow pass discards an entry with no stored signatures (L6068-6072). keripy's drop test counts controller signatures only, so an event carrying only witness signatures is also dropped, which fits L1266's "Controller signature".
+
+Not in the bible (no hit for "out-of-order" under `bible/`). Belongs in `bible/03` beside the sequence-number rules (`bible/03-key-management-and-identifier-lifecycle.md:19`), with the DDoS trade-off in `bible/02` and the disconnected-network case in `bible/11`.
 
 ---
 
@@ -206,7 +227,7 @@ Ruling: "So I would rather fix the ed448 before putting in the PQC codes". Comme
 
 Question settled: issue #175 reports that CESR's Ed448 seed code `K` holds 56 raw bytes while RFC 8032 and the `cryptography` library use 57-byte private keys. Sam's last comment in the thread demonstrates the 57-byte length in Python and so accepts the premise.
 
-Cross-check: not carried. The `K` row is unchanged on both branches, "Seed of Ed448 private key" with a one-character code and 76 text characters (`main` L961, `v1.1` L969), which is 56 bytes. The PQ codes had already merged into `v1.1`, so the preferred order did not happen. Issue #175 is open. `bible/04` mentions Ed448 three times and does not record the defect. It belongs in `bible/04` as a known table defect, carried as open.
+Cross-check: not carried. The `K` row is unchanged on both branches, "Seed of Ed448 private key" with a one-character code and 76 text characters (`main` @`bad6edd84` L961, `v1.1` @`65fd7518b` L969, re-read 2026-11-03), which is 56 bytes. The PQ codes had already merged into `v1.1`, so the preferred order did not happen. Issue #175 is open, and Sam has written nothing in it after 2026-09-01T21:40:25Z. Its one later comment, from mitfik (https://github.com/trustoverip/kswg-cesr-specification/issues/175#issuecomment-6326308409, 2026-10-21T20:53:05Z), reports that the Rust implementation cesrox "follows the spec as written", decoding `K` to 56 raw bytes, and says cesrox will follow whatever is decided; so a second implementation carries the defect as specified. `bible/04` mentions Ed448 three times and does not record the defect. It belongs in `bible/04` as a known table defect, carried as open.
 
 ### R-021 The parser swallows exceptions on purpose, so a service is not an oracle
 
@@ -214,7 +235,7 @@ Ruling: "In a long running service that faces the open internet, best practice f
 
 Question settled: whether `groupParsator`'s blanket `ExtractionError` should be made granular in the main path. No; callers who need the exceptions (to pre-qualify outgoing messages) should get a separate non-swallowing wrapper.
 
-Cross-check: not in the bible. A short security-posture point for `bible/02` (no failure oracle; restart timing as a side channel) and `bible/04` (parser behavior).
+Cross-check: `[code]` keripy `94f5423a3` has that wrapper, `Parser.parseOneBare`, which, unlike `parseOne`, "raises any error to the caller instead of logging it" (keripy core/parsing.py, Parser.parseOneBare, L471), added by PR #1718 (no Sam text in that thread). Not in the bible. A short security-posture point for `bible/02` (no failure oracle; restart timing as a side channel) and `bible/04` (parser behavior).
 
 ### R-022 v2 does not embed messages; it attaches them as nested substreams
 
@@ -319,6 +340,20 @@ Cross-check: not in the bible as a design rule. It is the cleanest statement any
 Ruling: "Not surprised. The vlei doesn't use edge groups," Same comment as R-034, answering a report that edge groups crash in keripy's credential path.
 
 Cross-check: consistent with `bible/08:148` (m-ary operators implemented only in the V2 module). Useful as the reason edge-group bugs went unnoticed. Low priority.
+
+### R-080 Edge Section validation is its own layer, and `I2I` stays in IPEX verification while that layer is built
+
+Ruling: "I agree that the edge logic should be at its own layer and have its one verification function" ("its one" reads as "its own"). And: "It just was simpler before graduated disclosure so it never was properly layered." Comment https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6201960001, created and updated 2026-10-15T20:48:05Z. Then: "Maybe we can stage the move of the backward compatible behavior of leaving I2I as an option to verify" and "but build a a more cleanly layered validation stack with I2I in the edge validation." Comment https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6202006921, created and updated 2026-10-15T20:50:47Z.
+
+The first comment quotes KeaxD's conclusion (https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6180433358, 2026-10-14T23:05:01Z) that registry state, `I2I` and edge-schema satisfaction are all inputs to Edge Section evaluation, so the whole semantic Edge Section verdict belongs outside `IpexHandler.verify()`. Before Sam spoke, dhh1128 and KeaxD had agreed to take only registry-state judgment out of `verify()` in this PR and to move the rest to a separate evaluator in a follow-up.
+
+Question settled: whether Edge Section validity is an IPEX concern. It is not; it is a validation layer of its own, and its place inside IPEX verification is a leftover from before graduated disclosure, not a design. This is an architectural direction for keripy, `[proposal]`, and it bears on no spec text.
+
+Unsettled: what "an option to verify" means. dhh1128's reply (https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6202411063, 2026-10-15T21:14:06Z) proposed a caller switch, default on, that keeps the Edge Section checks inside `verify()` until the layered path has proven itself, and asked whether Sam meant something narrower, such as making only `I2I` optional. Sam did not answer in the thread, which ryan-hansen merged on 2026-10-30T20:23:31Z. The whole thread (issue comments, review comments, reviews) holds no later Sam text and nothing that reverses the direction.
+
+Cross-check: `[code]` keripy `94f5423a3` (2026-10-30, after the merge) has no separate edge-verification layer yet. The Edge Section verdict is still computed inside `IpexHandler.verify`, "verdict = self._evaluateNode(origins[0], nodes=grantNodes, memo={}," (keripy acdc/ipexing.py, IpexHandler.verify, L756), and the default delegative operator is still appended in the leaf evaluator (`_evaluateLeafEdge`, L1557). What #1681 landed is the narrower step: the handler records each far node's registry state and "leaves judging it to an application or EGF evaluator" (ipexing.py, IpexHandler class comment, L490). Detailed code claims about the two verification paths belong to `raw/09`.
+
+Not in the bible. Belongs in `bible/08` section 5a (the two verification paths) as the editor's direction for where Edge Section validation should live, and in `bible/05` section 5 beside the operators.
 
 ---
 
@@ -696,6 +731,10 @@ R-020. Sam preferred fixing the 56-byte `K` seed code before the post-quantum co
 
 R-027. The never-edited #1512 body recommends the aggregate form for the SEDI core identity credential, which Sam withdrew on #1505 before #1512 was posted the same afternoon (#1505 reversal at 13:00 UTC, #1512 body at 15:44 UTC, copied from his earlier #1505 text). Anyone citing #1512 for the aggregate choice is citing a retracted position.
 
+### T-13 Out-of-order escrow: the editor allows it, the spec text does not provide for it
+
+R-079. Sam rules that a signed key event arriving out of order goes to out-of-order escrow and only an unsigned one is dropped, and keripy behaves that way at `94f5423a3`. Neither KERI branch mentions out-of-order escrow, and both condition their one MUST-drop on "at least one verifiable Controller signature" (`main` L1266, `v1.1` L1265), with verification defined as the complete process over every prior establishment event (`main` L1737, `v1.1` L1736). A reader of the spec alone can conclude that an out-of-order event must be dropped, which is the reading Sam calls a misreading. Issue #327 is open with dhh1128's proposed clarifying sentence after L1266, and no text has landed on either branch.
+
 ---
 
 ## 13. Already in the bible
@@ -733,30 +772,32 @@ From the threads `raw/15` and `raw/16` own (#1095, #1515, #1613, #1618, #1627, K
 Ranked by how likely the absence is to make a reader build the wrong thing, then by how settled the ruling is.
 
 1. T-01 / R-051, the spurn-of-grant inversion in `bible/08:164` and `raw/09:207`. The bible currently misstates the reference implementation, and the misstatement points opposite to the editor's ruling. Chapter `bible/08` §5a and §13.
-2. R-015, `DI2I` reaches any depth, with `DND`/`DID` as the depth control, and the reversal. The spec text supports the narrower reading Sam withdrew. Chapters `bible/05` §5 and `bible/03` §delegation.
-3. R-030 / T-05, the empty-operator default changes to `NI2I` for v1.1 ACDCs behind a version switch. It changes the meaning of every operator-less edge. Chapters `bible/05` §5, `bible/08` §5.
-4. R-052 / T-02, empty `dp` semantics and `dp` on `agree`/`grant` in keripy; the `v1.1` text lags. Chapter `bible/08` §4 and §12.
-5. R-036 / T-03, `upd` deprecated while `v1.1` still defines it. Chapter `bible/05` §registries.
-6. R-012 / T-10, the Ean `DID` example is an oversight; resolves `bible/03:126` and `bible/07:312`. Chapter `bible/03` §8.
-7. R-042, issuer revocation is universal across a bulk set; key compromise is answered by rotation, not revocation; salt compromise abandons the set. Chapter `bible/05` §bulk issuance, plus a `bible/07` shibboleth.
-8. R-040, R-044, R-045, R-043, the bulk-issuance cluster: decorrelated pre-created registries as SEDI's chosen case, the registry blinding-salt path left open, the annex-to-normative move, and the one part that landed in `main` (`k.`, qb64 concatenation, Blake3-256). Chapter `bible/05` §bulk issuance; a new subsection is warranted.
-9. R-049 and R-050, the contractual logic of IPEX: agree binds, admit removes deniability, the grantor's escape clause, tail anchoring, multiple anchors as contingencies. Chapters `bible/08` §9 and `bible/06` §contractually protected disclosure.
-10. R-025 / T-07, the aggregate issuee is intended at index 1. Chapter `bible/05` §4.1 (amend Finding 2).
-11. R-002 and R-022, version rules on the wire: KEL events never upgrade, attachments follow the receiving parser, v2 attaches nested substreams instead of embedding, v1-only parsers are a dead end. Chapter `bible/04`.
-12. R-008's deployment half: witnesses used as watchers in production, and the "eyes of a watcher" rule. Chapters `bible/02` and the proposed infrastructure chapter.
-13. R-037, registry transfer (`rxr` then `xfr`, doubly anchored, approved) and reversion of authority. Chapter `bible/05` §registries or the proposed authorization chapter (with `raw/19`).
-14. R-055, R-054, R-063, R-057, the IPEX design posture: predefined DAG shapes, receiver AID always present and participation not correlation, constructors not schemas against premature leaks, v2-only anchoring. Chapter `bible/08`, with `bible/06` for the EGF angle.
-15. R-019, R-017, R-018, R-020, CESR code-table doctrine: codes encode encoding not usage, fixed codes cost at most two bytes, goldilocks agility, the Ed448 seed defect. Chapter `bible/04`.
-16. R-013, R-014, R-016, delegation traits in practice: custodial versus horizontal scaling, `DND` enforcement in the Kever, `DID` consequence left to the relying party and to EGFs. Chapter `bible/03` §8.
-17. R-034, same issuer means a nested block, different issuers mean separate ACDCs. Chapter `bible/05` §4.
-18. R-065, R-066, decorrelation as the achievable goal; bulk issuance and blinded edges against standing-edge correlation. Chapter `bible/06` §4 and `bible/05` §5.
-19. R-047, R-071, R-072, SEDI architecture and guardianship: IAL3 management ACDC, per-disclosee bulk credentials, custody from birth, five parent-child key arrangements. Chapter `bible/06` §SEDI and `scenarios/`.
-20. R-038 / T-08, TEL anchors follow first-seen; keripy's keep-earliest rule differs. Chapter `bible/05` §registries.
-21. R-011, OOBI bootstrap with the controller AID and redirect to witnesses. Proposed infrastructure chapter.
-22. R-006, filtering is not authentication. Chapter `bible/09`.
-23. R-021, the parser swallows exceptions to avoid becoming an oracle. Chapter `bible/02` or `bible/04`.
-24. R-053, R-062, R-064, R-056, R-058, smaller IPEX facts: offer `o`, the four-tier taxonomy, the `m` field's open status, IPEX's likely separate spec, the exposure-not-meaning rationale. Chapter `bible/08`.
-25. R-001, R-007, R-009, R-010, R-078, small facts and history. Chapters `bible/03`, `bible/04`, `bible/08` §5a.
+2. R-079 / T-13, a signed out-of-order key event is escrowed and only an unsigned one dropped. The spec text supports the drop reading Sam calls a misreading, and an implementer following the text loses events that arrive out of order on any intermittent network. Chapters `bible/03` (KEL validation), `bible/02`, `bible/11`.
+3. R-015, `DI2I` reaches any depth, with `DND`/`DID` as the depth control, and the reversal. The spec text supports the narrower reading Sam withdrew. Chapters `bible/05` §5 and `bible/03` §delegation.
+4. R-030 / T-05, the empty-operator default changes to `NI2I` for v1.1 ACDCs behind a version switch. It changes the meaning of every operator-less edge. Chapters `bible/05` §5, `bible/08` §5.
+5. R-052 / T-02, empty `dp` semantics and `dp` on `agree`/`grant` in keripy; the `v1.1` text lags. Chapter `bible/08` §4 and §12.
+6. R-036 / T-03, `upd` deprecated while `v1.1` still defines it. Chapter `bible/05` §registries.
+7. R-012 / T-10, the Ean `DID` example is an oversight; resolves `bible/03:126` and `bible/07:312`. Chapter `bible/03` §8.
+8. R-042, issuer revocation is universal across a bulk set; key compromise is answered by rotation, not revocation; salt compromise abandons the set. Chapter `bible/05` §bulk issuance, plus a `bible/07` shibboleth.
+9. R-040, R-044, R-045, R-043, the bulk-issuance cluster: decorrelated pre-created registries as SEDI's chosen case, the registry blinding-salt path left open, the annex-to-normative move, and the one part that landed in `main` (`k.`, qb64 concatenation, Blake3-256). Chapter `bible/05` §bulk issuance; a new subsection is warranted.
+10. R-049 and R-050, the contractual logic of IPEX: agree binds, admit removes deniability, the grantor's escape clause, tail anchoring, multiple anchors as contingencies. Chapters `bible/08` §9 and `bible/06` §contractually protected disclosure.
+11. R-025 / T-07, the aggregate issuee is intended at index 1. Chapter `bible/05` §4.1 (amend Finding 2).
+12. R-002 and R-022, version rules on the wire: KEL events never upgrade, attachments follow the receiving parser, v2 attaches nested substreams instead of embedding, v1-only parsers are a dead end. Chapter `bible/04`.
+13. R-008's deployment half: witnesses used as watchers in production, and the "eyes of a watcher" rule. Chapters `bible/02` and `bible/11`.
+14. R-037, registry transfer (`rxr` then `xfr`, doubly anchored, approved) and reversion of authority. Chapter `bible/05` §registries or the proposed authorization chapter (with `raw/19`).
+15. R-055, R-054, R-063, R-057, the IPEX design posture: predefined DAG shapes, receiver AID always present and participation not correlation, constructors not schemas against premature leaks, v2-only anchoring. Chapter `bible/08`, with `bible/06` for the EGF angle.
+16. R-080, Edge Section validation as its own layer outside IPEX verification, staged with `I2I` kept in `verify()` for backward compatibility; not yet built at `94f5423a3`. Chapters `bible/08` section 5a and `bible/05` section 5.
+17. R-019, R-017, R-018, R-020, CESR code-table doctrine: codes encode encoding not usage, fixed codes cost at most two bytes, goldilocks agility, the Ed448 seed defect. Chapter `bible/04`.
+18. R-013, R-014, R-016, delegation traits in practice: custodial versus horizontal scaling, `DND` enforcement in the Kever, `DID` consequence left to the relying party and to EGFs. Chapter `bible/03` §8.
+19. R-034, same issuer means a nested block, different issuers mean separate ACDCs. Chapter `bible/05` §4.
+20. R-065, R-066, decorrelation as the achievable goal; bulk issuance and blinded edges against standing-edge correlation. Chapter `bible/06` §4 and `bible/05` §5.
+21. R-047, R-071, R-072, SEDI architecture and guardianship: IAL3 management ACDC, per-disclosee bulk credentials, custody from birth, five parent-child key arrangements. Chapter `bible/06` §SEDI and `scenarios/`.
+22. R-038 / T-08, TEL anchors follow first-seen; keripy's keep-earliest rule differs. Chapter `bible/05` §registries.
+23. R-011, OOBI bootstrap with the controller AID and redirect to witnesses. Chapter `bible/11`.
+24. R-006, filtering is not authentication. Chapter `bible/09`.
+25. R-021, the parser swallows exceptions to avoid becoming an oracle, with `parseOneBare` as the raising wrapper. Chapter `bible/02` or `bible/04`.
+26. R-053, R-062, R-064, R-056, R-058, smaller IPEX facts: offer `o`, the four-tier taxonomy, the `m` field's open status, IPEX's likely separate spec, the exposure-not-meaning rationale. Chapter `bible/08`.
+27. R-001, R-007, R-009, R-010, R-078, small facts and history. Chapters `bible/03`, `bible/04`, `bible/08` §5a.
 
 Process rulings (R-073 to R-077) belong in `refresh/README.md` or `field/` notes rather than in a chapter.
 
@@ -821,3 +862,6 @@ Not applied. The `gh-issues` kind does not exist in `refresh/detect.py` today; t
 - The grep for dead `tswg-` URLs in the corpus (R-076) was not run.
 - Discussion bodies created before the window and edited inside it (#934 on 2025-12-01, #1082 on 2026-04-27, #1095 on 2025-11-11) were read in their current form; the edits themselves cannot be isolated from the API, so it is not known which sentences changed in the window.
 - Reactions, emoji and the per-commit history of PR review threads were not fetched.
+- The 2026-11-03 scan did not run its own search. It read the orchestrator's 22-thread candidate set and re-fetched only the three threads with Sam text, so a Sam comment on a thread outside that set, or an in-place edit to an older Sam comment, would not have been seen.
+- R-079: the issue's report that an implementation removed its out-of-order escrow was not checked, and only `spec-body.md` was searched for a statement of Annex A's normative status.
+- R-080: whether `vdr/verifying.py` on the v1 path already keeps Edge Section validity in a layer separate from IPEX was not checked; only the v2 `IpexHandler.verify` call site was read.

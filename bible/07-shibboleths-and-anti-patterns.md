@@ -76,6 +76,10 @@ Immutability is a property of a commitment, not of agreement: "a SAID will verif
 
 Only a shared ledger cannot forget. KERI's trust bases are separate, so "a given identifier's data may be erased and truly forgotten" (keri.one homepage), and RUN replaces CRUD: "there is no Delete. Instead of Delete, Peers Nullify" (KERI spec > RUN off the CRUD, L2870), keeping an invalidity marker so erased data cannot be replayed.
 
+### 4.5 "A validator drops any event it cannot verify yet." {#out-of-order-drop}
+
+The text invites the reading: a validator receiving a message that lacks "at least one verifiable Controller signature MUST drop that message" (KERI spec > Indexed Signatures, L1266). [proposal] The editor calls it a misreading, "If it has no signature then out of order or not it is unverifiable so is dropped." (KERI spec GitHub > #327, comment of 2026-11-03, R-079), and a signed early arrival waits in out-of-order escrow. [code] keripy does exactly that: `if sn > sno:  # sn later than sno so out of order escrow` (keripy core/eventing.py, Kevery.processEvent, L4327 @`94f5423a3`). No specification text says so yet, so a citation for escrowing must name the ruling ([chapter 03, section 1](03-key-management-and-identifier-lifecycle.md#out-of-order-escrow)).
+
 ## 5. OAuth / OIDC / SAML / IAM / perimeter / federation tells {#iam-tells}
 
 ### 5.1 "Authentication precedes authorization as one indivisible login." {#authn-before-authz}
@@ -112,7 +116,7 @@ Federation moves centralization; trust registries are "a band aid; they just mov
 
 ### 5.8 "TSP gives forward secrecy, like any modern secure-messaging protocol." {#tsp-forward-secrecy}
 
-[spec] "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (TSP spec > Limits, L1515 @`5599b4556`), on the standardizing line of an experimental specification. KERI's messaging work treats accountability, not ratcheted secrecy, as the remedy; rotation protects only what follows it ([chapter 12, section 10](12-confidentiality-and-secure-messaging.md#tsp-spec)).
+[spec] "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (TSP spec > Security and Privacy Considerations > Limits, L1515 @`ccda6b331`), in a specification its editors label "Release 1.0" (TSP spec, L4 @`ccda6b331`). KERI's messaging work treats accountability, not ratcheted secrecy, as the remedy; rotation protects only what follows it ([chapter 12, section 10](12-confidentiality-and-secure-messaging.md#tsp-spec)).
 
 ## 6. SD-JWT / W3C-VC / DID "decentralized" drift tells {#vc-drift-tells}
 
@@ -120,9 +124,9 @@ These outsiders believe they already do decentralized identity; KERI's position 
 
 ### 6.1 "A credential is a signed envelope (paired signature)." {#signed-envelope}
 
-ACDCs are "bound to the Issuer's Key State... and the Issuer's Key State is signed. This enables the Key State of the Issuer to change independently of the ACDC state" (ACDC spec > Binding to Key State, L1673). For an outsider, cite the Dossier specification, which argues from rotation: [spec] "A dossier is not a signed document. The issuer does not compute a signature over the dossier ACDC and attach that signature to it as proof of authenticity" (Dossier spec > How a Dossier Is Issued: Anchoring, Not Attached Signatures, L13-14 @`b9227753c`).
+ACDCs are "bound to the Issuer's Key State... and the Issuer's Key State is signed. This enables the Key State of the Issuer to change independently of the ACDC state" (ACDC spec > Binding to Key State, L1673). For an outsider, cite the Dossier specification, which argues from rotation: [spec] "A dossier is not a signed document. The issuer does not compute a signature over the dossier ACDC and attach that signature to it as proof of authenticity" (Dossier spec > How a Dossier Is Issued: Anchoring, Not Attached Signatures, L13-14 @`6fcf84127`).
 
-Two guards. The partition is lifespan, not artifact kind: "key events are signed, and so are the short-lived transactional objects... Dossiers, endorsements, and other ACDCs are anchored" (L45-55). And a one-time dossier may carry an attached signature, because "A verifier MUST NOT treat an attached signature as equivalent to an anchor when evaluating a dossier as of any referenceTime other than the present" (L77-79).
+Two guards. The partition is lifespan, not artifact kind: "key events are signed, and so are the short-lived transactional objects... Dossiers, endorsements, and other ACDCs are anchored" (L50-52). And a one-time dossier may carry an attached signature, because "A verifier MUST NOT treat an attached signature as equivalent to an anchor when evaluating a dossier as of any referenceTime other than the present" (L77-79).
 
 ### 6.2 "DIDs already solved decentralized issuance." {#dids-solved-it}
 
@@ -220,6 +224,10 @@ An agent is a delegate. [proposal] "Agent has its own AID", and "ACDC mechanisms
 
 "It is not a generally true equivalence that multi-sig = org. Some orgs consist of only one person, so their AIDs are single-sig" (HWGA). What matters is that policy is visible: "Multisig is optional and infinitely variable, but defining and following policy about it is required" (keri-primer.md > 2.4), and KERI publishes thresholds in the KEL.
 
+### 9.6 "A verifier that cannot decide has rejected." {#indeterminate}
+
+[spec] The Dossier specification gives a third verdict, INDETERMINATE, for a verifier that meets "something it is not competent to judge" (Dossier spec > Verification: Algorithm for Validation > Verification Outcomes, L426 @`6fcf84127`), usually a schema outside the set it governs; the alternatives are to reject extensibility or to accept what "silently confers trust on credentials nobody evaluated" (L428). The verifier may not treat it as good, the governing framework decides whether it is tolerable, and a definite failure still makes it INVALID ([chapter 06, section 1](06-governance-ecosystems-and-interop.md#egf-two-layer)).
+
 ## 10. Data-modeling and disclosure tells {#disclosure-tells}
 
 ### 10.1 "Bundle all the claims into one big credential, then selectively disclose." {#bundled-credentials}
@@ -244,15 +252,15 @@ A dynamic schema enables schema-revocation and semantic-malleability attacks (AC
 
 ### 10.5 "I2I / edge operators do multi-hop authority reasoning." {#edge-operators}
 
-[code] `I2I` is AID string equality and nothing more, `if op == 'I2I' and issuer != farIssuee: return None` (keripy vdr/verifying.py, L481 @`80f77b73b`); multi-hop authority comes from the recursive edge walk. [spec-next] "Unlike `I2I` and `DI2I`, which are delegative Operators... `E1E` is an identity relation between the two ACDCs' Issuee AIDs" (ACDC spec > Edge, L1223 @`2362e48a1`), and the editor ruled a same-party use of `I2I` misapplied: "So the edge defines an an identity relation not a delegation relation." (keripy GitHub > #1505, comment of 2026-07-17, R-029, https://github.com/WebOfTrust/keripy/pull/1505#issuecomment-5004919975) ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#verifying-ground-truth)).
+[code] `I2I` is AID string equality and nothing more, `if op == 'I2I' and issuer != farIssuee:` (keripy vdr/verifying.py, Verifier.verifyChain, L909 @`94f5423a3`), refused without escrow; multi-hop authority comes from the recursive edge walk. [spec-next] "Unlike `I2I` and `DI2I`, which are delegative Operators... `E1E` is an identity relation between the two ACDCs' Issuee AIDs" (ACDC spec > Edge, L1223 @`2362e48a1`), and the editor ruled a same-party use of `I2I` misapplied: "So the edge defines an an identity relation not a delegation relation." (keripy GitHub > #1505, comment of 2026-07-17, R-029, https://github.com/WebOfTrust/keripy/pull/1505#issuecomment-5004919975) ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#verifying-ground-truth)).
 
 #### A second tell: which verifier {#edge-operators-two-verifiers}
 
-[code] At `80f77b73b` keripy's two evaluators, `vdr/verifying.py` and `acdc/ipexing.py`, disagree on an unrecognized operator, on a list of operators, and on an edge with no `o`, so one edge can pass one and fail the other. Neither has been checked against the specification, so do not pick a side; neither is in KERIA's dependency ([section 12](#main-not-deployed)).
+[code] At `94f5423a3` keripy's two evaluators, `vdr/verifying.py` and `acdc/ipexing.py`, read operators alike: an unrecognized token is a non-retryable unknown, a list resolves latest-wins among `I2I`, `NI2I` and `DI2I` with `E1E` alongside, and an absent `o` defaults to `I2I` or `NI2I`. The tell is assuming they agree on the rest: they differ on a revoked far node, schema pins naming the far node's own schema, inline schema pins, the schema validator, compact Edge Sections and nesting depth ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#module-disagreement)). Revocation matters most. v1 refuses a chain through a revoked far node, while in V2 "No registry-state policy lives here." (keripy acdc/ipexing.py, IpexHandler, L484 @`94f5423a3`), so a V2 grant holding a revoked credential passes, its state recorded in `exrs.` for an application to judge ([chapter 08, section 5](08-presentation-architectures-and-ipex.md#edges)). Name the module; neither is in KERIA's dependency ([section 12](#main-not-deployed)).
 
 #### The unknown-operator trap {#unknown-operator-trap}
 
-Sam narrowed #1515 to `E1E` because "we want to avoid it falling into the unknown operator trap" (#1515, 2026-07-18) [proposal]. Its proposed `I1I` and `DI1I` are absent from keripy at `80f77b73b`, so an edge carrying one is defaulted by one evaluator and refused by the other.
+Sam narrowed #1515 to `E1E` because "we want to avoid it falling into the unknown operator trap" (#1515, 2026-07-18) [proposal]. Its proposed `I1I` and `DI1I` are absent from keripy at `94f5423a3`, so both evaluators treat an edge carrying one as a non-retryable unknown ([chapter 05, section 5](05-acdc-and-verifiable-data.md#e1e)).
 
 ### 10.6 "Unlinkability is the privacy goal." {#unlinkability-goal}
 
@@ -274,17 +282,20 @@ Correlation lives in the context, not the identifier. [proposal] "Two different 
 
 KERI's guarantees are conditional, and the conditions live partly in whether the code honors them. The rule that "every externally supplied event, signature, key, receipt, or credential is *hostile input until verified*... 'looks well-formed' is not 'is authorized'" (00-lens.md, claim 3) applies to prose about code. Documented gaps:
 
-- [code] `DI2I` is documented and fails closed with `ValidationError` (keripy vdr/verifying.py, L453-455 @`80f77b73b`; keripy acdc/ipexing.py, L926-927), a closed door rather than a crash.
+- [code] `DI2I` is documented and unimplemented: `vdr/verifying.py` raises `UnsupportedOperatorError` and `acdc/ipexing.py` returns a non-retryable unknown, because "escrowing would promise a retry that can never succeed." (keripy vdr/verifying.py, Verifier.verifyChain, L866 @`94f5423a3`; keripy acdc/ipexing.py, L1573-1578), a closed door rather than a crash.
+- [code] signify-ts frames all 33 `v1.1` post-quantum codes and can sign or verify with none, its `Signer` throwing `` `Unsupported signer code = ${code}.` `` for anything but an Ed25519 seed (signify-ts src/keri/core/signer.ts, Signer, L53 @`6e07dc926`; [chapter 04, section 5.7](04-cesr-and-the-wire.md#pq-in-practice)).
 - The credential anchor may not be re-validated at presentation (landmine L15, a hypothesis).
 - "the spec rule; keripy's `WitnessReceiptor` currently waits for ALL witnesses instead — that is a defect, not the invariant" (30-invariants.md, F2; landmine L9).
 - Pre-rotation checks can go permissive on a digest-code mismatch, "silently excluded from threshold satisfaction rather than failing closed — weakening the pre-rotation check (the firewall)" (landmine L6, HIGH).
 - A code missing from a shadow table "round-trips as primitive but invisible to SAID derivation... fails late and silently" (landmine L5), a discipline for any new code ([chapter 04, section 5.5](04-cesr-and-the-wire.md#shadow-tables)).
 
-Date a gap rather than assert it, because code moves too: landmines L16 and L17 call edge grouping read but not enforced, and [code] at `b8f60166b` m-ary grouping is implemented (`EdgeGroupOps = ("AND", "OR")`, keripy acdc/ipexing.py, L903).
+Date a gap rather than assert it, because code moves too: landmines L16 and L17 call edge grouping read but not enforced, and [code] both evaluators reduce `AND` and `OR` groups through one table, `MAryReducers = dict(AND=reduceAnd, OR=reduceOr)` (keripy acdc/chaining.py, L189 @`94f5423a3`).
+
+The departure runs the other way too. [code] keripy's V2 handler enforces what the specification only negotiates: `dp` is required on all four disclosure verbs, and "A Grant may repeat but may not renegotiate an accepted prior plan." (keripy acdc/ipexing.py, IpexHandler.verify, L691 @`94f5423a3`), so a grant disclosing more or less than agreed is refused. V1, which the CLI runs, has no `dp` check ([chapter 08, section 4](08-presentation-architectures-and-ipex.md#dp-in-keripy)).
 
 ### The reflex is bidirectional {#bidirectional-reflex}
 
-A code comment about a specification is prose that borrows the code's credibility. keripy's now reads "E1E is normative on the spec's v1.1 branch (kswg-acdc-specification#197). It is absent from the 1.0 text currently under ToIP ratification" (keripy vdr/verifying.py, L40-41 @`80f77b73b`), correcting an earlier version that denied `E1E` any specification basis. This corpus's author wrote it (`d9ba3d9da`), so it is not independent evidence; the [spec-next] marker rests on the specification.
+A code comment about a specification is prose that borrows the code's credibility. keripy's now reads "E1E is normative on the spec's v1.1 branch (kswg-acdc-specification#197)." and calls it "absent from the 1.0 text currently under ToIP ratification" (keripy vdr/verifying.py, Verifier, L63-64 @`94f5423a3`), correcting an earlier version that denied `E1E` any specification basis. This corpus's author wrote it (`d9ba3d9da`), so it is not independent evidence; the [spec-next] marker rests on the specification.
 
 ### keripy main is not the deployed stack {#main-not-deployed}
 
@@ -307,6 +318,7 @@ Whose authority? Verified or merely parsed? Which invariant does this guard prot
 - Consult the registry at verify time. → Fetch state and verify it; never accept a verdict ([3.2](#status-endpoint)).
 - Revoke one bulk copy. → Revoke the set or rotate the key [proposal] ([3.4](#bulk-copy-revocation)).
 - You need global consensus. → Per-identifier order suffices ([4.1](#global-consensus)).
+- An early event is dropped. → Only an unsigned one; a signed one escrows [proposal] ([4.5](#out-of-order-drop)).
 - Use a bearer token. → Sign each request; freshness is unenforced ([5.2](#bearer-tokens)).
 - Federation decentralizes. → It moves centralization ([5.4](#federation)).
 - Secure the pipe. → Secure the data ([5.5](#secure-pipe)).
@@ -323,8 +335,9 @@ Whose authority? Verified or merely parsed? Which invariant does this guard prot
 - Observers are a cache. → They are security roles ([8.5](#observer-not-cache)).
 - Agents need a new primitive. → An agent is a delegate [proposal] ([8.6](#agent-identity)).
 - Verified means true. → Authentic, not veracious ([9.2](#authenticity-veracity)).
+- Undecided means rejected. → INDETERMINATE is its own verdict ([9.6](#indeterminate)).
 - Unlinkable ZKPs add privacy. → They defeat detection [proposal] ([10.1](#bundled-credentials-detectability)).
-- The operator means X. → Ask which verifier, at which commit ([10.5](#edge-operators)).
+- keripy's two edge verifiers agree. → On operators, not on revocation or schema pins ([10.5](#edge-operators-two-verifiers)).
 - Unlinkability is the goal. → Unexploitability is [proposal] ([10.6](#unlinkability-goal)).
 - A cryptonym is a supercookie. → The context correlates [proposal] ([10.8](#cryptonym-supercookie)).
 - Encode every algorithm variant. → [proposal] "Too much agility is a bad thing. There is a goldilocks amount of agility." (CESR spec GitHub > #165, comment of 2026-03-19, R-018; [chapter 04, section 5.6](04-cesr-and-the-wire.md#goldilocks-agility)).
@@ -345,7 +358,7 @@ Observer infrastructure is immature, and a super watcher reintroduces "a central
 
 ### The trusted-third-party relaxation is two concessions {#two-concessions}
 
-A Verifier requiring rotation in a presentation is conceded to "violate[] the maxim that security not be dependent on a trusted third party" [proposal], because the harm is local. And the Issuee's remedy, a presentation registry, is [proposal] "an Issuer-Verifier-protected mechanism to detect compromise of its signing keys", needing a non-colluding Issuer and an enforcing Verifier; [code] keripy enforces it on `/ipex/grant`, "Reject any malformed, missing, or invalid presentation factor." (keripy acdc/ipexing.py, L616 @`80f77b73b`), with no specification text. It has no table row, because the insiders' sources still disagree about what it requires ([chapter 10, section 8](10-presentation-registries.md#adversarial)).
+A Verifier requiring rotation in a presentation is conceded to "violate[] the maxim that security not be dependent on a trusted third party" [proposal], because the harm is local. And the Issuee's remedy, a presentation registry, is [proposal] "an Issuer-Verifier-protected mechanism to detect compromise of its signing keys", needing a non-colluding Issuer and an enforcing Verifier; [code] keripy's V2 handler enforces it on every `/ipex/grant`, "Verify every presentation registry declared for this disclosure." (keripy acdc/ipexing.py, IpexHandler.verify, L788 @`94f5423a3`), reading declarations only from the top level of a disclosed `a`, never from `A`, and exempting the origin of an issuance grant from Issuer to Issuee. The binding is enforced, while the Issuer's state registry is recorded in `exrs.`, "Recorded, never judged on the protocol path." (keripy db/basing.py, Baser, L596 @`94f5423a3`). There is no specification text, and the V2 handler has no caller in `src/keri`. It has no table row, because the insiders' sources still disagree about what it requires ([chapter 10, section 8](10-presentation-registries.md#adversarial)).
 
 ### A provenance weakness in the corpus's own method {#provenance-residual}
 
@@ -378,15 +391,16 @@ The tells in [sections 2 to 11](#pki-tells) are category errors to reframe; the 
 - dg-c02-claude.md — Analysis of DG-C02, a claim from Del Giudice's thesis. dhh1128/keri-security-analysis, dg-c02-claude.md, main @`149fa6c35` (2026-04-23, the repository's only commit; mined 2026-07-17). Security analysis, not specification text; it carries no provenance marker. Mined in raw/07.
 - dg-c03-claude.md — Analysis of DG-C03, a claim from Del Giudice's thesis. dhh1128/keri-security-analysis, dg-c03-claude.md, main @`149fa6c35` (2026-04-23, the repository's only commit; mined 2026-07-17). Security analysis, not specification text; it carries no provenance marker. Mined in raw/07.
 - dg-c06-claude.md — Analysis of DG-C06, a claim from Del Giudice's thesis. dhh1128/keri-security-analysis, dg-c06-claude.md, main @`149fa6c35` (2026-04-23, the repository's only commit; mined 2026-07-17). Security analysis, not specification text; it carries no provenance marker. Mined in raw/07.
-- Dossier spec — Dossier specification, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md and schemas/endorsement.json, main @`b9227753c` (2026-09-03). Mined in raw/04.
+- Dossier spec — Dossier specification, v0.7 Draft, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md, main @`6fcf84127` (2026-10-20). Mined in raw/04.
 - GOC — General Origin Platform Characteristics, Provenant. provenant-dev/origin-platform, docs/general-origin-characteristics.md, main @`cb758b1b5` (2026-08-26). A private client repository; vendor practice, [practice]. Mined in raw/12.
 - HWGA — How We Generate Aliases, Provenant. provenant-dev/origin-platform, docs/how-we-generate-aliases.md, main @`cb758b1b5` (2026-08-26). A private client repository; vendor practice, [practice]. Mined in raw/12.
 - KERI spec — Key Event Receipt Infrastructure (KERI) specification, Trust Over IP. trustoverip/kswg-keri-specification, spec/spec-body.md, main @`fbdd4a615` (2026-08-28) for unmarked and [spec] citations; v1.1 @`3753f3797` (2026-08-26) for the [spec-next] `DID` trait citations in [section 8.4](#did-trait). Mined in raw/01.
+- KERI spec GitHub — Sam Smith's comment of 2026-11-03 on trustoverip/kswg-keri-specification issue #327 (R-079), https://github.com/trustoverip/kswg-keri-specification/issues/327#issuecomment-6595373100, fetched with `gh api` on 2026-11-03. The issue was opened by this corpus's author. [proposal]. Mined in raw/21.
 - keri-primer.md — A Primer on KERI, ACDCs, and CESR, Daniel Hardman. dhh1128/papers, keri-primer.md, main @`68a5e2f76` (2026-09-28). Mined in raw/05 and raw/06.
 - keri.one — keri.one homepage, Samuel M. Smith, https://keri.one/. Mined 2026-07-17 and re-verified against the live page 2026-10-03. Mined in raw/13.
 - KERIA — KERIA, WebOfTrust/keria, src/keria (including authing.py), README and pyproject.toml. main @`7e685edaa` (2026-09-11) for the request-freshness claims in [section 5.2](#bearer-tokens); main @`928ce26a4` (2026-09-30) for the `keri==1.2.14` dependency pin in [section 12](#verify-the-code). Mined in raw/10.
 - KERIConf26 caption — KERI Conference 2026 edited auto-captions (Lehi, Utah, 22-23 April 2026), keri-foundation/CONF26-subtitles @`006042d39` (2026-10-04): Samuel Smith, The Future of KERI; Phil Feairheller, ACDCs for Authorization; the Ryan Hansen panel, What KERI allows us to do that we couldn't before. Cited as the captions read, for status and intent only, and paraphrased here, never quoted. Mined in raw/19 and raw/20.
-- keripy — keripy, the KERI reference implementation, WebOfTrust/keripy, src/keri and tests/sedi. main @`80f77b73b` (2026-10-01, mined 2026-10-03) for the claims re-read in that pass, which carry that stamp; main @`b8f60166b` (2026-09-14) for claims not re-read since, which keep theirs; code locators with no commit come from earlier passes of raw/09. A keripy [code] is a claim about keripy main, on its 2.1.0-dev line, and not about KERIA, which pins keri==1.2.14 ([section 12](#verify-the-code)). Mined in raw/09 and raw/16.
+- keripy — keripy, the KERI reference implementation, WebOfTrust/keripy, src/keri and tests/sedi. main @`94f5423a3` (2026-10-30) for the claims that carry that stamp; code locators with no commit come from earlier passes of raw/09. A keripy [code] is a claim about keripy main, on its 2.1.0-dev line, and not about KERIA, which pins keri==1.2.14 ([section 12](#verify-the-code)). Mined in raw/09 and raw/16.
 - keripy GitHub — Sam Smith's comments in WebOfTrust/keripy conversations: pull request #1505 (2026-07-17, R-029), and discussions #1515 (body), #1570 (2026-08-04, R-012) and #1574 (2026-08-07, R-042). Read from the read-only API cache of 2026-10-14 (`.ignored/sam-rulings-cache/`), quotes checked against the cached text; Sam's typing errors are kept as written. [proposal]: an editor's comment, not specification text. Mined in raw/21.
 - keripy-knowledge — keripy-knowledge, a distilled contributor knowledge base for keripy, on the orphan branch knowledge of dhh1128/keripy, @`9489ac9bd` (2026-07-02, mined 2026-09-15). Cited here for its invariants (H1, D1, D3) and landmines (L4, L5, L6, L9, L15, L16, L17). Its declared code baseline is keripy `60ab9e08d`, 493 commits behind `b8f60166b`; [section 12](#verify-the-code) says what that means for its claims. Mined in raw/08.
 - kids#1 — WebOfTrust/kids#1, a GitHub conversation on a draft KERI Improvement Document about watchers, never merged; Samuel M. Smith's comment of 2023-11-05. Maintainer statements, [proposal]. No raw note mines it; [chapter 02, section 9](02-security-model-and-threat-posture.md#observer-layer) quotes the same thread.
@@ -400,11 +414,11 @@ The tells in [sections 2 to 11](#pki-tells) are category errors to reframe; the 
 - SEDI_Tradeoff.web.pdf — SEDI: Policy and Technology Trade Space, Comprehensive Solutions vs. Incremental Solutions, slide deck, Samuel M. Smith, dated 2025/10/01. SmithSamuelM/Papers, master @`b47f21597` (2026-08-11), presentations/SEDI_Tradeoff.web.pdf, last changed `d00f260` (2025-10-11); read through pdftotext, cited by slide. [proposal]. Mined in raw/20.
 - SevenPrivacies.web.pdf — The Seven Privacies: Ugly Baby Pageant, slide deck, Samuel M. Smith, undated. SmithSamuelM/Papers, master @`b47f21597` (2026-08-11), presentations/SevenPrivacies.web.pdf, last changed `da3cde9` (2025-09-11); read through pdftotext, cited by slide. [proposal]. Mined in raw/17.
 - sign-author.md — Signing Doesn't Always Claim Authorship, Daniel Hardman. dhh1128/papers, sign-author.md, main @`68a5e2f76` (2026-09-28). Mined in raw/05 and raw/06.
-- signify-ts — signify-ts, the TypeScript Signify client, WebOfTrust/signify-ts, src (including authing.ts and clienting.ts) and README, main @`ffba8406e` (2026-09-10). Mined in raw/10.
+- signify-ts — signify-ts, the TypeScript Signify client, WebOfTrust/signify-ts, src (including authing.ts and clienting.ts) and README, main @`ffba8406e` (2026-09-10) for the request-freshness and client-authentication claims in [section 5](#iam-tells); main @`6e07dc926` (2026-10-23) for the post-quantum `Signer` claim in [section 12](#verify-the-code). Mined in raw/10.
 - SPAC_Message.md — Secure Privacy, Authenticity, and Confidentiality (SPAC), version string 0.5.3, Samuel M. Smith. SmithSamuelM/Papers, master @`b47f21597` (2026-08-11), whitepapers/SPAC_Message.md, last substantive change `cd2661f` (2025-06-11), last touched `b8cc11a` (2026-04-30, a typo fix). The version string did not move with the content, so cite it by commit. [proposal]. Mined in raw/17.
 - standard-analysis.md — Standard Analysis Template for KERI Security Claims. dhh1128/keri-security-analysis, standard-analysis.md, main @`149fa6c35` (2026-04-23, the repository's only commit; mined 2026-07-17). Security analysis, not specification text; it carries no provenance marker. Mined in raw/07.
 - SustainablePrivacy.pdf — Sustainable Privacy, v1.2.8 2026/08/11, Samuel M. Smith. SmithSamuelM/Papers, master @`b47f21597` (2026-08-11), whitepapers/SustainablePrivacy.pdf, last changed `b47f215` (2026-08-11); read through pdftotext, cited by section and page. [proposal]. Mined in raw/17.
-- TSP spec — Trust Spanning Protocol (TSP) Specification, Experimental Implementor's Draft Rev 3 with Errata, Wenjing Chu and Samuel Smith, Trust Over IP. trustoverip/tswg-tsp-specification, spec/spec.md, main @`5599b4556` (2026-09-30). The standardizing line of an explicitly experimental specification. Mined in raw/17.
+- TSP spec — Trust Spanning Protocol (TSP) Specification, Release 1.0 by its status line (no approving body or date recorded), Wenjing Chu and Samuel Smith, Trust Over IP. trustoverip/tswg-tsp-specification, spec/spec.md, main @`ccda6b331` (2026-10-21). Mined in raw/17.
 - UniversalIdentifierTheory.pdf — Universal Identifier Theory, v1.40 2025/09/14 (original 2020/10/20), Samuel M. Smith. SmithSamuelM/Papers, master @`b47f21597` (2026-08-11), whitepapers/UniversalIdentifierTheory.pdf, added `e2e995f` (2025-09-14); the same blob as whitepapers/IdentifierTheory_web.pdf. Read through pdftotext, cited by section and page. [proposal]. Mined in raw/20.
 - was.md — Why Anchored Signatures?, Daniel Hardman. dhh1128/papers, was.md, main @`68a5e2f76` (2026-09-28). Mined in raw/05 and raw/06.
 - who-sign.md — Who Is Signing?, Daniel Hardman. dhh1128/papers, who-sign.md, main @`68a5e2f76` (2026-09-28). Mined in raw/05 and raw/06.

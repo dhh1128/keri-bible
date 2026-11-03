@@ -8,7 +8,7 @@ Its goal is not data privacy as such but "the more general goal of protection fr
 
 ## Status {#status}
 
-Markers are load-bearing in the edge operators, where the specification's branches, keripy's two evaluators and the discussions disagree. Registrar and Observer are unbuilt, and bulk issuance sits in an annex of undeclared force.
+Markers are load-bearing in the edge operators, where the specification's branches and the discussions disagree, and where keripy's two evaluators read operators alike but still part on revoked far nodes, schema pins and nesting depth. Registrar and Observer are unbuilt, and bulk issuance sits in an annex of undeclared force.
 
 ## 1. What an ACDC fundamentally is {#what-an-acdc-is}
 
@@ -26,7 +26,7 @@ The order is `[v, t, d, u, i, rd, s, a, A, e, r]` (ACDC spec > Field Ordering, L
 
 "A digital signature on a SAID makes a verifiable cryptographic non-repudiable commitment that is equivalent to a commitment on the full serialization of the associated block from which the SAID was derived" (ACDC spec > SAID Fields, L81). Nested SAIDs let one top-level commitment bind a tree.
 
-[code] keripy pads the id field with `#` to the digest's size (`sad[label] = Dummy * Matter.Sizes[code].fs`, keripy `core/coring.py`, `Saider._derive`, L4085), digests, and injects the result; `Saider.verify` (L4117-4160) fails closed.
+[code] keripy pads the id field with `#` to the digest's size (`sad[label] = clas.Dummy * Matter.Sizes[code].fs`, keripy `core/coring.py`, `Saider._derive`, L3899 @`80f77b73b`), digests, and injects the result; `Saider.verify` (L3930-3973 @`80f77b73b`) fails closed.
 
 There MUST be one way to compute a compactifiable section's SAID: the most compact form SAID, computed depth-first from leaves to trunk (ACDC spec > Most compact form SAID, L130-151). Its stability under compaction "is essential to Graduated Disclosure" (L136).
 
@@ -42,6 +42,8 @@ Without the `u` field, "an adversary may be able to reconstruct the block conten
 
 The `$id` SAID is "the normative determiner" in validation; the semver `version` is "informative" (ACDC spec > Schema Versioning, L230). "Unavailable does not mean insecure or unverifiable. ACDCs MUST be verifiable when available" (ACDC spec > Schema Availability, L242).
 
+[code] keripy's V2 validator enforces both: Draft 2020-12 "validation uses only locally available schemas" (keripy `acdc/scheming.py`, `validateSchema`, L432), an uncached one raises `MissingSchemaError` for the caller to escrow, and a schema must recompute to its bare-SAID `$id`, carry a `major.minor.patch` version and use no dynamic keyword (`_inspectSchema`, L204-208). IPEX V2 and blind issuance call it; the CLI's `vdr/verifying.py` does not ([section 5.1](#module-disagreement)).
+
 ## 4. Attribute section `a` vs aggregate section `A` {#attribute-vs-aggregate}
 
 The choice between these two disclosure mechanisms fixes at issuance what can ever be disclosed separately.
@@ -52,7 +54,7 @@ The aggregate section's "compact value is an aggregate / AGID (Aggregate ID), NO
 
 ### The deciding question {#deciding-question}
 
-[practice] "Does hiding the field labels or positions buy you anything?" (bakobo/schema `docs/choosing-attribute-vs-aggregate.md`). The same document says "an aggregate can disclose one element with no issuee", which is true of the mechanism and false, at keripy `80f77b73b`, for a registry-backed credential presented through keripy's V2 IPEX ([section 4.1](#age-credential)).
+[practice] "Does hiding the field labels or positions buy you anything?" (bakobo/schema `docs/choosing-attribute-vs-aggregate.md`). The same document says "an aggregate can disclose one element with no issuee", which is true of the mechanism; whether keripy's V2 IPEX accepts such a presentation of a registry-backed credential is untested ([section 4.1](#age-credential)).
 
 [proposal] Sam orders the choice by issuer first: "If two pieces of information have different issuers then they must be in different ACDCs and then a blindable edge enables graduated disclosure." ([keripy conversations > discussion #1550](https://github.com/WebOfTrust/keripy/discussions/1550#discussioncomment-17909785), comment of 2026-08-05, R-034).
 
@@ -64,21 +66,21 @@ The SEDI age credential is the aggregate's natural case: bakobo/schema's `sedi-a
 
 ### 4.1 The age credential, the reference implementation, and two findings {#age-credential}
 
-Both findings, at keripy `80f77b73b`, come from reading code paths: no keripy test presents an Age credential (keripy `tests/sedi/test_ipex_sedi.py`, L39-50), and the path is `acdc/ipexing.py`, which keripy's CLI does not call ([section 5.1](#verifying-ground-truth)).
+Both findings come from reading code paths, not running them: no keripy IPEX test at `94f5423a3` presents an Age credential (a negative result recorded in raw/16), and the path is `acdc/ipexing.py`, which keripy's CLI does not call ([section 5.1](#verifying-ground-truth)).
 
-#### Finding 1: no selective Age presentation through IPEX grant {#age-finding-grant}
+#### Finding 1: presentation-registry discovery does not read the aggregate {#age-finding-grant}
 
-[code] Age requires `rd` (keripy `tests/sedi/test_sedi.py`, L1180), so it is registry-backed. keripy represents a withheld aggregate element as its SAID (keripy `core/mapping.py`, `Aggor.disclose`, L1899-1900), and for a registry-backed ACDC requires that "Every inspected aggregate entry must be a mapping." (keripy `acdc/ipexing.py`, `_presentationRegistries`, L1458-1460), because "A verifier cannot distinguish an omitted requirement from an undisclosed one using only its digest." (L1414-1415). The node fails and the grant with it (L1508-1512, L610-617). Proving over-21 this way discloses every threshold, including over-40 and over-62, which brackets the age. The rule stops a hidden element concealing a presentation-registry declaration ([chapter 10](10-presentation-registries.md)); no resolution has been proposed.
+[code] Age requires `rd` (keripy `tests/sedi/test_sedi.py`, L1180 @`80f77b73b`), so it is registry-backed, and keripy represents a withheld aggregate element as its SAID (keripy `core/mapping.py`, `Aggor.disclose`, L1899-1900). IPEX V2 looks for a presentation-registry declaration only in the attribute section: "The presentation signal lives at the top level of the attribute" block (keripy `acdc/ipexing.py`, `_presentationRegistries`, L2117), and a compact or partially disclosed `A` yields no declaration rather than a refusal (keripy `tests/acdc/test_ipexing.py`, `test_ipex_v2_finds_attribute_presentation_registry`, L8018-8023). So this check does not force an over-21 proof to disclose the other thresholds; whether the rest of the grant path accepts it is untested. The converse fails silently: "Only the top-level attribute pair declares a presentation registry." (L7977), so an `i`/`rd` pair in an aggregate element declares nothing ([chapter 10](10-presentation-registries.md)).
 
 #### Finding 2: the aggregate issuee is read from a fixed position {#age-finding-issuee}
 
-[code] keripy reads an aggregate's issuee "for aggregative ACDC .sad["A"][1]['i']" (keripy `core/serdering.py`, L2830) inside a bare `except` that returns `None` (L2837-2844), and the Age schema does not constrain `A`'s positions (keripy `tests/sedi/test_sedi.py`, L1204-1493). So an Age whose element 1 is withheld or misplaced reads as untargeted, which "lets a holder withhold element 1 and present a targeted credential as an untargeted affidavit" (bakobo/schema `this.i` > `@lkfnoess`, L2144-2147 @`cfcbdcc7a`). On the V2 path Finding 1 closes this hole, but only by also closing selective disclosure.
+[code] keripy reads an aggregate's issuee "for aggregative ACDC .sad["A"][1]['i']" (keripy `core/serdering.py`, L2830) inside a bare `except` that returns `None` (L2837-2844 @`80f77b73b`), and the Age schema does not constrain `A`'s positions (keripy `tests/sedi/test_sedi.py`, L1204-1493 @`80f77b73b`). So an Age whose element 1 is withheld or misplaced reads as untargeted, which "lets a holder withhold element 1 and present a targeted credential as an untargeted affidavit" (bakobo/schema `this.i` > `@lkfnoess`, L2144-2147 @`cfcbdcc7a`). Presentation-registry discovery on the V2 path does not read `A` (Finding 1), so it does not close this hole; whether anything else on that path does was not traced.
 
 [proposal] The position is the editor's intent: "The issuee in an ACDC with Agg section (selectively disclosable) is the "i" field in the second (index 1) attribute block." ([keripy conversations > PR #1505](https://github.com/WebOfTrust/keripy/pull/1505#issuecomment-4981932724), comment of 2026-07-15, R-025). Neither branch states it beyond an example (ACDC spec > Aggregate Section > Composed Schema for selectively disclosable Aggregate section > JSON Serialization, L914, L930), so on this chapter's reading a schema must pin element 1 itself.
 
 #### Sam's sparse-Merkle-tree proposal {#age-smt-proposal}
 
-[proposal] Discussion [#1098](https://github.com/WebOfTrust/keripy/discussions/1098) proposes instead an SMT whose root is an attribute, with a salted leaf per date on which a predicate holds, so "A proof-of-age is given by an inclusion proof of a given predicate leaf in the SMT." It rejects ZKP predicates on detectability: "a static SMT predicate proof preserves KERI's security properties, whereas a dynamic ZKP predicate proof defeats them." The fixture's booleans go stale — "Over21 True if age>=21 else False" (keripy `tests/sedi/test_sedi.py`, L1385) — and are remedied by reissuance, while dated leaves stay correct; nothing read says which design is the plan.
+[proposal] Discussion [#1098](https://github.com/WebOfTrust/keripy/discussions/1098) proposes instead an SMT whose root is an attribute, with a salted leaf per date on which a predicate holds, so "A proof-of-age is given by an inclusion proof of a given predicate leaf in the SMT." It rejects ZKP predicates on detectability: "a static SMT predicate proof preserves KERI's security properties, whereas a dynamic ZKP predicate proof defeats them." The fixture's booleans go stale — "Over21 True if age>=21 else False" (keripy `tests/sedi/test_sedi.py`, L1385 @`80f77b73b`) — and are remedied by reissuance, while dated leaves stay correct; nothing read says which design is the plan.
 
 ## 5. Edges, chaining, and the operator families {#edges}
 
@@ -86,11 +88,11 @@ The far node is the ACDC whose SAID is in `n` (ACDC spec > Edge Section, L1172);
 
 ### The edge schema constraint is enforced {#edge-schema-enforced}
 
-[code] The edge `s` "is a schema the far node must" "*satisfy*, not a SAID that must equal the far node's own schema" SAID (keripy `vdr/verifying.py`, `processCredential`, L196-197 @`80f77b73b`, citing keripy issue #1534). A failing far node raises `MissingChainError`, and an uncached schema escrows rather than failing (L195-230).
+[code] The edge `s` "is a schema the far node must" "*satisfy*, not a SAID that must equal the far node's own schema" SAID (keripy `vdr/verifying.py`, `evaluateEdge`, L454-455, citing keripy issue #1534). Both evaluators enforce it, a failing far node is decided against rather than escrowed (L495-504), and an `s` on an enclosing group binds every edge below it: "Conjunction, not override: an inherited pin is a floor" (L464). That group-level `s` is a keripy extension, since ACDC "reserves [d, u, o, w] on a group and defines no `s` there" (L276).
 
 #### The m-ary operators {#m-ary-operators}
 
-Edge-groups take `AND` (default), `OR`, `NAND`, `NOR`, `AVG` and `WAVG` (ACDC spec > Edge Section, L1099-1116). [code] Only `EdgeGroupOps = ("AND", "OR")` exist, in `acdc/ipexing.py` (keripy `acdc/ipexing.py`, `EdgeGroupOps`, L45 @`b8f60166b`; reduction at L1020-1053), with an empty group malformed.
+Edge-groups take `AND` (default), `OR`, `NAND`, `NOR`, `AVG` and `WAVG` (ACDC spec > Edge Section, L1099-1116). [code] Both keripy evaluators reduce only `AND` and `OR`, through one shared table, `MAryReducers = dict(AND=reduceAnd, OR=reduceOr)` (keripy `acdc/chaining.py`, L189), over valid, invalid and unknown, and "the Kleene reading below is keripy's default rather than protocol." (L25-26), overridable per profile. Any other group operator makes the group a non-retryable unknown, and an authored empty group is malformed (keripy `vdr/verifying.py`, `reduceGroup`, L383-406). The shared module holds only this algebra; each evaluator walks the Edge Section and evaluates unary operators in its own code.
 
 #### The unary operators {#unary-operators}
 
@@ -106,7 +108,7 @@ Edge-groups take `AND` (default), `OR`, `NAND`, `NOR`, `AVG` and `WAVG` (ACDC sp
 
 [spec-next] `E1E` is in `v1.1` (ACDC spec > Edge, L1206 @`2362e48a1`) and not `main`. "This is an identity relation on the two ACDCs' Issuees and places no constraint on either ACDC's Issuer" (L1206): where `I2I` and `DI2I` bind this Issuer to the far Issuee, `E1E` binds the two Issuees, for one subject holding credentials from different issuers, "a relationship the delegative `I2I` Operator cannot express" (L1223). Sam proposed it in keripy discussion [#1515](https://github.com/WebOfTrust/keripy/discussions/1515), keripy implemented it, and `v1.1` then defined it.
 
-[proposal] He later proposed `I1I` and a delegated `DI1I`: "the leaf edge to the core is both E1E and I1I  that is issuee is issuee and issuer is issuer." (keripy discussion #1515, comment of 2026-10-01). Neither is implemented at `80f77b73b`, so an `I1I` edge is given the default by `vdr/verifying.py` and rejected by `acdc/ipexing.py`.
+[proposal] He later proposed `I1I` and a delegated `DI1I`: "the leaf edge to the core is both E1E and I1I  that is issuee is issuee and issuer is issuer." (keripy discussion #1515, comment of 2026-10-01). Neither is implemented at `94f5423a3`, so both evaluators treat an `I1I` or `DI1I` token as unrecognized ([section 5.1](#module-disagreement)). keripy's SEDI fixtures nonetheless give six leaf edges `"o": ["E1E", "DI1I", "NI2I"]` (keripy `tests/sedi/test_sedi.py`, L5876 and five more), which neither evaluator can satisfy; the file never runs either evaluator, so the tests do not show it.
 
 #### The default operator {#default-gate}
 
@@ -122,43 +124,51 @@ Edge-groups take `AND` (default), `OR`, `NAND`, `NOR`, `AVG` and `WAVG` (ACDC sp
 
 `Verifier.verifyChain` (keripy `vdr/verifying.py`) is what the CLI runs.
 
-- Five operators are recognized: `UnaryOps = ('I2I', 'NI2I', 'DI2I', 'E1E', 'NOT')` (keripy `vdr/verifying.py`, `UnaryOps`, L43). The unimplemented ones are listed "so they fail closed diagnosably instead of being dropped and silently defaulting" (L38-39 @`b8f60166b`).
-- In a list, the delegative operators `I2I`, `NI2I` and `DI2I` are exclusive and the latest wins (L436), while "E1E constrains the near issuee instead, so it does not conflict with them and composes (AND)" (L431). Unknown tokens are dropped (L435).
-- If nothing recognized remains, the default is silently inferred: `op = 'I2I' if creder.iseaid is not None else 'NI2I'` (L443), reading an aggregate far node's issuee at the fixed position of [section 4.1](#age-credential).
-- `I2I` is plain string equality: `if op == 'I2I' and issuer != farIssuee: return None` (L481). A multi-hop chain of authority is an emergent property of the edge walk, not of an operator.
-- `E1E` is enforced ahead of the standardizing branch: `if farIssuee is None or issuee is None or issuee != farIssuee: return None` (L457-466). Its code comment calling `E1E` normative on `v1.1` (L40-41) was written by the corpus's author, so the marker rests on the specification text.
-- `DI2I` and `NOT` fail closed: each raises `ValidationError` (L449, L453-455), because a `MissingChainError` would escrow and "escrowing would promise a retry that can never succeed" (L445 @`b8f60166b`). Older notes describing a `NotImplementedError` crash predate this; every prose account of `DI2I` behavior, including the Dossier's `operators-ref` table, still has no machine behind it.
+- Five operators are recognized: `UnaryOps = ('I2I', 'NI2I', 'DI2I', 'E1E', 'NOT')` (keripy `vdr/verifying.py`, `Verifier.UnaryOps`, L66).
+- Any other token refuses the edge before the far node is looked up: `unknown = [cand for cand in ops if cand not in self.UnaryOps]` (`verifyChain`, L828). The result is a non-retryable unknown, not a malformed ACDC, so an `OR` sibling can still decide the group. The comment calls this "keripy's choice where the spec is silent" (L821) and notes "Reverses #1552's skip; needs S. Smith's buy-in via ACDC #201" (L826); no ruling is recorded.
+- In a list, the delegative operators `I2I`, `NI2I` and `DI2I` are exclusive and the latest wins, `op = next((cand for cand in reversed(ops) if cand in self.DelegativeOps), None)` (L846), while `E1E` composes with the winner.
+- If `o` is absent, empty, or holds none of `I2I`, `NI2I`, `DI2I` and `E1E`, the default is inferred: `op = 'I2I' if creder.iseaid is not None else 'NI2I'` (L861), reading an aggregate far node's issuee at the fixed position of [section 4.1](#age-credential).
+- `I2I` is plain string equality, `if op == 'I2I' and issuer != farIssuee:` (L909), refused without escrow. A multi-hop chain of authority is an emergent property of the edge walk, not of an operator.
+- `E1E` is enforced ahead of the standardizing branch: `if farIssuee is None or issuee is None or issuee != farIssuee:` (L886). Its code comment calling `E1E` normative on `v1.1` (L63) was written by the corpus's author, so the marker rests on the specification text.
+- `DI2I` and `NOT` are recognized and unimplemented. Each raises `UnsupportedOperatorError` (L867-873), a non-retryable unknown, because "escrowing would promise a retry that can never succeed." (L866). Every prose account of `DI2I` behavior, including the Dossier's `operators-ref` table, has no machine behind it.
 - `NI2I` skips the binding by construction and requires only that the far node be issued.
 
-#### Chain revocation propagates {#chain-revocation}
+#### Chain revocation propagates on one path {#chain-revocation}
 
-A revoked far node raises `RevokedChainError` (keripy `vdr/verifying.py`, L178-180 @`b8f60166b`).
+`vdr/verifying.py` decides against a chain through a revoked far node: `if state.et in (Ilks.rev, Ilks.brv):` yields an invalid verdict carrying `RevokedChainError` (keripy `vdr/verifying.py`, `evaluateEdge`, L516-519). `acdc/ipexing.py` does not judge it ([section 5.1](#module-disagreement)).
 
 #### A second implementation, and its scoping caveat {#second-implementation}
 
-keripy's `acdc/ipexing.py` holds the m-ary operators, the closed-DAG walk and per-node issuer authentication, but its `loadHandlers` (L2149-2167) has no caller in `src/keri`; keripy's commands load V1 from `vc/protocoling.py`. A [code] claim sourced to `ipexing.py` is about tested code, not anything a shipped command does. See [chapter 08, section 6](08-presentation-architectures-and-ipex.md#two-ipex).
+keripy's `acdc/ipexing.py` holds the closed-DAG walk and per-node issuer authentication, but its `loadHandlers` (keripy `acdc/ipexing.py`, L2851) has no caller in `src/keri`; keripy's commands load V1 from `vc/protocoling.py`. A [code] claim sourced to `ipexing.py` is about tested code, not anything a shipped command does. See [chapter 08, section 6](08-presentation-architectures-and-ipex.md#two-ipex).
 
-#### The two modules disagree on three axes {#module-disagreement}
+[proposal] Sam wants Edge Section validation out of IPEX: "I agree that the edge logic should be at its own layer and have its one verification function" ([keripy conversations > PR #1681](https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6201960001), comment of 2026-10-15, R-080), staged so as to "build a a more cleanly layered validation stack with I2I in the edge validation." ([keripy conversations > PR #1681](https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6202006921), comment of 2026-10-15, R-080), keeping `I2I` in verification meanwhile for backward compatibility. [code] No such layer exists: the grant's Edge Section verdict is computed inside `IpexHandler.verify` (keripy `acdc/ipexing.py`, L756).
 
-- Unrecognized tokens: `vdr/verifying.py` drops them and falls back to the default (L435); `acdc/ipexing.py` fails closed (keripy `acdc/ipexing.py`, L921-922).
-- Conflicting delegative operators: one takes the latest (L436), the other conjoins them, so `["I2I", "NI2I"]` is `NI2I` to one and `I2I` to the other.
-- An absent `o`: one infers `I2I` or `NI2I` (L443), the other checks nothing (L910-911).
+#### Where the two modules agree, and where they differ {#module-disagreement}
 
-A conformant edge can pass credential processing and fail grant verification; the SEDI fixtures use `["E1E", "NI2I"]`, which both evaluate alike, so tests miss the divergence, and neither branch says what to do with an unrecognized operator. See [chapter 08, section 13](08-presentation-architectures-and-ipex.md#ground-truth).
+[code] They read operators alike: `acdc/ipexing.py` also refuses an unrecognized token as a non-retryable unknown (`_evaluateLeafEdge`, L1480, L1545-1548), resolves a list latest-wins among the delegative three (L1565) and defaults an absent `o` on the same four-operator set (L65, L1556-1557), so `["I2I", "NI2I"]` is `NI2I` to both. They agree too on `DI2I`, `NOT`, `E1E`, `I2I`, the m-ary reductions and inherited pins, and differ on six things:
 
-#### DAG acyclicity is unchecked {#dag-acyclicity}
+- A revoked far node. `vdr/verifying.py` refuses it ([section 5.1](#chain-revocation)); in `acdc/ipexing.py` "No registry-state policy lives here." (`IpexHandler`, L484): the state is recorded in `Baser.exrs` for an application or EGF evaluator (L489-491), so the chain passes grant verification.
+- A pin naming the far node's own schema. `vdr/verifying.py` skips it (`if farCreder.schema != nodeSchema:`, L485); in `acdc/ipexing.py` "The far node is validated against every pin" (L1610).
+- An inline schema-document pin, which `acdc/ipexing.py` accepts when it recomputes to its `$id` (L1517-1527) and `vdr/verifying.py` cannot read, returning a non-retryable unknown (L469-482).
+- The schema validator. `vdr/verifying.py` uses `schemer = Schemer(raw=scraw)` (`Verifier.processCredential`, L217); `acdc/ipexing.py` uses the stricter `scheming.validateSchema` of [section 3](#static-schema).
+- A compact Edge Section inside a list-valued `e`, which `vdr/verifying.py` passes without walking it (`evaluateSection`, L342-349) and `acdc/ipexing.py` refuses (L1385-1391).
+- Nesting depth. `vdr/verifying.py` stops at `MaxEdgeGroupDepth = 8` (keripy `vdr/eventing.py`, L73); no bound was found in `acdc/ipexing.py`, so Python's recursion limit is the only stop.
 
-`_walkGraph` (keripy `acdc/ipexing.py`, L780-872) keeps a `seen` set that terminates on a cycle rather than rejecting it, `verifyChain` resolves one hop, and no code in `src/keri` checks for cycles. Assume nothing rejects a cyclic provenance graph.
+Neither branch of the specification says what to do with an unrecognized operator. See [chapter 08, section 13](08-presentation-architectures-and-ipex.md#ground-truth).
+
+#### DAG acyclicity is not checked, by design {#dag-acyclicity}
+
+No code in `src/keri` rejects a cycle, and both modules say why: SAID-based references "make a cycle infeasible to construct, so this is not a cycle guard" (keripy `vdr/eventing.py`, L69-70), and in `acdc/ipexing.py` "The disclosed graph is digest-linked and so" "cannot contain a cycle" (L1365-1366), with a memo placeholder against re-entry. On this chapter's reading the argument holds as long as the digest does, since closing a cycle would mean finding content that contains its own future SAID.
 
 ### 5.2 The same-holder binding pattern {#same-holder-binding}
 
 [practice] In a holder-issued presentation, "`I2I` requires the presenter to be the issuee of both source credentials." (bakobo/schema `sedi-present-age-portrait/index.md`, L5), pinned as `"const": "I2I"` (bakobo/schema `sedi-present-age-portrait.schema.json`, L152-153).
 
-Where the state issues both credentials, `I2I` is wrong: "Its required `coreIdentity` edge links to Core with `E1E` and `NI2I`." (bakobo/schema `sedi-age/index.md`, L3 @`cfcbdcc7a`), as Sam's fixture builds it (keripy `tests/sedi/test_sedi.py`, L4360). Choose the operator that states the relation rather than dropping the edge; the older advice in Bakobo's decision record to bind at presentation instead predates `E1E`.
+Where the state issues both credentials, `I2I` is wrong: "Its required `coreIdentity` edge links to Core with `E1E` and `NI2I`." (bakobo/schema `sedi-age/index.md`, L3 @`cfcbdcc7a`). Sam's fixture builds the same edge with `DI1I` added, `"o": ["E1E", "DI1I", "NI2I"]` (keripy `tests/sedi/test_sedi.py`, L5967), which no keripy evaluator can satisfy ([section 5](#e1e)). Choose the operator that states the relation rather than dropping the edge; the older advice in Bakobo's decision record to bind at presentation instead predates `E1E`.
 
 #### E1E still rests on a forward branch {#e1e-tier-caution}
 
-No operator in `main` binds two state-issued credentials about one subject, so a schema that requires `E1E`, as bakobo's `sedi-guardian` `citizen` edge does (bakobo/schema `sedi-guardian.schema.json`, L284, L317), builds on a forward branch; Sam's Age schema leaves the operator unconstrained (keripy `tests/sedi/test_sedi.py`, L1520-1527). The `NI2I` beside `E1E` makes the list mean "same issuee, issuer unconstrained" under either branch's gate.
+No operator in `main` binds two state-issued credentials about one subject, so a schema that requires `E1E`, as bakobo's `sedi-guardian` `citizen` edge does (bakobo/schema `sedi-guardian.schema.json`, L284, L317), builds on a forward branch; Sam's Age schema leaves the operator unconstrained (keripy `tests/sedi/test_sedi.py`, L1520-1527 @`80f77b73b`). The `NI2I` beside `E1E` makes the list mean "same issuee, issuer unconstrained" under either branch's gate.
 
 #### Standing edges as a correlation point {#standing-edges}
 
@@ -218,7 +228,7 @@ A TEL is "a hash-chained data structure of sealed transaction events" anchored i
 
 #### Revocation is a state, not a deletion {#revocation-state}
 
-[code] keripy keeps a revoked credential: "Log this and continue instead of the previous exception so we save a revoked credential" (keripy `vdr/verifying.py`, L129-132), and reads state from the TEL, not a list. `Tever`/`Tevery` implement registries with `vcp`, `iss`/`rev` and `bis`/`brv` events (keripy `vdr/eventing.py`).
+[code] keripy keeps a revoked credential: "Log this and continue instead of the previous exception so we save a revoked credential" (keripy `vdr/verifying.py`, `Verifier.processCredential`, L207), and reads state from the TEL, not a list. `Tever`/`Tevery` implement registries with `vcp`, `iss`/`rev` and `bis`/`brv` events (keripy `vdr/eventing.py`).
 
 ### Registrar, Observer, and no phone-home {#registrar-observer}
 
@@ -232,17 +242,17 @@ A Registrar under the Issuer publishes the registry; an Observer under the Valid
 
 #### Implementation status of Registrar and Observer {#registrar-observer-status}
 
-Neither exists. `keri-foundation/observer` and `keri-foundation/registrar` are placeholders, keripy's `acdc/registraring.py` is a docstring stub, and keripy has no observer. Beneath them, keripy implements the blindable `bup`, `BlindState` (keripy `core/structing.py`; `acdc/messaging.py`, `blindate()`), and the `RegBaser`/`WebRegBaser` stores. Nothing specifies the Observer protocol, discovery, or batch window, so "the Observer handles that" is not an answer.
+Neither exists. `keri-foundation/observer` and `keri-foundation/registrar` are placeholders, keripy's `acdc/registraring.py` is a local registry manager, not a service: its `Registrar` is a "Small facade for V2 registry inception and blindable state updates." (keripy `acdc/registraring.py`, `Registrar`, L347), and keripy has no observer. Beneath them, keripy implements the blindable `bup`, `BlindState` (keripy `core/structing.py`; `acdc/messaging.py`, `blindate()`), and the `RegBaser`/`WebRegBaser` stores. Nothing specifies the Observer protocol, discovery, or batch window, so "the Observer handles that" is not an answer.
 
 ### Binding ACDC state to issuer key state {#key-state-binding}
 
 ACDCs are "not directly signed by the Issuer... bound to the Issuer's Key State... and the Issuer's Key State is signed. This enables the Key State of the Issuer to change independently of the ACDC state" (ACDC spec > Binding to Key State, L1673). Validity is judged "AS OF its KEL anchor's sequence position, not current key state or wall-clock" (keripy-knowledge `30-invariants.md` > H1; `Tever.verifyAnchor`), the defense against [chapter 07, section 11](07-shibboleths-and-anti-patterns.md#retrograde-attack)'s retrograde attack.
 
-[spec] The Dossier specification puts it for outsiders: "The signature exists on the anchoring key event, not on the dossier" (Dossier spec > How a Dossier Is Issued: Anchoring, Not Attached Signatures, L27-28). The partition is by lifespan: a token bears a signature "because its lifetime is measured in seconds and it is never expected to outlive a key rotation" (L473), and an ephemeral dossier MAY too. So the accurate rule is not that ACDCs are never signed but that nothing expected to outlive a rotation is authenticated by an attached signature.
+[spec] The Dossier specification puts it for outsiders: "The signature exists on the anchoring key event, not on the dossier" (Dossier spec > How a Dossier Is Issued: Anchoring, Not Attached Signatures, L27-28). The partition is by lifespan: a token bears a signature "because its lifetime is measured in seconds and it is never expected to outlive a key rotation" (L657), and an ephemeral dossier MAY too. So the accurate rule is not that ACDCs are never signed but that nothing expected to outlive a rotation is authenticated by an attached signature.
 
-#### Recon hypothesis: anchors not re-verified on presentation {#verifyanchor-hypothesis}
+#### Credential processing does not check the issuer against the registry {#verifyanchor-hypothesis}
 
-Open at keripy `60ab9e08d` and not re-examined since (landmine L15, high severity, medium confidence): recon "found no call to `Tever.verifyAnchor`" in `processCredential`, so "a credential presented with a forged `(seqner, saider)` proof could pass schema + TEL-state checks without the anchor being confirmed against the issuer's actual KEL at that sn — undermining invariant H1" (keripy-knowledge `31-landmines.md` > L15). Confirm that the ingest path ran `verifyAnchor`.
+[code] `processCredential` stores the source triple the parser hands it, `self.reger.logCred(creder, prefixer, seqner, saider)` (keripy `vdr/verifying.py`, `Verifier.saveCredential`, L757), and never verifies it, as recon landmine L15 suspected (keripy-knowledge `31-landmines.md` > L15). That is not the whole gap L15 feared, because the credential's state comes from its TEL, whose issuance is anchored in the registry controller's KEL (`self.pre = ked["ii"]`, keripy `vdr/eventing.py`, `Tever`, L880), so what goes unchecked is the credential's own `i`. It feeds the issuer index, `issuer = creder.israid.encode("utf-8")` (keripy `vdr/verifying.py`, L760), and is never compared with the registry's controller, so a credential naming issuer X in a registry controlled by Y is saved and indexed under X, as keripy issue #1730 reports. Whether the V2 registry check covers the issuer is open (raw/16).
 
 ### Blindable state (BLID) {#blindable-state}
 
@@ -312,7 +322,9 @@ The Utah chain, "Root AID -> Org Unit (division/department/program) -> Issuing A
 
 #### The Dossier {#dossier}
 
-A Dossier's issuer attests composition by anchoring: "The issuer does not necessarily attest to the veracity of the claims within the evidence, but rather to the integrity and composition of the collection itself" (Dossier spec > The Role of the Issuer, L83). Joint issuance uses weighted thresholds (`MxN`, `RMxN`, `MxQ`, `RMxQ`) in an edge-group's `o` and "relies on logic within the ACDC layer," not multisig. The normative schema SAIDs are `EKuLzS_oN_mIao5og1NOujtF2QMXloiMCZP7xuAR5tY7` (base) and `ECRjgun8t3cay_YBiVxEY-qXKCz37oUrvE5GvmySwxCh` (endorsement); anything naming the earlier `ECpZgR2Y…` or `EAfn0gRM…` no longer resolves. Foreign material needs a wrapper ACDC: "Direct reference to non-ACDC material without a wrapper is NOT RECOMMENDED." See [chapter 07, section 10.4](07-shibboleths-and-anti-patterns.md#foreign-credentials).
+A Dossier's issuer attests composition by anchoring: "The issuer does not necessarily attest to the veracity of the claims within the evidence, but rather to the integrity and composition of the collection itself" (Dossier spec > The Role of the Issuer, L83). Joint issuance uses weighted thresholds (`MxN`, `RMxN`, `MxQ`, `RMxQ`) in an edge-group's `o` and "relies on logic within the ACDC layer," not multisig. The normative schema SAIDs are `ENroDvI_lXRUa3p1UCxU6Pxp0DWDS1yZNexCq_1TQlcj` (base, which gained the `attest` and `manifest` properties) and `ECRjgun8t3cay_YBiVxEY-qXKCz37oUrvE5GvmySwxCh` (endorsement); anything naming an earlier SAID (`EKuLzS…`, `ECpZgR2Y…` or `EAfn0gRM…`) does not resolve to these. Foreign material needs a wrapper ACDC: "Direct reference to non-ACDC material without a wrapper is NOT RECOMMENDED." A wrapper whose `content_digest` is an xSAID MUST carry a `filename`, because the SAID travels in the filename (Dossier spec > Foreign Artifact Wrappers, L256-261). See [chapter 07, section 10.4](07-shibboleths-and-anti-patterns.md#foreign-credentials).
+
+A presentation finds its dossier structurally: "the dossier under evaluation MUST be the only ACDC that no other ACDC in the set points to" (Dossier spec > The Dossier as Graph Root, L98). It says ACDC "already requires" a single origin node (L100), but only the forward branch does: [spec-next] "That DAG MUST have exactly one source node, called the origin node." (ACDC spec > DAG of ACDCs, L1821 @`2362e48a1`); `main` @`f0bd097de` has no such text. The dossier rule is no evidence that ACDC `main` mandates one origin.
 
 [practice] Provenant's dossier base (`$id` `EHxI61CGs7FRuStz8P6QWJyMK4u2bGH1LQqIXsA4bT7q`) says "A dossier SHOULD NOT include an issuee; all evidence MUST be carried in e, never in a." (public-schema `dossier-base/dossier-base.schema.json`, L5) and "When phase transitions, a new dossier version SHOULD be issued." (L127). bakobo/schema publishes a third base (`EFf_1u…`).
 
@@ -328,18 +340,18 @@ ACDC's text rejects signing credentials directly (L1675), phone-home revocation 
 
 ### Where the ground truth is softer than the prose {#softer-ground-truth}
 
-The gaps in sections 4.1 and 5.1 are implementation maturity on keripy's 2.1-dev line, not protocol defects: ACDC's constraints "are constraints of *youth*, not of *architecture*" (papers `wtbo.md` > 6. The Transition Problem: A Comparison of Trajectories). The age-credential collision may be the exception: two deliberate rules meet — hide nothing that could conceal a presentation-registry declaration, and disclose one threshold without the others — and resolving it may take a design decision rather than code. Nobody read has said which.
+The gaps in sections 4.1 and 5.1 are implementation maturity on keripy's 2.1-dev line, not protocol defects: ACDC's constraints "are constraints of *youth*, not of *architecture*" (papers `wtbo.md` > 6. The Transition Problem: A Comparison of Trajectories). The Age credential is where two deliberate rules meet — hide nothing that could conceal a presentation-registry declaration, and disclose one threshold without the others — and keripy settles it in code by recognizing a declaration only in `a` ([section 4.1](#age-finding-grant)). Neither specification branch states that choice, so another implementation may make the other one.
 
 ## Sources {#sources}
 
 - ACDC spec — Authentic Chained Data Containers (ACDC) specification, Trust Over IP. trustoverip/kswg-acdc-specification, spec/spec-body.md. `main` @`f0bd097de` (2026-08-28) supports every unmarked or [spec] citation, including the annex's Graduated Disclosure and Registry-Dependent Issuance Lifecycle examples. `v1.1` @`2362e48a1` (2026-09-11) supports the [spec-next] citations, which carry that commit in their locator. Mined in raw/03.
 - ACDC spec conversations — Sam Smith's comments and reviews in trustoverip/kswg-acdc-specification issues and pull requests, as spec editor. Numbers used: issue #205, PR #204. Each citation gives the comment URL and date; comment bodies were read from the 2026-10-14 fetch cached under `.ignored/sam-rulings-cache/`. [proposal] unless the text at a pin carries them. Mined in raw/21.
 - bakobo/schema — Bakobo's applied ACDC schema corpus (SEDI, GCD, the `docs/` decision notes and the `this.i` decision record), Bakobo. bakobo/schema, repository root, main @`cfcbdcc7a` (2026-10-02). Evidence about what real schemas do, not about what the specification requires. Mined in raw/11.
-- Dossier spec — Dossier specification, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md, main @`b9227753c` (2026-08-25). The `operators-ref` edge-operators reference beside it is untracked and unpinnable. Mined in raw/04.
+- Dossier spec — Dossier specification, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md, main @`6fcf84127` (2026-10-13), status v0.7 Draft, a single-author draft on the standardizing line. The `operators-ref` edge-operators reference beside it is untracked and unpinnable. Mined in raw/04.
 - keri-foundation observer and registrar — placeholder repositories for the Observer and Registrar services, KERI Foundation. keri-foundation/observer and keri-foundation/registrar, checked 2026-09-01 (no pin recorded). Mined in raw/14.
 - KERIConf26 caption — hand-edited auto-captions of Sam Smith's KERI Conference 2026 talk The Digital Identity Tradespace. keri-foundation/CONF26-subtitles, subtitles/*.fixed.srt, at an unrecorded commit. Near-wording only: evidence of intent and framing, never of a design detail; see `raw/14` section 0 before quoting it onward. Mined in raw/14.
-- keripy — KERI reference implementation, WebOfTrust. WebOfTrust/keripy, src/keri and tests/. `main` @`80f77b73b` (2026-10-01) supports [code] claims by default; a locator marked `@b8f60166b` (2026-09-14) was read at that pin and not re-read at the later one. `__version__` is `2.1.0-dev1`. The SEDI test fixtures (`tests/sedi/test_sedi.py`, `tests/sedi/test_ipex_sedi.py`) are evidence of what the spec author intends credentials to look like, not library behavior. Mined in raw/09 and raw/11.
-- keripy conversations — Sam Smith's comments in WebOfTrust/keripy issues, pull requests and discussions. Numbers used: PR #1505, discussion #1550, PR #1564, discussion #1515, discussion #1566, PR #1612, PR #1576, discussion #1574. Each citation gives the comment URL and date; comment bodies were read from the 2026-10-14 fetch cached under `.ignored/sam-rulings-cache/`, at their edited text. [proposal] throughout. Mined in raw/21.
+- keripy — KERI reference implementation, WebOfTrust. WebOfTrust/keripy, src/keri and tests/. `main` @`94f5423a3` (2026-10-30) supports [code] claims by default; a locator marked `@80f77b73b` (2026-10-01) was read at that pin and not re-read at the later one. `__version__` is `2.1.0-dev1`. The edge-reduction code merged in keripy PR #1681 was written by the corpus's author, so its comments about what the specification says are an interested party's claims, and markers here rest on the specification text instead. The SEDI test fixtures (`tests/sedi/test_sedi.py`, `tests/sedi/test_ipex_sedi.py`) are evidence of what the spec author intends credentials to look like, not library behavior. Mined in raw/09, raw/11 and raw/16.
+- keripy conversations — Sam Smith's comments in WebOfTrust/keripy issues, pull requests and discussions. Numbers used: PR #1505, discussion #1550, PR #1564, discussion #1515, discussion #1566, PR #1612, PR #1576, discussion #1574, PR #1681. Each citation gives the comment URL and date; comment bodies were read from the 2026-10-14 fetch cached under `.ignored/sam-rulings-cache/`, at their edited text, except PR #1681, read from the 2026-11-03 fetch. [proposal] throughout. Mined in raw/21.
 - keripy discussion #1098 — ACDC with Static Age Predicate Proof SMT, Sam Smith. https://github.com/WebOfTrust/keripy/discussions/1098, created 2025-10-27, last edited 2026-09-26, fetched 2026-10-03; without its edit history it is evidence of his position at the last edit. Mined in raw/11 and raw/16.
 - keripy discussion #1515 — New Unary Edge Operators to Support SEDI, Sam Smith. https://github.com/WebOfTrust/keripy/discussions/1515, opened 2026-07-17; comments of 2026-07-18 and 2026-10-01 read. Mined in raw/09, raw/11 and raw/21.
 - keripy-knowledge — keripy knowledge base (`20-crosswalk.md`, `30-invariants.md`, `31-landmines.md`), Daniel Hardman. dhh1128/keripy, branch `knowledge` @`9489ac9bd`. Recon findings such as landmine L15 are hypotheses at the commit they were made against (`60ab9e08d`), not facts at the current pin. Mined in raw/08.

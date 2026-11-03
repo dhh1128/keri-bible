@@ -12,21 +12,26 @@ These are the two halves of the **Signify/KERIA architecture**: a custodial clou
 |---|---|---|---|---|
 | KERIA | `upstream/main` (WebOfTrust/keria) | `7e685edaaeca408919f9adf6789a6626d9c5cf79` | 2026-09-11 | mined 2026-09-15 |
 | KERIA | `upstream/main` | `928ce26a4` | 2026-09-30 | **delta-mined 2026-10-03** — §11; only the changed files were read |
-| signify-ts | `upstream/development` (WebOfTrust/signify-ts) | `4c0072f62ede449d44136e8db87972ceb90bc760` | **2024-04-12** | **stale branch — see warning below** |
+| signify-ts | `upstream/development` (WebOfTrust/signify-ts) | `4c0072f62ede449d44136e8db87972ceb90bc760` | **2024-04-12** | **dormant branch — see below** |
 | signify-ts | `upstream/main` (WebOfTrust/signify-ts) | `ffba8406ef5d0c148decefd6ecfb2f31c480a0ef` | 2026-09-10 | spot-checked 2026-09-15 |
-| signify-ts | `upstream/main` | `5a174b545` | 2026-09-16 | **delta-mined 2026-10-03** — one commit, one source file plus its test (*corrected 2026-10-03 (verification): was "one file"*); §11 |
+| signify-ts | `upstream/main` | `5a174b545` | 2026-09-16 | **delta-mined 2026-10-03** — one commit, one source file plus its test; §11 |
+| signify-ts | `upstream/main` | `6e07dc926` | 2026-10-23 | **delta-mined 2026-11-03** — `src/keri/core/parsing.ts` (read in full), the post-quantum block of `src/keri/core/matter.ts` (L150-218), `src/exports.ts`; §12 |
 
-**Mining date: 2026-09-15.** Both sources previously carried `unknown` pins; this pass is the first anchoring, so every `[code]` claim below either gained a commit or is flagged as not re-read. What this pass covered: the KERIA auth path end-to-end (`core/authing.py`), the `endrole`/`locscheme` establishment-event sealing fix, the ESSR tunnel changes, the untargeted-ACDC fix, the custody claims at code level rather than README level, and a set of deliberate negative checks. What it did **not** cover is listed under "Not re-read in the 2026-09 pass".
+**Mining dates: 2026-09-15 (first anchoring), 2026-10-03 (delta), 2026-11-03 (delta).** Both sources carried `unknown` pins before 2026-09-15, so every `[code]` claim below either names a commit or is flagged as not re-read. The 2026-09-15 pass covered the KERIA auth path end-to-end (`core/authing.py`), the `endrole`/`locscheme` establishment-event sealing fix, the ESSR tunnel changes, the untargeted-ACDC fix, the custody claims at code level rather than README level, and a set of deliberate negative checks. What it did not cover is listed under "Not re-read in the 2026-09 pass".
 
-### WARNING: the signify-ts pin names a branch that has been dormant since April 2024
+The 2026-11-03 pass read only the three signify-ts source files that changed between `5a174b545` and `6e07dc926`, plus `verfer.ts` and `signer.ts` at `6e07dc926` for one negative check (§12a) and a verbatim check of `README.md:20` (§1, §8). Every other signify-ts claim keeps the pin it already names (`ffba8406e` or `5a174b545`), and KERIA (`928ce26a4`, unchanged) was not re-opened.
 
-`4c0072f62` is a real commit and it is genuinely the head of `WebOfTrust/signify-ts`'s `development` branch — but that branch has not moved since **2024-04-12**. The branch the project actually develops on is `main`, at `ffba8406e` (2026-09-10). A pin on `development` is therefore a pin on a two-and-a-half-year-old tree, and any `[code]` claim anchored there is a claim about signify-ts as it stood in April 2024. The manifest field is a reviewed field and this note does not change it; the retarget is proposed in the PR body.
+### The signify-ts `development` branch is dormant; cite `main`
 
-### WARNING: the CESR post-quantum and stream-parser work is NOT upstream signify-ts
+`4c0072f62` is the head of `WebOfTrust/signify-ts`'s `development` branch, which has not moved since 2024-04-12. The project develops on `main`, and the manifest tracks `main`. A claim pinned at `4c0072f62` describes signify-ts as it stood in April 2024.
 
-Seven commits — `4c9aab4`, `6caf3be`, `ff79077`, `43e1be6`, `b5385b4`, `6e70dd0`, `4ed767b` — sit on the branches `feat/cesr-pq-codes` and `feat/cesr-stream-parser*`. `git branch -a --contains 4ed767b` returns **only** `feat/cesr-pq-codes` and `origin/feat/cesr-pq-codes`, where `origin` is `git@github.com:dhh1128/signify-ts.git`. Every one of the seven is authored by `Daniel Hardman <daniel.hardman@gmail.com>`, and none is contained in any `upstream/*` branch. A search of `upstream/main` for `ML-DSA|MLDSA|FN-DSA|SLH-DSA|Dilithium|Falcon|SPHINCS|Kyber` across `src` returns **nothing**.
+### The CESR post-quantum codes and the stream parser are in upstream signify-ts `main`
 
-So the sentence "signify-ts has implemented the post-quantum codes" is **false** as a statement about the project. What is true is that *an unmerged branch on Daniel's personal fork* has implemented them. These are notes about our own work-in-progress, not evidence about the ecosystem, and the distinction is exactly the kind this corpus exists to keep straight. They are recorded in §10 under a tier marker that says so.
+`6e07dc926` is an ancestor of `upstream/main` (`git merge-base --is-ancestor 6e07dc926 upstream/main` succeeds; `git branch -a --contains 6e07dc926` lists `remotes/upstream/main`). The work arrived as twelve commits touching `src`, authored by Daniel Hardman and committed to `main` by Kent Bull (git committer field): `7f7c541` through `44d2801` for the parser and `52534a9` for the codes. No tag in this checkout contains `52534a9`, and `package.json` reads `"version": "0.4.1",` at `6e07dc926`, so the work is on `main` and not shown here to be in a tagged release.
+
+What is `[code]` at `6e07dc926`, and what is not, is set out in §12. In one line: signify-ts sizes, frames and parses all 33 CESR 1.1 post-quantum primitives, and it cannot sign or verify with any of them. Nothing else in the library calls the parser; it is exported for consumers.
+
+Readers will meet the older position elsewhere. `bible/04` and the signify-ts manifest caveat at `refresh/sources.yaml` describe this work as existing only on `feat/cesr-pq-codes` and `feat/cesr-stream-parser*` in `dhh1128/signify-ts`. The fork commit those sources cite, `4ed767b`, is not what landed: no branch in this checkout contains it, upstream carries different commits, and the parser has changed since (for example, the sequence-number lifting the fork version did is gone, §12e). Cite `6e07dc926`, never the fork.
 
 ---
 
@@ -41,7 +46,7 @@ The central doctrine: **the cloud agent never holds the controller's private key
   3. Event generation
   4. Event signing
   5. Event Validation
-  > *"Signify-TS splits off two, key generation and event signing into a TypeScript library to provide 'signing at the edge'."*
+  > "Signify-TS splits off two, key generation and event signing into a TypeScript library" (`signify-ts/README.md:20` @`6e07dc926`), to provide what the README calls signing at the edge.
 - The remaining three functions (encrypted key *storage*, event *generation*, event *validation*) live in the cloud agent — but storage is only ever of **encrypted** material the agent can't decrypt.
 - Agent role (KERIA README, "Agents"): *"Agents act on behalf of their Signify clients. They don't have the secrets of the client. Instead, they handle all actions for the clients, other than secret/encryption/signing."*
 - The private protocol name is **SKRAP** — "Signify/KERIA Request Authentication Protocol" (`keria/docs/protocol.md`, title).
@@ -125,7 +130,7 @@ This is the corpus's sharpest negative result — `bible/09 §9` and the bearer-
 - Group inception: signing member must be a local AID and an actual participant, else 400 (`aiding.py:335-346`).
 
 ### Every Admin request/response must be signed (no unsigned admin traffic)
-- ~~`SignatureValidationComponent.process_request` short-circuits Falcon with **HTTP 401** if the signature fails: `resp.complete = True ... resp.status = falcon.HTTP_401` (`keria/src/keria/core/authing.py:187-189`).~~ **SUPERSEDED 2026-09-15** — the class no longer exists. `core/authing.py` was restructured into an abstract `Authenticator` with two concrete subclasses and a middleware; see §10a. The *behavior* survives the rename, re-anchored below.
+- `core/authing.py` is an abstract `Authenticator` with two concrete subclasses and a middleware (§10a). Older write-ups cite a `SignatureValidationComponent` class; it does not exist at `7e685edaa`.
 - **[code]** `AuthenticationMiddleware.process_request` short-circuits Falcon with **HTTP 401** on any authentication failure: *"This short-circuits Falcon, skipping all further processing"* (`keria/src/keria/core/authing.py:AuthenticationMiddleware.process_request`, L458, at `7e685edaa`). The failure funnel is one `except` clause — `except (kering.AuthNError, ValueError, UnicodeDecodeError):` — so a bad signature, a malformed header and a non-UTF-8 ESSR payload are indistinguishable to the caller, all returning a bare 401 with no body.
 - **[code]** Only explicitly `allowed` paths bypass, and at `7e685edaa` that list has exactly one entry: `authing.AuthenticationMiddleware(agency=agency, authn=authn, allowed=["/agent"])` (`keria/src/keria/app/agenting.py:952`).
 - **[code]** Which authenticator runs is decided purely by path: `authenticator = self.essrAuthn if req.path == "/" else self.authn` (`authing.py:AuthenticationMiddleware.process_request`, L449). `POST /` is the ESSR tunnel; everything else is signed-header. Correspondingly `ESSRAuthenticator.inbound` opens with `if request.path != "/": raise kering.AuthNError("Request should not expose endpoint in the clear")` (`authing.py:229-230`) — the tunnel exists so the *endpoint* is confidential, not just the body.
@@ -172,7 +177,7 @@ This is the corpus's sharpest negative result — `bible/09 §9` and the bearer-
 - **pidx / kidx / ridx** — prefix index (which managed AID), key index (cumulative signing+rotation key count over lifetime), rotation index (`controller.ts:110-169`, `keeping.py`).
 - **RemoteKeeper / RemoteManager** — server-side encrypted key store; `TailDirPath = "keri/rks"`; sub-DBs must end in `.` to avoid Base64 prefix collisions (`keeping.py:41-131`).
 - **Signify-Resource header** — carries the AID whose signature authenticates the request/response (`authing.py:34-40`).
-- **Signify-Timestamp header** — ~~signed freshness field~~ **CORRECTED 2026-09-15**: a signed *timestamp* field. Calling it a "freshness field" overstates it — it is bound by the signature and never checked against a clock by either implementation (see §2, "The signature BINDS a timestamp"). It establishes *when the signer says the request was made*, not that the request is recent (`httping.ts:16`).
+- **Signify-Timestamp header** — a signed *timestamp* field. Calling it a "freshness field" overstates it — it is bound by the signature and never checked against a clock by either implementation (see §2, "The signature BINDS a timestamp"). It establishes *when the signer says the request was made*, not that the request is recent (`httping.ts:16`).
 - **Signage / Signature-Input** — the RFC-httpbis structured-header signature envelope produced by `siginput`/`signature` and parsed by `desiginput`/`designature` (`httping.ts`, `end/ending.ts`).
 - **OpTypes / long-running operation** — async server-side operations the client polls: `delegation`, `witness`, `group`, `credential`, `done` (`aiding.py`, `credentialing.py`, `longrunning`).
 
@@ -266,18 +271,18 @@ The signed byte string `ser` is assembled identically in TS and Python; any dive
 - *"This architecture protects the host and the holder private keys. All client tasks/calls are signed 'at the edge'."* — `keria/README.md`, KERIA Service Architecture.
 - *"They don't have the secrets of the client."* — `keria/README.md`, Agents.
 - *"Agents do have their own keys and do sign all of their messages BACK to the Signify client."* — `keria/README.md`, Agents.
-- *"splits off two, key generation and event signing ... to provide 'signing at the edge'."* — `signify-ts/README.md`.
+- *"Signify-TS splits off two, key generation and event signing into a TypeScript library"* — `signify-ts/README.md:20` at `6e07dc926`.
 - *"a remote cloud agent that never has access to the decryption keys."* — `signify-ts/README.md`.
 - *"only the public keys and blake3 hash of the next keys made available to the agent."* — `signify-ts/README.md`.
 - *"unencrypted private key material never leaves the client."* — `keria/docs/protocol.md`, Key Generate Methods.
-- *"the Signify Client AID (called the 'Client AID') being the delegator for the KERIA agent worker AID (called the 'Agent AID')."* — `protocol.md`, Agent Worker Initialization.
+- *"being the delegator for the KERIA agent worker AID"*, said of the Signify Client AID — `keria/docs/protocol.md:13`, Agent Worker Initialization, at `928ce26a4`.
 - *"all HTTP requests against the Admin Interface must be signed by the Client AID and expect all responses to be signed by the Agent AID."* — `protocol.md`, Step Three.
 - *"To provide post-quantum secure passcode recovery, a passcode recovery must be accompanied by partial rotation of the Client AID."* — `protocol.md`, Partial Client AID Rotation.
 - *"lock out all other operations until it is completed successfully."* — `protocol.md`, Passcode Rotation Recovery.
-- *"message from a different remote agent"* (client-side agent-impersonation guard) — ~~`clienting.ts:243`~~ → `signify-ts/src/keri/core/authing.ts:83` at `ffba8406e` (moved 2026-09).
-- *"commitment to controller AID missing in agent inception event"* — ~~`clienting.ts:167-169`~~ → `clienting.ts:202` at `ffba8406e`.
+- *"message from a different remote agent"* (client-side agent-impersonation guard) — `signify-ts/src/keri/core/authing.ts:83` at `ffba8406e`.
+- *"commitment to controller AID missing in agent inception event"* — `clienting.ts:202` at `ffba8406e`.
 - *"multisig groups not supported as agent controller"* — `keria/src/keria/app/agenting.py:871`. **Line hint not re-verified in the 2026-09 pass.**
-- ~~*"This enpoint allows all KERI clients (not just Signify) to interact in a seamless way."*~~ **CUT 2026-09-15 — the quote does not match the source.** At `7e685edaa` the line reads *"This endpoint allows all KERI clients (not just Signify) to interact in a seamless way."* (`keria/README.md:17`) — `endpoint`, correctly spelled. Whether the note mistranscribed it or the typo was fixed upstream is not determinable from here, and per the rule a quote that cannot be found at its commit is cut rather than reworded. The replacement is the verbatim line above, re-read at `7e685edaa`, and it supports the same claim (§2, §4: externally the agent is a normal KERI participant).
+- *"This endpoint allows all KERI clients (not just Signify) to interact in a seamless way."* — `keria/README.md:17`, at `7e685edaa` and unchanged at `928ce26a4`. It supports §2 and §4: externally the agent is a normal KERI participant.
 
 ### Added in the 2026-09 pass (all re-read at the stated commit)
 
@@ -290,15 +295,19 @@ KERIA, all at `7e685edaa`:
 - *"Include the issuee KEL and delegation parents only when the issuee is disclosed and differs from the recipient."* — `app/ipexing.py:871-872`.
 - `response.set_header("Signify-Timestamp", helping.nowIso8601())` — `core/authing.py:180`. The *only* outbound-stamp site; no inbound counterpart exists, which is the freshness negative in one line.
 
-signify-ts, at `ffba8406e` unless marked:
+signify-ts, at `ffba8406e`:
 - `export class EssrAuthenticator extends Authenticator {` — `src/keri/core/authing.ts:192`.
 - *"Timestamp is missing from ESSR payload"* — `src/keri/core/authing.ts:342` (a presence check, not a freshness check).
-- `if (typeof fs !== 'number' || fs < 0) return { fail: 'bad' }; // variable-size: unsupported` — `src/keri/core/parsing.ts:263` **at `4ed767b` (fork branch)**.
-- `return avail < fs ? { fail: 'short' } : { node: fs };` — `src/keri/core/parsing.ts:264` **at `4ed767b` (fork branch)**.
-- `if (genus === 2) return frameGroupV2(bytes, at);` — `src/keri/core/parsing.ts:429` **at `4ed767b` (fork branch)**.
-- `| 'incomplete'; // the stream ends inside an element — RECOVERABLE, more bytes may complete it` — `src/keri/core/parsing.ts:101` **at `4ed767b` (fork branch)**.
-- `ver.proto === 'KERI' && sad && typeof sad.s === 'string'` — `src/keri/core/parsing.ts:725` **at `4ed767b` (fork branch)**.
-- `'1AAR': new Sizage(4, 0, 892, 0), // FN-DSA-512 signature, 666 B` — `src/keri/core/matter.ts:174` **at `4ed767b` (fork branch)**.
+
+signify-ts, at `6e07dc926` (`upstream/main`), all read at the commit:
+- `'1AAR': new Sizage(4, 0, 892, 0), // FN-DSA-512 signature, 666 B` — `src/keri/core/matter.ts`, `Matter.Sizes`, L174.
+- `const VERFER_CODES = new Set([` — `src/keri/core/verfer.ts`, L6; the set holds only Ed25519 and ECDSA secp256r1 codes.
+- `const sizage = sizes.get(head.slice(0, hs));` — `src/keri/core/parsing.ts`, `probePrimitive`, L299.
+- `if (typeof fs !== 'number' || fs < 0) return { fail: 'bad' }; // variable-size: unsupported` — `parsing.ts`, `probePrimitive`, L306.
+- `if (gvrsn.major === 2) return frameGroupV2(bytes, at, gvrsn);` — `parsing.ts`, `frameGroup`, L478.
+- `| 'incomplete'; // the stream ends inside an element — RECOVERABLE, more bytes may complete it` — `parsing.ts`, `ParseErrorCode`, L128.
+- *"say) are read from `sad`, not lifted here."* — `parsing.ts`, `CesrBody` doc comment, L77, completing "Protocol-specific fields (a KERI sequence number," on L76.
+- `export * from './keri/core/parsing.ts';` — `src/exports.ts`, L32.
 
 ---
 
@@ -349,37 +358,6 @@ That is the difference between "we promise not to look" and "there is no code th
 
 Two doctrinal facts are encoded in that one line, and both are easy to get wrong from outside. An ACDC **need not have an issuee at all** — an untargeted ACDC is an attestation about the world rather than a credential about a subject, so `a.i` is absent and code that assumes a subject crashes. And the attribute section **need not be a dict** — when it is compacted or blinded it is a SAID string, so `attrib.get` is not even a valid operation. The `isinstance` check is doing selective-disclosure work, not defensive-programming work.
 
-### 10e. Post-quantum codes — implemented, but on a personal fork, not in signify-ts
-
-Read the second warning at the top of this note before using anything in this subsection. Tier marker for everything here is **`[K-fork]`** — a marker this note coins for "code exists at a named commit on an unmerged personal fork". It is deliberately *weaker* than `[code]`, because `[code]` means an implementation behaves this way and this is not yet an implementation anyone else runs. Do not promote it to `[code]` without a merge into `WebOfTrust/signify-ts`.
-
-**[K-fork]** At `4ed767b` (`dhh1128/signify-ts`, branch `feat/cesr-pq-codes`), `Matter.Sizes` carries **33 post-quantum rows** across the four-character `1`, `2` and `3` fixed tables — 14 in `1AAQ`–`1AAd`, 15 in `2AAA`–`2AAO`, 4 in `3AAA`–`3AAD` (`src/keri/core/matter.ts:173-205`). They are sizes only. Examples, verbatim: `'1AAR': new Sizage(4, 0, 892, 0), // FN-DSA-512 signature, 666 B` (`matter.ts:174`) and `'2AAN': new Sizage(4, 0, 39728, 1), // SLH-DSA-SHA2-256s signature, 29792 B` (`matter.ts:200`).
-
-**[K-fork]** No named `MatterCodex` constants were added, deliberately. The commit touches exactly two files (`src/keri/core/matter.ts` +40/−2, `test/core/pq.test.ts` +212) and a search of `src` for `FNDSA|MLDSA|SLHDSA|PostQuantum` returns nothing. The stated reason is parity discipline: names should follow the reference implementation so the two do not diverge, and adding them later is additive.
-
-**[K-fork]** Two existing rows changed meaning. `2AAA` and `3AAA` previously held `Sizage(4, 0, 8, 1)` and `Sizage(4, 0, 8, 2)` — placeholder rows nothing in the repository referenced — and now hold FN-DSA-1024 and ML-DSA-44 public keys. A code table row changing meaning is exactly the class of change that breaks byte-for-byte parity silently, which is why it was called out rather than left to ride in as a diff line.
-
-**Cross-implementation state, as of this pass.** Three findings, from three agents, at three pins:
-- CESR `v1.1` at `65fd7518b` defines these codes; CESR `main` at `bad6edd84` has **zero** post-quantum codes (cross-reference, `raw/02` agent — not re-verified here).
-- keripy at `b8f60166b` has **no** post-quantum codes; a search for FN-DSA/ML-DSA/SLH-DSA/Dilithium/Falcon/SPHINCS/Kyber/ML-KEM found only the `falcon` web framework (cross-reference, `raw/09` agent — not re-verified here).
-- `WebOfTrust/signify-ts` at `ffba8406e` has **zero** post-quantum codes — **verified in this pass**, by searching `upstream/main -- src` for `ML-DSA|MLDSA|FN-DSA|SLH-DSA|Dilithium|Falcon|SPHINCS|Kyber` and getting no match.
-
-So the correct statement is: **no shipped implementation carries the CESR 1.1 post-quantum code table.** The codes are `[spec-next]` — spec-side only, in the v1.1 branch and not the standardizing line. The earlier framing of this as "the reference implementation and the TypeScript client disagree about the post-quantum code table" does not survive checking: they agree, in that neither has them. What exists is a fork branch ahead of both. That is a much less interesting finding about interop and a much more honest one, and it does **not** move `keri-doctrine.md` claim 9.
-
-### 10f. The CESR stream parser (same fork caveat — `[K-fork]`, all at `4ed767b`)
-
-A stream parser in `src/keri/core/parsing.ts` (746 lines), with `test/core/parsing.test.ts` (897 lines). It bears directly on chapter 04's "sizing is a pure function of the code" territory, and it is worth mining precisely because an independent implementation is where that doctrine either holds or breaks.
-
-**Sizing is arithmetic on the code, never on the value.** `probePrimitive` selects a table by class (`const hards = part === 'sig' ? Indexer.Hards : Matter.Hards;`, `parsing.ts:248`), looks up the hard code (`const sizage = sizes.get(head.slice(0, hs));`, `parsing.ts:256`), and returns the table's full size as the length: `return avail < fs ? { fail: 'short' } : { node: fs };` (`parsing.ts:264`). The payload is never decoded before its length is decided. Group sizing is the same shape — `const innerEnd = innerStart + count * 4; // self-framing: count is quadlets` (`parsing.ts:frameGroupV2`, L385). **This is the doctrine holding under independent implementation**, and it is why the 33 post-quantum rows needed no parser change at all: `4ed767b` does not touch `parsing.ts`, and a 21 KB SLH-DSA signature frames correctly the moment the table knows its size.
-
-**Genus dispatch decides the counter table, and the genus comes from the version string.** `if (genus === 2) return frameGroupV2(bytes, at);` (`parsing.ts:frameGroup`, L429). The genus is read from the version string — base64 for v2, hardcoded `genus: 1` for v1 — not sniffed from the counters. **Terminology warning worth carrying into any chapter that uses this:** "genus" names two different things here, the CESR genus *major version* (1 or 2, which selects the table) and the `-_AAA` genus-version *counter* primitive (a bodyless in-stream declaration). At this commit the counter is framed and reported but does not switch tables; the version string does. Conflating them would produce a false claim about how a stream announces its own encoding.
-
-**Variable-size codes are rejected by runtime value, not declared type**: `if (typeof fs !== 'number' || fs < 0) return { fail: 'bad' }; // variable-size: unsupported` (`parsing.ts:263`). The prior form was `fs === undefined || fs < 0`, which trusts TypeScript's declared `fs?: number`. The hazard it guards is a table value the declared type does not admit — `null` passes both arms of the old check, since `null === undefined` is false and `null < 0` is false, and the function would then hand back `null` as a byte length. **Flagged as unresolved:** the in-source comment claims "the Sizes tables store that as null", but this repo's tables store `undefined` (e.g. `'4A': new Sizage(2, 2, undefined, 0)`, `matter.ts:206`); keripy's use `None`. The code change is real; its stated justification does not describe this repo. Listed in open questions.
-
-**Truncation is recoverable and is not an error class.** The parser never throws — errors are returned as data. The distinction is a boolean field, `permanent: boolean;` (`parsing.ts:ParseError`, L112), plus a reserved code: `| 'incomplete'; // the stream ends inside an element — RECOVERABLE, more bytes may complete it` (`parsing.ts:ParseErrorCode`, L101). The declared-length bounds check is `if (bodyEnd > n) {` (`parsing.ts:parse`, L673), yielding `permanent: false`. Without it, `subarray` clamps silently and **a truncated message decodes as a whole one** — which is the failure mode that matters, because a silently-truncated KERI event is a different event. On `incomplete`, `consumed` stays at the message's first byte so a caller can append and re-parse.
-
-**`s` means different things in different protocols, and the guard is on `proto`, not genus.** `ver.proto === 'KERI' && sad && typeof sad.s === 'string'` (`parsing.ts:parse`, L725), else `sn` is `null`. `s` is the sequence number under KERI and the **schema SAID** under ACDC — the same field name with unrelated meanings. Gating on the protocol field of the version string covers both v1 and v2 KERI and excludes ACDC under either. **This is a genuine interop hazard worth a chapter mention:** a parser that reads `s` as a sequence number unconditionally will report an ACDC's schema SAID as a sequence number, and will do so without erroring.
-
 ## 11. The 2026-10 pass — what changed at `928ce26a4` (KERIA) and `5a174b545` (signify-ts)
 
 A delta pass. Only the files that changed between the 2026-09 pins and these were read; nothing in "Not re-read in the 2026-09 pass" below was re-opened, and those caveats stand.
@@ -399,6 +377,72 @@ Most of the KERIA diff is the new `src/keria/app/scheduling.py` and `tocks` conf
 ### 11c. signify-ts fixed a hex/decimal violation of the sequence-number invariant `[code]`
 
 §7d records that both implementations "must agree" that `s` is a hex string. signify-ts's `messagize` violated it when attaching a `SealEvent` source seal: it built the `Seqner` from `new Seqner({ sn: parseInt(seal[1].s) })` (`src/keri/core/eventing.ts:432` @`ffba8406e`), which reads the hex string as decimal — wrong from sequence number `0xa` upward. At `5a174b545` it reads `new Seqner({ snh: seal[1].s }).qb64b` (`src/keri/core/eventing.ts:430`), the hex constructor (#417). Corroborative of §7d by counter-example: the invariant was live enough to be broken in production code until 2026-09-16, and nothing in the type system caught it.
+
+## 12. The 2026-11 pass — signify-ts at `6e07dc926` carries the CESR 1.1 post-quantum codes and a CESR stream parser
+
+A delta pass over three files: `src/keri/core/matter.ts` (the code tables, L150-218), `src/keri/core/parsing.ts` (read in full, 805 lines) and `src/exports.ts`, all at `6e07dc926` on `upstream/main`. Reachability and authorship are recorded at the top of this note. The tests (`test/core/pq.test.ts`, 212 lines; `test/core/parsing.test.ts`, 951 lines) were not read beyond their `describe`/`it` titles, so nothing below rests on them.
+
+### 12a. The post-quantum rows are sizes only `[code]`
+
+`Matter.Sizes` carries 33 post-quantum rows across the four-character fixed tables: 14 in `1AAQ`–`1AAd`, 15 in `2AAA`–`2AAO`, 4 in `3AAA`–`3AAD` (`src/keri/core/matter.ts`, `Matter.Sizes`, L173-205 @`6e07dc926`). Two examples, verbatim: `'1AAR': new Sizage(4, 0, 892, 0), // FN-DSA-512 signature, 666 B` (L174) and `'2AAN': new Sizage(4, 0, 39728, 1), // SLH-DSA-SHA2-256s signature, 29792 B` (L200). The block's comment states the placement rule: every post-quantum code goes in the four-character "fixed tables rather than spending scarce one- and two-character" entries (L171), which matches the CESR v1.1 entry policy that `raw/02` records.
+
+The rows match CESR `v1.1` at `65fd7518b` exactly. All 33 codes, their primitive names and their qb64 lengths were compared line by line against the spec's master table (`spec/spec-body.md`, Master code table, L1021-1034, L1036-1050, L1052-1055 @`65fd7518b`), and none differs. The lead-byte column follows the selector (`1` → 0, `2` → 1, `3` → 2), as the comment says: "The selector fixes the lead size: 1 -> 0, 2 -> 1, 3 -> 2." (L172).
+
+No named codex constants were added. A search of `src` at `6e07dc926` for `DSA` and `falcon` finds only ECDSA constants, an unrelated `dsad` variable in `saider.ts`, and the Sizes comments, so a caller can frame a post-quantum primitive by its code string but there is no `MtrDex` name for it.
+
+Two existing rows changed meaning. At `5a174b545` the tables held `'2AAA': new Sizage(4, 0, 8, 1),` and `'3AAA': new Sizage(4, 0, 8, 2),` (`matter.ts` L168-169 @`5a174b545`); at `6e07dc926` the same codes are `// FN-DSA-1024 public verification key, 1793 B` (L187) and `// ML-DSA-44 public verification key, 1312 B` (L202). keripy at `94f5423a3` has neither `2AAA` nor `3AAA` anywhere in `src/keri/core` (`git grep` at that commit returns nothing), and CESR `main` at `bad6edd84` has neither in `spec/spec-body.md` (`git grep` at that commit returns nothing), so the old rows were signify-ts's own placeholders and the change breaks no parity with keripy or with the standardizing line. It would break any signify-ts consumer that wrote the old 8-character placeholders, which nothing in `src` does.
+
+Sizing is all signify-ts can do with these codes. It cannot sign or verify with any of them: `Verfer` admits a fixed set, `const VERFER_CODES = new Set([` (`src/keri/core/verfer.ts`, L6 @`6e07dc926`), holding only Ed25519 and ECDSA secp256r1 codes, and `Signer` throws `` `Unsupported signer code = ${code}.` `` for anything but `Ed25519_Seed` (`src/keri/core/signer.ts`, `Signer` constructor, L53). So the accurate statement is that signify-ts sizes, frames and parses post-quantum primitives and has no post-quantum cryptography.
+
+Cross-implementation state at the pins now in the corpus:
+- CESR `v1.1` at `65fd7518b` defines the 33 codes `[spec-next]`; CESR `main` at `bad6edd84` defines none (cross-reference to `raw/02`, not re-read here). Pull request trustoverip/kswg-cesr-specification#178, which reverts the table from `v1.1`, is open and unmerged, last updated 2026-09-22 (GitHub API, read 2026-11-03).
+- keripy `main` at `94f5423a3` has no post-quantum codes (cross-reference to `raw/09`, section 10, item 3, not re-read here).
+- signify-ts `main` at `6e07dc926` has all 33, as sizes.
+
+So the TypeScript client is now ahead of the reference implementation and of the standardizing line, and level with a forward branch that has an open revert against it. Every row is still `[spec-next]` as a statement about CESR; the `[code]` claim is only that signify-ts frames them.
+
+### 12b. The stream parser: sizing is a lookup on the code `[code]`
+
+The module states its own rule: it frames "by the version-string size and the attachment counters, never by sniffing a" leading `{` (`src/keri/core/parsing.ts`, file header comment, L6 @`6e07dc926`). `probePrimitive` picks a table by class, `const hards = part === 'sig' ? Indexer.Hards : Matter.Hards;` (`parsing.ts`, `probePrimitive`, L291), looks up the hard code, `const sizage = sizes.get(head.slice(0, hs));` (L299), and returns the table's full size as the length, `return avail < fs ? { fail: 'short' } : { node: fs };` (L307). No payload is decoded before its length is fixed. v2 group sizing has the same shape: `const innerEnd = innerStart + count * 4; // self-framing: count is quadlets` (`parsing.ts`, `frameGroupV2`, L433).
+
+This is chapter 04's sizing doctrine holding in a second implementation. It is also why the post-quantum rows needed no parser change: `52534a9`, which added them, touches only `matter.ts` and `test/core/pq.test.ts` (`git show --stat 52534a9`).
+
+### 12c. Genus dispatch: v1 and v2 framing, selected by the version string `[code]`
+
+`frameGroup` dispatches on the genus major version: `if (gvrsn.major === 2) return frameGroupV2(bytes, at, gvrsn);` (`parsing.ts`, `frameGroup`, L478). The genus version comes from the version string. For v2 it is decoded from base64 (`gvrsn: { major: b64ToInt(m[4]), minor: b64ToInt(m[5]) },`, `parsing.ts`, `smell`, L220); for v1 it is the constant `const GENUS_1: Version = { major: 1, minor: 0 };` (L41), because a v1 version string carries no genus. The minor is kept on purpose: "A genus version keeps its minor because a later minor may add" codes (L38).
+
+v2 counters are framed natively because signify-ts's `Counter` cannot: "signify-ts's Counter carries only the v1 table and SILENTLY MISFRAMES v2 codes" (`parsing.ts`, v2 framing block comment, L338). That is a statement in the code about the rest of the library, and it means no other path in signify-ts at `6e07dc926` reads a v2 attachment correctly. Under genus 2 an unknown counter code is framed by its quadlet count and the walk continues; under genus 1 it halts with `unframable-group` (`parsing.ts`, `frameGroupSequence`, L663-673), because v1 cannot size a group it does not recognize.
+
+"Genus" names two things here, and a chapter must not conflate them: the genus version in the version string, which selects the table, and the `-_AAA` genus-version counter, `const V2_GENUS_CODE = '-_AAA'; // genus-version counter (a bodyless declaration)` (L344). In `frameGroupV2` that counter is framed as a bodyless `known` group and the `gvrsn` passed to later groups is unchanged (L420-430), so at this commit an in-stream genus counter is reported but does not switch tables.
+
+Version-string handling follows keripy. v1 version digits are read as hex, `pvrsn: { major: parseInt(m[9], 16), minor: parseInt(m[10], 16) },` (`parsing.ts`, `smell`, L225), so `KERI1a…` is version 1.10. The version string must start within `const MAXVSOFFSET = 8;` bytes of the message start (L195), enforced by `if (!m || m.index > MAXVSOFFSET) return null;` (L213), so a version-like string inside a field value cannot be taken for the header.
+
+### 12d. The error model: errors are data, and only truncation is recoverable `[code]`
+
+`parse` does not throw on bad input; it returns `{ messages, errors, consumed }` (`parsing.ts`, `parse`, L804). Each `ParseError` carries `permanent: boolean;` (`parsing.ts`, `ParseError`, L139), which the doc comment defines as "False only for `incomplete`, the one failure more bytes can cure." (L135). The codes are `no-version-string`, `invalid-version-size`, `malformed-body`, `unparseable-counter`, `unframable-group` and `incomplete` (`parsing.ts`, `ParseErrorCode`, L122-128).
+
+The declared-length bounds check is `if (bodyEnd > n) {` (`parsing.ts`, `parse`, L733), and the comment beside it gives the reason: "`subarray` would have CLAMPED silently here, so without this check" (L735) "a truncated message decodes as a whole one." (L736). A truncated KERI event decoded as whole is a different event, so this check is load-bearing. On `incomplete`, "`i` is left at the message start, so a caller can append bytes and re-parse" (L743).
+
+The source maps its codes onto keripy's extraction errors: "`incomplete` is ShortageError, raised" (`parsing.ts`, `ParseErrorCode` doc comment, L115) "wherever the stream ends inside an element, version string included." (L116).
+
+### 12e. The parser does not interpret `s`, so the ACDC hazard moves to the caller `[code]`
+
+`CesrBody` lifts `proto`, `pvrsn`, `gvrsn`, `kind`, `size`, `ilk` (the `t` field) and `said` (the `d` field), and nothing protocol-specific: "Protocol-specific fields (a KERI sequence number," (`parsing.ts`, `CesrBody` doc comment, L76) "say) are read from `sad`, not lifted here." (L77). There is no sequence-number field on a parsed message at `6e07dc926`.
+
+The hazard is unchanged and now sits with every caller. `s` is the sequence number under KERI and the schema SAID under ACDC, so code that reads `body.sad.s` as a sequence number without checking `body.proto` will report an ACDC's schema SAID as one, without erroring. The parser does not guard this for the caller, and nothing in signify-ts calls the parser (§12g).
+
+### 12f. What the parser does not do, at `6e07dc926`
+
+Each is stated in the source or follows from reading it in full.
+- No binary (qb2) domain and no cold-start classification: "the parser does not yet classify a stream's first byte as keripy's" `ColdCodex` does (`parsing.ts`, `ParseErrorCode` doc comment, L119), so a stream opening with a counter or in binary is reported as `no-version-string`.
+- Only JSON bodies decode by default; CBOR and MGPK are decoded only when a decoder is injected through `ParseOptions.decoders` (L107-111), and otherwise framed with `sad` null.
+- Under genus 1, `-L` PathedMaterialQuadlets is framed with an opaque body (L529-532), and recognized counters with no `GROUP_SPEC` entry, such as the `-J`/`-K` SAD-path signature groups, are framed only as far as their header and marked `unknown` (L502-505).
+- Variable-size primitive codes are rejected: `if (typeof fs !== 'number' || fs < 0) return { fail: 'bad' }; // variable-size: unsupported` (`parsing.ts`, `probePrimitive`, L306).
+- No signature verification and no SAID check. The parser frames and decomposes; it does not validate.
+
+### 12g. Nothing in signify-ts calls the parser `[code]`
+
+The only reference to `parsing.ts` anywhere in `src` at `6e07dc926` is the re-export `export * from './keri/core/parsing.ts';` (`src/exports.ts`, L32); `git grep` in `src` for imports of `parsing.ts` and for `smell(` finds nothing outside `parsing.ts` itself. The parser is public API for consumers, exercised in-repo only by its tests. In particular `SignifyClient` and the KERIA wire path do not use it, so §7's interop claims about what signify-ts sends and receives are unaffected by it.
 
 ---
 
@@ -423,13 +467,13 @@ Under-claiming deliberately. The following were carried forward from the origina
 - signify-ts `keeping.ts`, `aiding.ts`, `httping.ts`, `end/ending.ts` — §6c, §6d, §7a's field-serialization detail, §7d's threshold arithmetic. Only the README, `authing.ts` and `controller.ts` guard strings were checked.
 - **§7a in particular has NOT been re-verified and is the most likely to have drifted**, because the code it describes has moved: the response-verification logic it cites at `clienting.ts:240-255` now lives in `authing.ts:83,93`. The `DefaultFields` order asymmetry it flags was not re-examined. Treat §7a's line hints as stale and its substance as unconfirmed at the new pins.
 
-**Claims that WERE re-read and re-anchored:** the three KERIA README custody quotes (`7e685edaa`); the three signify-ts README custody quotes (at both `4c0072f62` and `ffba8406e`); the four `controller.ts` agent-inception guards and the three client-side impersonation/verification guards (at `ffba8406e`, locations moved); the whole of `keria/src/keria/core/authing.py`; the `endrole`/`locscheme` handlers in `aiding.py`; the artifact-gathering helper in `ipexing.py`; the route table; `matter.ts` and `parsing.ts` at `4ed767b`.
+**Claims that WERE re-read and re-anchored:** the three KERIA README custody quotes (`7e685edaa`); the three signify-ts README custody quotes (at both `4c0072f62` and `ffba8406e`); the four `controller.ts` agent-inception guards and the three client-side impersonation/verification guards (at `ffba8406e`, locations moved); the whole of `keria/src/keria/core/authing.py`; the `endrole`/`locscheme` handlers in `aiding.py`; the artifact-gathering helper in `ipexing.py`; the route table. At `6e07dc926`, see §12 for exactly what was read.
 
 ## Open questions and unresolved tensions
 
-1. ~~**The signify-ts pin names a dormant branch.**~~ *Resolved 2026-09-15, recorded 2026-10-03:* the manifest was retargeted to `main` by hand on 2026-09-15 and the 2026-10 refresh scanned `main`. The text below is kept as the record of what was believed. **The signify-ts pin names a dormant branch.** `upstream/development` has not moved since 2024-04-12 while `upstream/main` is current. Any `[code]` claim anchored at `4c0072f62` is a claim about April 2024. `refresh/sources.yaml` is a reviewed field and this pass did not change it; the retarget is proposed in the PR body. **Until it is retargeted, this note's signify-ts claims are pinned to `ffba8406e` and say so, which is a divergence between the note and the manifest that a reader should know about.**
-2. **What tier do fork-branch implementations get?** §10e and §10f coin `[K-fork]` for "code at a named commit on an unmerged personal fork". The existing ladder has no rung for it: it is not `[code]` (no implementation anyone runs behaves this way), not `[proposal]` (it is code, not a proposal), and not `[spec-next]` (it is not a spec). The marker is provisional and needs a decision — either adopt it corpus-wide with a definition in the tier key, or rule that fork branches are not citable at all and cut §10e and §10f. **They must not be silently read as `[code]`.**
-3. **The variable-size rejection comment does not describe its own repo.** `parsing.ts:258-261` justifies the fix by asserting the Sizes tables "store that as null", but signify-ts's tables store `undefined` (`matter.ts:206`, `indexer.ts:202`); keripy's use `None`. Either the comment was written against keripy's tables and carried over, or there is a table entry not found. The code is defensible as defense-in-depth; the stated reason is not accurate for this codebase. Unresolved.
+1. **signify-ts `main` carries a code table the standardizing line does not, and its forward branch may withdraw.** At `6e07dc926` signify-ts sizes all 33 CESR `v1.1` post-quantum codes (§12a); CESR `main` at `bad6edd84` and keripy at `94f5423a3` have none, and trustoverip/kswg-cesr-specification#178, open since 2026-09-22, reverts them from `v1.1`. If #178 merges, signify-ts frames codes no CESR branch defines, and `2AAA`/`3AAA` mean something in signify-ts that they mean nowhere else. Which way this resolves is outside what the code can settle.
+2. **The variable-size rejection comment does not describe its own repo.** `probePrimitive` justifies its check by asserting that "the Sizes tables store that as" null (`parsing.ts`, `probePrimitive`, L301-302 @`6e07dc926`; "null" opens L302), but signify-ts's tables store `undefined`: `'4A': new Sizage(2, 2, undefined, 0),` (`matter.ts`, L206) and `'0z': new Xizage(2, 2, 0, undefined, 0),` (`indexer.ts`, L202); keripy's use `None`. The check is sound as defense in depth, since `typeof fs !== 'number'` rejects `undefined` and `null` alike; the stated reason is not accurate for this codebase.
+3. **The parser's file header still says v1.** Line 1 reads `// CESR stream parser (v1): message framing + attachment-group decomposition.` (`parsing.ts`, L1 @`6e07dc926`) while the module frames v2 (§12c). Cosmetic, but a reader who stops at the header will under-read what the module does.
 4. **Does anything downstream depend on freshness that the protocol does not provide?** The timestamp is signed, carried, and never checked. A deployment that assumes the agent rejects stale requests would be wrong, but nothing in either codebase documents the assumption either way. Whether any deployed system relies on it is outside what code reading can settle.
 5. **Are the `endrole`/`locscheme` `tsg` sites the last stragglers?** Fourteen sites already used `lastEst`; two did not and were fixed. No systematic audit was done to confirm no third class of site still seals to the latest event rather than the latest establishment event. Worth a sweep on the next pass.
 6. **§7a's default-field order asymmetry remains unverified**, as it was in the original note, and the code has since moved. The original gap statement stands unresolved and is now additionally stale.
@@ -439,6 +483,6 @@ Under-claiming deliberately. The following were carried forward from the origina
 - **Default-field ORDER asymmetry** between `authing.ts` (`@method` first) and `authing.py` (`Signify-Resource` first) is unverified as harmless; I reasoned it's driven by the emitted `Signature-Input` header, but did not trace a full sign→verify round-trip to prove byte-identical `ser` across langs. Flag for a synthesizer/verifier.
 - Did not deep-read **`end/ending.ts`** vs keripy `keri.end.ending` — the two independent message-signature implementations that most need line-level diffing for interop.
 - Did not read **grouping/delegating/exchanging** modules in depth (multisig ceremony, IPEX state machine) — only the boundary touchpoints.
-- **CESR core** (matter/counter/indexer/serder tables) not audited for code-table parity, which is the deepest interop layer (the qb64 derivation-code tables must be identical across all four impls).
+- **CESR core** (matter/counter/indexer/serder tables) not audited for code-table parity, which is the deepest interop layer (the qb64 derivation-code tables must be identical across all four impls). The one exception is the 33 post-quantum rows in `matter.ts`, compared against CESR `v1.1` in §12a; the rest of the Matter, Indexer and Counter tables were not compared.
 - KERIA `specing.py` / the actual OpenAPI `spec.yaml` not read — it is the formal admin-API contract and would firm up every endpoint schema.
 - No coverage of **witness/watcher** doctrine here (belongs to keripy sources); KERIA treats witnessing as async ops (`Witnesser`, `Receiptor`) but the threat-model doctrine of witnesses/watchers is upstream.
