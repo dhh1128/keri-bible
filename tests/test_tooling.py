@@ -355,6 +355,46 @@ class Checks(unittest.TestCase):
             self.pick(2, "hot")
 
 
+class TrackedRefs(unittest.TestCase):
+    """freshness.tracked_refs reads a local branch only when its remote-tracking ref is absent."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+        src = self.tmp / "src"
+        src.mkdir()
+        git = lambda *a: subprocess.run(["git", "-C", str(src), *a], check=True, capture_output=True)
+        git("init", "-q", "-b", "main")
+        git("config", "user.email", "t@example.com")
+        git("config", "user.name", "t")
+        (src / "doc.md").write_text("an obsolete sentence the source has since dropped\n")
+        git("add", "doc.md")
+        git("commit", "-q", "-m", "old")
+        self.git, self.src = git, src
+        (self.tmp / "refresh").mkdir()
+        (self.tmp / "refresh" / "sources.yaml").write_text(
+            f"code_root: {self.tmp}\n"
+            "sources:\n"
+            "  - {id: s, kind: git, path: src, remote: origin, watch: [doc.md], branches: [{name: main}]}\n")
+
+    def refs(self):
+        from unittest import mock
+        with mock.patch.object(freshness, "REPO", self.tmp), mock.patch.dict("os.environ", {}, clear=False):
+            import os
+            os.environ.pop("CODE_ROOT", None)
+            return [ref for _, ref, _ in freshness.tracked_refs()]
+
+    def test_stale_local_branch_is_not_read_beside_the_remote(self):
+        (self.src / "doc.md").write_text("the current text\n")
+        self.git("commit", "-q", "-am", "new")
+        self.git("update-ref", "refs/remotes/origin/main", "HEAD")
+        self.git("reset", "-q", "--hard", "HEAD~1")    # local main now lags origin/main
+        self.assertEqual(self.refs(), ["origin/main"])
+
+    def test_local_branch_is_the_fallback_when_no_remote_ref(self):
+        self.assertEqual(self.refs(), ["origin/main", "main"])
+
+
 class Manifest(unittest.TestCase):
     """Every source in refresh/sources.yaml is a kind detect.py handles, with the keys it reads."""
 

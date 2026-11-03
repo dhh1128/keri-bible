@@ -1,6 +1,6 @@
 # Doctrine Mining: Confidentiality, metadata privacy and secure channels — SPAC, ESSR, TSP, sustainable privacy, bulk-issuance privacy
 
-Mining date: 2026-10-14. Role: mine-spac. This note is new; nothing in `raw/01`-`16` mined these sources.
+Mining date: 2026-10-14 for the Papers, CESR spec, keripy and talk sources, which keep the pins given below; 2026-11-03 for the ToIP TSP specification, re-mined at `ccda6b331`. Role: mine-spac. Nothing in `raw/01`-`16` mined these sources.
 
 Primary sources, all in `SmithSamuelM/Papers` at `master` @`b47f21597` (2026-08-11) unless stated. Each line gives the last commit that touched the file, which dates the content.
 
@@ -18,7 +18,7 @@ Primary sources, all in `SmithSamuelM/Papers` at `master` @`b47f21597` (2026-08-
 
 Specification sources:
 
-- ToIP `trustoverip/tswg-tsp-specification`, `main` @`5599b4556` (2026-09-30), `spec/spec.md`. Status line: "Experimental Implementor's Draft Rev 3 with Errata (September 30, 2026)". Authors Wenjing Chu and Samuel Smith. Fetched by shallow clone 2026-10-14 into the session scratchpad (not vendored). Sections 1-5, 7 (relationship forming, padding, key update), 8, 9 (envelope and payload encoding) and the Security and Privacy Considerations read in full; the test-vector appendix was not read.
+- ToIP `trustoverip/tswg-tsp-specification`, `origin/main` @`ccda6b331` (2026-10-21, the merge of `rev3-work`), `spec/spec.md`, local clone `~/code/wot/tswg-tsp-specification`. Status line: "Release 1.0". Authors Wenjing Chu and Samuel Smith. Read on 2026-11-03 from `git show ccda6b331:spec/spec.md`: the whole body, Overview through Security and Privacy Considerations (L1-1580), in full, with the diff from the previous pin `5599b4556` used only to locate changes; the reference list was skimmed; the test-vector appendix (L1645 onward) was not read. Line numbers through L1617 are the same at both pins, because every change above the reference list replaced lines one for one. Neither `specs.json` nor `spec/revision_history.md` (an empty template list) gives a status or date. The local `main` ref still sits at `5599b4556`. Branch `origin/rev3-work` (`57c18be`, 2026-10-21) is contained in `main` (0 commits ahead, 6 behind) and was not mined.
 - `trustoverip/kswg-cesr-specification` `main` @`bad6edd84` and `v1.1` @`65fd751`, local clone `~/code/me/kswg-cesr-specification`, grepped for the ESSR and TSP count codes and cipher codes only.
 
 Implementation: `WebOfTrust/keripy` `upstream/main` @`927c0cb87` (2026-10-10), local clone `~/code/wot/keripy` (remote `upstream`; not fetched this session, so this is the tip as of the clone's last fetch). Files read: `src/keri/spac/payloading.py`, `src/keri/app/forwarding.py` (`StreamPoster`), the ESSR passages of `src/keri/peer/exchanging.py`, `src/keri/core/counting.py`, `src/keri/app/keeping.py` (`Manager.decrypt`).
@@ -35,8 +35,8 @@ Everything in the Papers repo is `[proposal]`: Sam's position, in his voice, at 
 
 The reach of each idea is different, and the differences are the most useful thing this note records.
 
-- ESSR as a construction reached two specifications. The CESR spec carries the ESSR count codes `-E##` and `-Z##` on both `main` and `v1.1` `[spec]` (§11). The ToIP TSP draft adopts ESSR by name, with a modification for HPKE-Base (§11). The draft is an experimental implementor's draft, so its `[spec]` marks in this note mean present in the line ToIP is standardizing, and that line is explicitly experimental.
-- SPAC's three-level nesting, routed mode, relationship forming and padding reached the ToIP TSP draft in recognizable form. The PAC trilemma, the three-party exploitation model, the covert/clandestine argument and the time-value-of-information argument did not reach any spec. The ACDC spec carries the three-party model and defers third-party protection to SPAC/TSP (`raw/03` §L1728, cited at `bible/06-governance-ecosystems-and-interop.md:73`).
+- ESSR as a construction reached two specifications. The CESR spec carries the ESSR count codes `-E##` and `-Z##` on both `main` and `v1.1` `[spec]` (§11). The ToIP TSP specification adopts ESSR by name in both of its encryption modes, and under HPKE-Base adds a second sender binding through the HPKE associated data (§11.3). Its status line reads "Release 1.0" (§11.2), so its `[spec]` marks in this note mean present in the line ToIP is standardizing, at a version its editors label a release. The repository does not say whether ToIP has approved it.
+- SPAC's three-level nesting, routed mode, relationship forming and padding reached the ToIP TSP specification in recognizable form. The PAC trilemma, the three-party exploitation model, the covert/clandestine argument and the time-value-of-information argument did not reach any spec. The ACDC spec carries the three-party model and defers third-party protection to SPAC/TSP (`raw/03` §L1728, cited at `bible/06-governance-ecosystems-and-interop.md:73`).
 - keripy implements one ESSR sender path and the SPAC payload-type primitive `[code]` (§12). It implements no hop routing, no relationship forming, no padding payload and no `/essr/req` receive handler.
 - The conference captions are edited auto-captions. Per `raw/14` §0 and `standards.md` §2 they support status and intent only. Section 13 paraphrases them and never puts them in quotation marks.
 
@@ -274,7 +274,7 @@ The payload types are `CTL`, `HOP`, `RFI`, `RFA`, `RFD`, `PAD`, `SCS` (L1246-125
 The two papers diverge in ways the bible must not paper over.
 
 - Identifier encoding. The TSP paper has open and closed modes: in open mode "all VIDs must be either URNs or DIDs encoded as variable-length CESR UTF-8 byte strings" (`TSP_CESR_Implementation.md` §VID fields in Open Mode). In closed mode a KERI AID is used bare. The SPAC paper removed the modes on 2025-04-21 (`702796a`, commit message `removed closed mode and open mode references`) and uses bare AIDs throughout.
-- The version field. The SPAC paper uses a 10-character field with an explicit genus version, example `0OSPACAABCAA` (`SPAC_Message.md` L1226), added 2025-06-11 (`77cc6f7`). The TSP paper uses a 7-character field with an implied genus, `YTSP_AAB` (`TSP_CESR_Implementation.md` §TSP ESSR Wrapper), where "The CESR Genus table version is implied." The ToIP spec uses `YTSP-AAC` with a hyphen, version 0.2 (§11).
+- The version field. The SPAC paper uses a 10-character field with an explicit genus version, example `0OSPACAABCAA` (`SPAC_Message.md` L1226), added 2025-06-11 (`77cc6f7`). The TSP paper uses a 7-character field with an implied genus, `YTSP_AAB` (`TSP_CESR_Implementation.md` §TSP ESSR Wrapper), where "The CESR Genus table version is implied." The ToIP spec uses a hyphen and version 1.0: "The current version is `YTSP-BAA` (1.0)." (TSP spec §TSP Envelope Encoding, L1130 @`ccda6b331`). It also ties the CESR code table to its own version, "we will increment the TSP version to reflect code table changes" (§Serialization and Encoding, L1120), so in the ToIP spec the genus is implied by the TSP version rather than carried.
 - The hop-list code. The SPAC paper's prose says "The hop list group code is `-K##`." (`SPAC_Message.md` §Hop Payload, L1377) while its own example tables use `-J##` (L1390), and `-K##` is the indexed-signature group code in the same tables. The TSP paper and the ToIP spec both use `-J##`. The SPAC prose is a defect in the source. Open question 5.
 - Example drift. The SPAC paper's hop-payload examples still show version values `YSPACABA` and `YSPACAAB` (L1390, L1537), the pre-June 2025 form.
 
@@ -288,22 +288,34 @@ The `HOP` payload has a proposed variant, explicitly "for Discussion", that encr
 
 The CESR master table on both branches carries the wrapper code: "| `-E##` | ESSR wrapper signable up to 4,095 quadlets/triplets |" (`kswg-cesr-specification` `spec/spec-body.md` L842 @`main` `bad6edd84`; L850 @`v1.1` `65fd751`). The payload group is named for TSP: "ESSR (TSP) Payload `version+messagtype+...` up to 4,095 quadlets/triplets" (L939 @`main`; L947 @`v1.1`; "messagtype" sic). The X25519 sealed-box cipher codes `4C`-`9AAC` and HPKE-Base codes `4F`-`9AAF` are present (L1028-1050 @`main`). One drift: the CESR spec describes `4F` as "HPKE Base cipher bytes of QB2 plaintext" (L1046 @`main`), while both papers describe it as "HPKE Base cipher bytes of sniffable stream plaintext" (`SPAC_Message.md` L1316). Which one the TSP spec means is not stated; it refers to its codes only by prefix. Open question 6.
 
-### 11.2 The ToIP TSP draft: status and shape `[spec]`, experimental
+### 11.2 The ToIP TSP specification: status and shape `[spec]`
 
-Status, verbatim: "Experimental Implementor's Draft Rev 3 with Errata (September 30, 2026)" (`tswg-tsp-specification` `spec/spec.md` L4 @`5599b4556`). The version on the wire is 0.2: "The current experimental draft's version is `0.2`." (L245).
+Status, verbatim: "Release 1.0" (`tswg-tsp-specification` `spec/spec.md`, status line, L4 @`ccda6b331`). The version on the wire matches: "The current version is `1.0`." (§TSP Envelope, L245), encoded `YTSP-BAA` (§10). Nowhere else does the text describe the spec as experimental or as a draft, apart from the label "Latest Draft:" over its repository link (L6). Three things temper what "Release 1.0" says about maturity, and each is in the same file at the same commit.
+
+- The contributor list is still template text: "The contributor list goes here" (L17).
+- The HPKE specification it requires is cited as an Internet-Draft, `draft-ietf-hpke-hpke-04` (§Normative References, L1592), and the post-quantum KEM reference "is an active Internet-Draft" (§HPKE PQ and PQ/T Algorithms, L1048).
+- Its ML-DSA-65 signature code collides with CESR's forward branch. TSP says "It is identified by the CESR code `1AAQ`" (§ML-DSA-65 Signature, L1401) and "The code point 1AAQ is provisional. It is the next available code in the CESR master code table for genus -_AAACAA and does not conflict with any currently assigned code" (L1404). That holds for CESR `main` `bad6edd84`, which has no post-quantum codes, but CESR `v1.1` at `65fd7518b` assigns "`1AAQ` | FN-DSA-512 public verification key" (spec/spec-body.md L1021) and puts the ML-DSA-65 signature at `1AAT` (L1024), and signify-ts `main` at `6e07dc926` sizes `1AAQ` as that 1200-character key (src/keri/core/matter.ts L173). A parser built to `v1.1` would read TSP's 4416-character signature as a 1200-character key and lose the stream.
+
+What the status line does not say is who released it. Nothing in `spec/spec.md`, `specs.json` or `spec/revision_history.md` records a ToIP approval vote or a release date; the date 2026-10-21 is the commit's, not the document's. The bible should therefore say that TSP's editors label it Release 1.0, version 1.0 on the wire, and should stop calling it experimental; it should not say that ToIP has approved it. Open question 11.
+
+The MAJOR version change is a wire break. The spec says a "MAJOR version signals backward compatibility MAY not be maintained with previous versions" (§TSP Envelope, L243). This note's inference, not the spec's statement: a 0.2 HPKE-Base message carrying the NULL VID in its payload fails the 1.0 receiver's sender check (§11.3), and because HPKE-Base's associated data begins with `TSP_Version` (`aad = CONCAT(TSP_Version, VID_sndr, VID_rcvr)`, §HPKE-Base Mode, L1017), every HPKE-Base ciphertext depends on the version it was sealed under.
+
+Verification has two named parts. The spec splits it into computation and policy: "Cryptographic verification establishes by computation that the VID maps to its keys" (§VID General Requirements, L148), while appraisal is the assessing endpoint's evaluation of what the VID type publishes, "such as its inception record and its rotation and pre-rotation events, and for instance, additional evidence from witnesses" (same paragraph), against its own policy. The term is taken "in the sense of [[ref:RFC9334]] and [[ref:TCG-AF]]" (same paragraph), both listed as informational references (L1621-1623); neither was read for this note. The receiver procedure already used both verbs, "Verify, and appraise `VID_sndr`" (§Receiver Procedure, L364). For KERI this is the familiar split between validating a KEL, which is computation, and deciding which witnesses and watchers to rely on, which is policy (`bible/02`, `bible/11`); the mapping is this note's, and the spec names witnesses only as an example.
 
 TSP defines the three properties per directional relationship and renames Sam's privacy "metadata privacy" to keep it separate from confidentiality: the protection "is termed metadata privacy, differentiating it from the narrower understanding of privacy" (§Authenticity, Confidentiality, and Metadata Privacy, L105; "metadata privacy" is italicized in the source). "TSP messages always assure authenticity, optionally confidentiality, and if utilized, metadata privacy." (L107). Metadata privacy comes from exactly the two SPAC mechanisms: "The metadata privacy protections are achieved by nested TSP messages and routed messages through intermediaries." (L107).
 
 The SPAC formal properties survive almost word for word. VIDs must be "cryptographically non-correlatable in an information-theoretic security context" (§Cryptographic Non-Correlation, L152). Inner VIDs in nested relationships "do not require same level of verification as public VIDs, and do not require transport layer address resolution of their own" (§Nested Relationships, L418, italics markers of the source dropped).
 
-### 11.3 ESSR in the spec, with an HPKE-Base modification
+### 11.3 ESSR in the spec, with an added HPKE-Base binding
 
 The spec adopts ESSR explicitly and argues for it more carefully than the SPAC paper: "No naive composition of public-key encryption and signature achieves authenticated encryption in the public-key setting." (§Cryptographic Algorithms, L957). It then makes two changes Sam's paper does not.
 
 - HPKE-Base is mandatory; the sealed box is optional and on notice. "TSP implementations MUST support HPKE-Base mode as defined in this document." (L993). Of the sealed box: "implementors SHOULD consider migrating to the HPKE option specified in this document. We MAY remove this option in the future." (L1052). The SPAC paper's baseline was the sealed box, because RFC 9180 implementations were "not yet broadly available" (`SPAC_Message.md` L359). The spec reverses that baseline.
-- Under HPKE-Base, the sender-in-ciphertext half of ESSR moves into the associated data. "the binding of the ciphertext to the sender identity required by the ESSR construction is provided by the associated data `aad`" (TSP spec §HPKE-Base Mode, L1010). The in-payload sender VID becomes optional: "In HPKE-Base mode the VID_sndr confidential field is NULL VID by default." (L1041). Under the sealed box it remains mandatory: "the `VID_sndr` field MUST be present in the Confidential Control Fields (as required by [[ref:ESSR]])" (L1102).
+- Under HPKE-Base, the sender is bound twice. The in-payload sender VID, the sender-in-ciphertext half of ESSR, is required in every mode: "For all PKAE schemes, the `VID_sndr` MUST appear as a confidential payload field following the ESSR ([[ref:ESSR]]) method." (§Ciphertext of the Confidential Payloads, L286). HPKE-Base adds the associated data on top: "In the HPKE-Base mode, the binding of the sender identity is additionally achieved through AAD in the HPKE construction." (§Cryptographic Algorithms, L959). The HPKE-Base section states both, "the binding of the ciphertext to the sender identity required by the ESSR construction is provided by the associated data `aad`" and "The sender VID is additionally carried as the first confidential payload field and MUST match `VID_sndr` in the envelope." (§HPKE-Base Mode, L1010). The sealed box carries the payload binding only: "the `VID_sndr` field MUST be present in the Confidential Control Fields (as required by [[ref:ESSR]])" (L1102).
 
-Whether AAD binding gives RUF-PTXT in An's sense is the spec's argument, not the paper's. The spec makes it in §Binding of identifiers (L1478-1482) and says that an implementation wary of relying on "the associated-data handling of a newer HPKE implementation obtains the same property from the payload check alone" (L1482). The bible should record this as a spec-level refinement of SPAC's ESSR, not as a contradiction.
+The receiver checks the payload binding in both modes: "For both PKAE variants, retrieve the sender VID from the decrypted payload plaintext and verify that it matches `VID_sndr`." (§Receiver Procedure, L367). The NULL VID `4BAA` (§TSP Envelope Encoding, L1140) survives in the sender field only for signed-only messages: `VID_sndr` "MUST carry the sender's VID in a confidential payload; in a non-confidential payload it MAY be NULL" (§Control Message Encoding, L1319). Every payload layout in §9 now shows a bare `VID_sndr` with no `| 4BAA` alternative (L1176, L1304, L1312, L1326-1385).
+
+Whether the bindings give RUF-PTXT in An's sense is the spec's argument, not the paper's. The spec makes it in §Binding of identifiers (L1478-1482): under HPKE-Base the associated data and the payload field are independent bindings, and an implementation that does not trust "the associated-data handling of a newer HPKE implementation obtains the same property from the payload check alone" (L1482). Because the payload field is mandatory, that fallback is always available, so TSP's HPKE-Base mode is full ESSR with a second, AAD-based sender binding added, not ESSR with one half relocated. The bible should record it as a spec-level strengthening of SPAC's ESSR, not as a contradiction or a weakening.
 
 Post-quantum entered the spec and is absent from the paper. The spec supports ML-DSA-65 signatures and an MLKEM768-X25519 hybrid KEM: "Post-quantum support in TSP is not a separate mode — it is HPKE-Base with the post-quantum/traditional hybrid KEM MLKEM768-X25519" (L1048). The SPAC paper deliberately considered "only ... pre-quantum safe algorithms" (§Adoptability via Dumb Crypto, L327).
 
@@ -311,7 +323,7 @@ Post-quantum entered the spec and is absent from the paper. The spec supports ML
 
 Routed mode follows the SPAC non-shared-intermediary design. "A typical three hop pattern of TSP routed messages will traverse from source endpoint `A` to its intermediary `P`", then to the destination's intermediary `Q`, then to `B`. (§Metadata Privacy in Routed Mode, L464). Three relationship types are named: direct neighbor, endpoint-to-endpoint, and "Nested private endpoint-to-endpoint relationship" (L462). The last hop is identified by a VID the destination chose, so that "an intermediary cannot oblige its clients to re-establish their routing information with every correspondent" (L469). This is the spec's answer to the SPAC paper's open "for Discussion" variant: the final hop is a destination-chosen exit VID, not an encryption to the final destination.
 
-Relationship forming became mandatory before application traffic, which SPAC did not require. "It is not permissible that one endpoint which has learned a VID of the other simply starts with an application level message" (§Direct Relationship Forming, L713). The most private response to an unwanted invitation is no response: "The most private option is to remain silent." (L733). The `TSP_RFI` carries a nonce and a SAID-style digest (L684-701), matching the paper's salty nonce and iSAID.
+Relationship forming became mandatory before application traffic, which SPAC did not require. "It is not permissible that one endpoint which has learned a VID of the other simply starts with an application level message" (§Direct Relationship Forming, L714). The most private response to an unwanted invitation is no response: "The most private option is to remain silent." (L734). The `TSP_RFI` carries a nonce and a SAID-style digest (§TSP Digest and §Direct Relationship Forming, L684-713), matching the paper's salty nonce and iSAID.
 
 ### 11.5 What the spec says TSP does not do
 
@@ -320,7 +332,7 @@ The spec is more candid than the papers about limits, and these sentences belong
 - No forward secrecy. "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (§Limits, L1515).
 - Metadata privacy is not cryptographic. "The properties that require no judgement about an operator are authenticity and confidentiality, which are cryptographic." Then: "Metadata privacy and availability in routed mode are not among them." (§What An Intermediary Is Trusted For, L1558).
 - Timing and size survive everything. "Timing, size, and frequency survive encryption, nesting, and routing alike." (§What Remains Observable, L1527). "TSP itself does not batch, reorder, or delay messages to frustrate this" (same paragraph). This contrasts with the 2026 talk's intent that intermediaries keep uniform traffic (§13): in the spec that is an intermediary arrangement, not a protocol property.
-- Intermediary non-retention is a promise. Not storing endpoint-to-endpoint VIDs "is not enforced by any mechanism in TSP; it is a commitment by the operator." (L1554). The SPAC paper's "only ever in memory" property (§6) is therefore, in the spec, an operator commitment.
+- Intermediary non-retention is a requirement nothing enforces. The spec makes it normative: intermediaries "MUST NOT store `VID_a2` and `VID_b2` in any persistent storage" (§Endpoint-to-Endpoint Messages > The Destination Endpoint, L599). It then says the requirement "is not enforced by any mechanism in TSP; it is a commitment by the operator." (§What An Intermediary Is Trusted For, L1554). The SPAC paper's "only ever in memory" property (§6) is therefore, in the spec, a conformance requirement that only an operator's conduct can satisfy.
 - Freshness belongs above TSP. "An application requiring ordering, delivery, or freshness of its own obtains them from the layer that understands what its messages mean" (§Security and Privacy Considerations, L1473). For KERI that layer is KRAM (`bible/09`).
 - A verified VID is not an identity. "A verified VID is an identifier that can be relied upon consistently, not an identity." (§Introductions, L1566).
 - Rotation is the VID type's business. "Because the resolution and verification of key state is VID type specific, TSP does not define a rotation mechanism of its own." (§Handling Changes, L196). The spec does require of public VIDs what KERI provides natively: "The authority to rotate a VID's keys MUST be separate from the VID's signing key" (§VID General Requirements, L144). Its recovery-limits paragraph describes KERI's three defenses without naming KERI: pre-commitment to next keys, delegation, and first-seen with conflict treated as evidence (§Limits, L1511).
@@ -377,13 +389,14 @@ These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotatio
 1. Which form of the PAC trilemma is current, "at the highest level" (2023) or "to the same degree" (2021, 2025)? They make different claims. No source reconciles them.
 2. An's ePrint 2001/079 was not read. The ESSR property table (§4.3) is relayed through Sam and through the ToIP spec. Before the bible states it as established, someone should read An's paper.
 3. The time-value argument (§7.1) has no numbers. No source estimates a correlation time constant for any market, so the claim that partitioned contexts make privacy "sustainably protectable indefinitely" (`SPAC_Message.md` L1068) is a conditional with an unmeasured condition.
-4. VID syntax (§11.6): does the ToIP spec require a bare KERI AID to be wrapped as a URN or DID? §VID Syntax and §Examples point different ways at `5599b4556`. This is worth raising with Sam, who co-authors both.
+4. VID syntax (§11.6): does the ToIP spec require a bare KERI AID to be wrapped as a URN or DID? §VID Syntax (L158) and §Examples (L206) point different ways at `ccda6b331`. This is worth raising with Sam, who co-authors both.
 5. The SPAC paper's `-K##` hop-list code (L1377) contradicts its own tables and the ToIP spec. Probably a typo; worth a one-line fix upstream.
 6. `4F`: QB2 plaintext (CESR spec) or sniffable-stream plaintext (papers)? The two describe different payloads under the same code.
 7. Is the destinationless ESSR variant (§4.5) sound? The birthday-attack argument is sketched, not made.
 8. keripy's ESSR receive path. The KERIA PR named in the talks was not located or read. Until it is, the statement that ESSR is implemented holds for the send side only `[code]`.
 9. The Seven Privacies title. The deck never enumerates seven privacies; this note's mapping to the "Combinations" slide is an inference and should be checked with Sam before the bible uses the phrase as a defined term.
-10. Gaps in reading, recorded as such: the TSP spec's test-vector appendix and the 2021 PAC deck's slides 33-78 and 93-228 (KERI tutorial material) were skimmed by title only. No other source in the assignment went unread.
+10. Gaps in reading, recorded as such: the TSP spec's test-vector appendix was not read at `ccda6b331`, and RFC 9334 and the TCG Attestation Framework, which the spec cites for "appraisal" (§11.2), were not read; the 2021 PAC deck's slides 33-78 and 93-228 (KERI tutorial material) were skimmed by title only. No other source in the assignment went unread.
+11. Who released TSP 1.0? The status line says "Release 1.0" (L4 @`ccda6b331`), but the file still carries a "Latest Draft:" label, a placeholder contributor list, a normative reference to an HPKE Internet-Draft and a provisional ML-DSA code (§11.2), and the repository records no ToIP approval or release date. Whether this is a ToIP-approved specification or an editors' release label decides how the bible may describe TSP's maturity. The ToIP site or the TSWG's records would settle it; neither was consulted.
 
 ---
 
@@ -405,7 +418,7 @@ These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotatio
 
 ## Proposed chapter outline
 
-A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secure-channels.md`. Per `standards.md` §6 this is a proposal for the PR body, not an action. Status paragraph: almost everything is `[proposal]`; the ESSR codes are `[spec]` in CESR; the TSP draft is `[spec]` but experimental; keripy is `[code]` for direct-mode ESSR send only.
+A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secure-channels.md`. Per `standards.md` §6 this is a proposal for the PR body, not an action. Status paragraph: almost everything is `[proposal]`; the ESSR codes are `[spec]` in CESR; the TSP specification is `[spec]`, with the status line "Release 1.0"; keripy is `[code]` for direct-mode ESSR send only.
 
 1. Thesis and status. KERI's privacy argument begins where key state ends: strongest authenticity and confidentiality first, then the best privacy those allow, defended by contexts and accountability rather than by hiding. Supports: §1 (L3, L13), §3 (L103), §7.4 (slide 24). Cross-link 06 §4.
 2. The trade space. PAC trilemma, its wording history, priority versus layering, cold war versus hot war. Supports: §1. Flag open question 1.
@@ -417,7 +430,7 @@ A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secu
 8. Sustainable privacy. Time value, covert versus clandestine, contextual linkability, ZKP cryptoperiod argument, differential privacy and synthetic data, chain-link confidentiality and data loyalty, accountability as the thesis. Supports: §7. Cross-link 05 §8, 06 §4, 07 ZKP rows, 10 (presentation registries as accountability).
 9. Bulk-issuance privacy. HD-derived members, shared blinded registries, placeholder updates, SMT predicate versus ZKP, IAPC. Supports: §8. Cross-link 05 §9, 10.
 10. The wire. SPAC/TSP CESR wrapper, payload types, pad, plaintext/cipher sniffing, the divergences between papers and spec. Supports: §10, §11.1. Cross-link 04. Flag open questions 5 and 6.
-11. What is specified. ToIP TSP Rev 3: shape, ESSR with HPKE-Base AAD, PQ, routed mode, mandatory relationship forming, and the explicit limits (no forward secrecy, metadata privacy is not cryptographic, timing survives, non-retention is a promise, freshness above TSP). Supports: §11. Flag open question 4.
+11. What is specified. ToIP TSP Release 1.0: shape, ESSR in both encryption modes with an added HPKE-Base AAD binding, verification versus appraisal, PQ, routed mode, mandatory relationship forming, and the explicit limits (no forward secrecy, metadata privacy is not cryptographic, timing survives, non-retention is a promise, freshness above TSP). Supports: §11. Flag open question 4.
 12. What is implemented. keripy direct-mode ESSR send path and its four boundaries; deployments by status only. Supports: §12, §13. Flag open question 8.
 13. Shibboleths this chapter retires or adds, for chapter 07: encrypt-then-sign is enough; HPKE authenticates the sender; cryptonyms are supercookies; unlinkability is the privacy goal; selective disclosure is a safe harbor; TSP gives forward secrecy (it does not, §11.5).
 
@@ -425,7 +438,7 @@ A new chapter, provisionally `bible/11-confidentiality-metadata-privacy-and-secu
 
 ## Proposed sources.yaml entries
 
-Not applied. `smithsamuelm-papers` exists with `watch: [whitepapers/kram.md]`; the proposal widens `watch` and `feeds` (a reviewed-field change for the PR body) rather than adding a duplicate id. The TSP spec is a new source.
+Not applied. `smithsamuelm-papers` exists with `watch: [whitepapers/kram.md]`; the proposal widens `watch` and `feeds` (a reviewed-field change for the PR body) rather than adding a duplicate id.
 
 ```yaml
   - id: smithsamuelm-papers
@@ -457,25 +470,8 @@ Not applied. `smithsamuelm-papers` exists with `watch: [whitepapers/kram.md]`; t
       several decks. SPAC_Message.md's version string (0.5.3) has not moved since 2023 despite
       content changes through 2025-06; cite by commit. SPAC_Strawman, KERI_PAC_Theorem,
       TSPSlides20230208 and SustainablePrivacySlides are superseded or subsumed; read, not watched.
-
-  - id: tsp-spec
-    kind: gh-repo
-    repo: trustoverip/tswg-tsp-specification
-    branch: main
-    watch: [spec/spec.md]
-    tier: warm
-    branches:
-      - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: 5599b4556, date: 2026-10-14},
-         last_mined:   {commit: 5599b4556, date: 2026-10-14}}
-    feeds: [raw/17-spac-tsp-privacy.md]
-    chapters: ["04", "06", "07"]
-    caveat: >-
-      Experimental Implementor's Draft Rev 3 with Errata (2026-09-30); wire version 0.2. [spec] here
-      means present in the line ToIP is standardizing, and that line calls itself experimental.
-      Not cloned under ~/code; read from a shallow clone on 2026-10-14. Only spec/spec.md is
-      rendered (specs.json markdown_paths); the other spec/*.md files are template residue. The
-      test-vector appendix was not mined.
 ```
+
+The TSP specification is in `refresh/sources.yaml` as `tsp-spec`, which is the only record of its pins; it is not repeated here.
 
 The keripy source entry would need `src/keri/spac/` and `src/keri/app/forwarding.py` added to its `watch` list, feeding `raw/17`; that is a reviewed-field change and is left to the PR body.

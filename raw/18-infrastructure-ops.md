@@ -14,23 +14,23 @@ KERI Foundation repos (`github.com/keri-foundation`, all Apache-2.0, fetched 202
 
 | repo | pin (main) | commit date | what was read |
 |---|---|---|---|
-| `witness-hk` (package `witopnet`) | `39e1c3fc7` | 2026-09-29 | README, `docs/developer-guide.rst`, `ansible/README.md`, `src/witopnet/core/witnessing.py` (shallow clone) |
+| `witness-hk` (package `witopnet`) | `39e1c3fc7`, `48bb46a24` | 2026-09-29, 2026-10-29 | README, `docs/developer-guide.rst`, `ansible/README.md`, `src/witopnet/core/witnessing.py` at `39e1c3fc7`; `src/witopnet/app/aiding.py` (`AidCollectionEnd`) at `48bb46a24`, the only file that changed between the two pins |
 | `watcher-hk` (package `watopnet`) | `9be717f8a` | 2026-09-25 | README, `docs/developer-guide.rst`, `src/watopnet/app/watching.py` (shallow clone) |
-| `kf-boot` | `14c8f616e` | 2026-09-11 | README, `setup-guide.md`, `docs/developer-guide.rst` |
-| `kf-observer` | `d6368aef9` | 2026-10-08 | README |
-| `kf-registrar` | `bf14eac4d` | 2026-10-09 | README |
+| `kf-boot` | `14c8f616e`, `ab0e3c296` | 2026-09-11, 2026-10-30 | README quotes re-checked at `ab0e3c296` (only its install and development instructions changed); `setup-guide.md` at `14c8f616e`, unchanged through `ab0e3c296`; `docs/developer-guide.rst` at `14c8f616e`, changed at `ab0e3c296` and not re-read |
+| `kf-observer` | `f7d7a8fd2` | 2026-10-22 | README, byte-identical to `d6368aef9`; quotes re-checked |
+| `kf-registrar` | `32dcbd712` | 2026-10-30 | README, byte-identical to `bf14eac4d`; quotes re-checked |
 | `observer` | `ffe586bf2` | 2026-02-28 | README (placeholder) |
 | `registrar` | `725ed5a67` | 2026-02-28 | README (placeholder) |
 | `witness` | `3e73b604b` | 2025-01-24 | listed only |
 | `.github` | `68a0d8883` | 2024-07-20 | `profile/README.md` |
 
-Implementation: `WebOfTrust/keripy` `upstream/main` @`927c0cb87` (2026-10-10), read via `git show` for `src/keri/app/indirecting.py`, `src/keri/kering.py`, `src/keri/cli/commands/witness/authenticate.py`, `src/keri/app/agenting.py`.
+Implementation: `WebOfTrust/keripy` `upstream/main` @`927c0cb87` (2026-10-10), read via `git show` for `src/keri/app/indirecting.py`, `src/keri/kering.py`, `src/keri/cli/commands/witness/authenticate.py`, `src/keri/app/agenting.py`. Through `94f5423a3` (2026-11 run) `indirecting.py`, `agenting.py` and `authenticate.py` are unchanged; `kering.py` changed elsewhere and the `Rolage` lines cited in §9.3 read the same at `94f5423a3`. The citations stay at `927c0cb87`. This note makes no claim about sender endpoint routing (`habbing.py`, keripy `c98015569`) or `forwarding.py` `introduce()` (keripy `999d226d5`), so neither was mined.
 
 Web: `https://keri.foundation/` and `/about/services/`, `/faq/`, fetched 2026-10-14 with curl, HTML stripped to text. PyPI JSON API for `witopnet` and `watopnet`, queried 2026-10-14.
 
 Conference captions: `keri-foundation/CONF26-subtitles` @`006042d` (2026-10-04), joined text in `.ignored/conf26/text/`. Talks used: Phil Feairheller, Infrastructure for Security; Ryan Hansen, Witnesses & Watchers (and his hallway interview); Samuel Smith, State of the KERI Suite; Thomas Mayfield, KERI Infrastructure & the 5 W's; Evan Asawaka, Mobile Wallet (Q&A with Phil Feairheller and Karla McKenna); Kent Bull, KERIA Tutorial; Jay Alexander Elliot, Open KERI Infrastructure; Keanu Pahio, KERI Development & Deployment; the closing panel, What KERI allows us to do that we couldn't before. These are the talks the coverage report (`.ignored/coverage-gaps-2026-10.md` §2.2) lists as operations-heavy.
 
-Mining date: 2026-10-14.
+Mining date: 2026-10-14, with a corroborative pass on 2026-11-03 covering only `witness-hk` `aiding.py` at `48bb46a24` (§4), the `kf-boot` README quotes at `ab0e3c296`, the unchanged `kf-observer` and `kf-registrar` READMEs, and the keripy file check above.
 
 ---
 
@@ -44,7 +44,7 @@ Five source classes are mixed in this note, and the ordering between them is the
 
 [code] means code or code-adjacent documentation in a repository at a named commit. A README describing a service is vendor documentation about that vendor's code; I mark it [code] only where I read the code, and [practice] (below) where I read only the README.
 
-[practice] is a marker this note introduces for vendor or deployment practice: what healthKERI, the KERI Foundation, Veridian, or GLEIF do or say they do. It is not one of the corpus's four tiers. It records a deployment choice, not a protocol rule, and a [practice] claim must never be cited as KERI doctrine. Where a vendor's choice instantiates a normative pattern, the two are cited separately.
+[practice] is the marker for vendor or deployment practice (`docs/house-style.md`, Provenance markers): what healthKERI, the KERI Foundation, Veridian, or GLEIF do or say they do. It records a deployment choice, not a protocol rule, and a [practice] claim must never be cited as KERI doctrine. Where a vendor's choice instantiates a normative pattern, the two are cited separately.
 
 Conference captions are the fifth class and carry no marker. Per `refresh/prompts/standards.md` §2 they are usable for status and intent only and are never a quotation. In this note a caption excerpt is always introduced with the word caption and set in a code span, never in double quotes, so that it is string-checkable against the caption text without being presented as the speaker's words. Several are secondhand inside the talk (one person reporting what Sam said), and those are flagged as such.
 
@@ -98,7 +98,7 @@ Several numbers circulate, none normative, and the best-attested one is secondha
 
 - Sam's recommendation, relayed by Evan Asawaka during his Q&A: caption `It was either one or four cuz he says when you have three or four as your signing threshold for witnesses you can't be eclipsed` (Mobile Wallet). "three or four" is almost certainly the captioner's rendering of "three of four". This is a secondhand report of a spoken recommendation; do not attribute it to Sam in public without the video.
 - GLEIF runs five, per Karla McKenna in the same Q&A: caption `That's the same amount of witnesses that GLEIF maintains in the infrastructure` [practice], and she said QVIs are required to contribute to that pool. She proposed putting witness-count guidance into the vLEI credential governance frameworks (caption `a recommendation of how many witnesses should be associated with`), which is [practice] roadmap, not something any EGF says yet that this pass checked.
-- The KERI Foundation's boot service hardcodes the choice: [practice] "witness profile is `1-of-1` or `3-of-4`" (`kf-boot` README §Product Rules @`14c8f616e`). Phil Feairheller's healthKERI UI instead lets the user pick N per region and defaults the threshold by the KAWA formula (caption `our user interface will default to the most logical threshold based on the What's the name of that algorithm? The Kawa algorithm.`, Infrastructure for Security).
+- The KERI Foundation's boot service hardcodes the choice: [practice] "witness profile is `1-of-1` or `3-of-4`" (`kf-boot` README §Product Rules, L168 @`ab0e3c296`). Phil Feairheller's healthKERI UI instead lets the user pick N per region and defaults the threshold by the KAWA formula (caption `our user interface will default to the most logical threshold based on the What's the name of that algorithm? The Kawa algorithm.`, Infrastructure for Security).
 
 The 1-or-4 pairing is coherent with KAWA: 3-of-4 is the smallest pool where M > F with F = 1 and one witness may also be down (F* = N - M = 1). One witness is "less secure because one could be compromised" in the same relayed answer. A chapter can state the arithmetic as [spec] and the recommendation as reported practice.
 
@@ -118,7 +118,11 @@ This is the clearest case in the topic where a vendor feature is a direct instan
 
 [code] The KERI Foundation witness requires it. [code] "Witnesses are provisioned dynamically via the boot API and secured with TOTP-based two-factor authentication before receipting events." (`witness-hk` README @`39e1c3fc7`). The developer guide's Step 7 reads "Before the witness will receipt events, the controller must register its AID with two-factor authentication" (`docs/developer-guide.rst` §Step 7: Authenticate with TOTP).
 
-The design rationale given is about lock-in, not security: caption `we thought that was more vendor lock-in than we really were comfortable with, so we went with this one-time password solution.` (Infrastructure for Security; the alternative he rejected was a proprietary ESSR-authenticated API). And the usability cost is acknowledged: per-witness codes at four witnesses are caption `really onerous`, so healthKERI offers one batch code for all of an AID's witnesses [practice]. A batch code shared across the pool is a weaker second factor than the spec's "unique authentication factor" per witness, because one stolen code then satisfies every witness. That is my analysis, not a source's; it is the kind of trade a chapter should name.
+[code] What the witness hands back at registration. `AidCollectionEnd.on_post` generates a fresh secret per witness, `code = pyotp.random_base32().encode("utf-8")` (`witness-hk` `src/witopnet/app/aiding.py`, `AidCollectionEnd.on_post`, L124 @`48bb46a24`), unless the caller supplies one in a `secret` form part, which the code comments as "Optionally, an otp secret is included with the request for batch authentication" (L96). The `totp` field is that secret encrypted to the AID's first current key only (`kever.verfers[0]`). For a multi-key AID the response also carries "``totps`` (multi-key AIDs only): list with the TOTP code encrypted to each of the controller's public keys, in inception key order" (same function, docstring, L53), implemented under the comment "Multisig groups: encrypt the same code to each member's key" (L176-190). What the docstring calls the TOTP code is the TOTP secret, wrapped as an `Ed25519_Seed` and encrypted, not a one-time code.
+
+What the `totps` change does: before it, only the holder of the first key could decrypt the witness's secret, so the other members of a multisig group could not obtain the second factor from the witness. Now each member key receives the same secret. What it does not do: it changes nothing across witnesses. Each witness still mints its own secret unless the batch `secret` part is used, so the cross-witness question below is untouched. It adds a within-witness one. The factor is copied whole to every member, not split by the signing threshold, so any one member key, or one compromised member key, holds the full second factor for that witness. Whether that is acceptable no source says. The condition is `len(kever.verfers) > 1`, so it applies to any multi-key AID, not only one whose keys belong to different people. Both readings are mine, from the code.
+
+The design rationale given is about lock-in, not security: caption `we thought that was more vendor lock-in than we really were comfortable with, so we went with this one-time password solution.` (Infrastructure for Security; the alternative he rejected was a proprietary ESSR-authenticated API). And the usability cost is acknowledged: per-witness codes at four witnesses are caption `really onerous`, so healthKERI offers one batch code for all of an AID's witnesses [practice]; the open witness accepts such a caller-supplied secret (the `secret` form part above). A batch code shared across the pool is a weaker second factor than the spec's "unique authentication factor" per witness, because one stolen code then satisfies every witness. That is my analysis, not a source's; it is the kind of trade a chapter should name.
 
 ## 5. Non-promiscuous witnesses: one witness per controller AID
 
@@ -148,7 +152,7 @@ So the spec asks for two things that pull against each other operationally: a va
 
 [practice] healthKERI first rented per-customer watchers, then switched to a pooled network on Sam's advice: caption `He said it's no more secure giving them VMs inside of our infrastructure than if I just created a global watcher network.` and now assigns caption `We do four watchers. So, pick them at random, one in each region.`, in data centres separate from the witnesses (Infrastructure for Security, talk and Q&A). A key-state change triggers a notification to the subscriber.
 
-[practice] The KERI Foundation's boot service makes a watcher mandatory: "one hosted watcher is required before onboarding completes" (`kf-boot` README §Product Rules). Note the number: one hosted watcher, against healthKERI's four.
+[practice] The KERI Foundation's boot service makes a watcher mandatory: "one hosted watcher is required before onboarding completes" (`kf-boot` README §Product Rules, L173 @`ab0e3c296`). Note the number: one hosted watcher, against healthKERI's four.
 
 [practice] Veridian announced watcher services as roadmap: caption `we are deploying highly available watcher infrastructure services in the second half of this year.` (Mayfield, KERI Infrastructure & the 5 W's).
 
@@ -174,9 +178,9 @@ bible/02 §9 already records the wtbo.md recommendation that the default watcher
 
 raw/14 §1-§6 carries Sam's design intent for Registrar/Observer from the talks. What is new since raw/14's 2026-09-01 check is code-adjacent documentation.
 
-[practice] `kf-observer` describes itself in exactly the doctrine's terms: "It is the ACDC counterpart of a watcher. Watchers serve KELs; this process serves TELs." and "Wallets and verifiers must not talk to the registrar — they talk to an observer (anti-correlation). For SEDI, observers are not optional." (`kf-observer` README, intro @`d6368aef9`). It ingests bulk TEL from a registrar, verifies each event against the issuer KEL and "stores a verified copy" (intro), and falls back to a witness's `GET /log` when the bulk feed lacks the issuer KEL (§Running).
+[practice] `kf-observer` describes itself in exactly the doctrine's terms: "It is the ACDC counterpart of a watcher. Watchers serve KELs; this process serves TELs." and "Wallets and verifiers must not talk to the registrar — they talk to an observer (anti-correlation). For SEDI, observers are not optional." (`kf-observer` README, intro @`f7d7a8fd2`). It ingests bulk TEL from a registrar, verifies each event against the issuer KEL and "stores a verified copy" (intro), and falls back to a witness's `GET /log` when the bulk feed lacks the issuer KEL (§Running).
 
-[practice] `kf-registrar` is "the ACDC counterpart of a witness. Witnesses serve KELs; this process serves TELs." (`kf-registrar` README, intro @`bf14eac4d`). Its external port is "authenticated with KRAM and restricted to configured observer AIDs" (§Dual HTTP), and the README is explicit about what it does not replicate from witnesses: "There is no registrar pool, no TEL receipts" (§Dual HTTP).
+[practice] `kf-registrar` is "the ACDC counterpart of a witness. Witnesses serve KELs; this process serves TELs." (`kf-registrar` README, intro @`32dcbd712`). Its external port is "authenticated with KRAM and restricted to configured observer AIDs" (§Dual HTTP), and the README is explicit about what it does not replicate from witnesses: "There is no registrar pool, no TEL receipts" (§Dual HTTP).
 
 Two observations, both mine. First, the registrar keeps an allow-list of observer AIDs, and the observer README says "This node’s AID must be allow-listed on each registrar" (§Running). That makes the registrar-observer relationship permissioned on the registrar's side, which has no analogue in the witness-watcher relationship (any watcher may query any witness). It is a reasonable anti-scraping control, but it means a verifier's choice of observer is constrained by issuers' allow-lists, which cuts against the framing in raw/14 §1 that the observer is controlled by the verifier. Second, "no registrar pool, no TEL receipts" means a TEL currently has no KAWA-style availability or duplicity accountability of its own; its integrity rests on the KEL anchors, which is consistent with Sam's Q&A answer, caption `They depend on watchers, but they aren't watchers` (State of the KERI Suite; raw/14 §1), but its availability rests on one registrar. Neither README was checked against code this pass.
 
@@ -217,7 +221,7 @@ bible/01 §Discovery is separated from trust, bible/06 (Bootstrap Configuration)
 
 [spec] Operationally relevant parts of the OOBI section the bible does not foreground: the self (blind) OOBI exists for bootstrapping infrastructure, so that a controller's witness AIDs need appear only in its KEL, "Just SOOBIs will do." with the rationale "Redundancy for security is best applied in the context of a self-healing or resilient threshold structure" rather than as unmanaged redundancy in config files (§Self (Blind) OOBI, L2827). And the bounded downside of a hostile OOBI: "an OOBI may be part of a DDOS attack but not as part of a service endpoint cache poison attack." (§OOBI Forwarding, L2831).
 
-[practice] The KERI Foundation boot service applies percolated discovery to itself: "clients verify the service by percolated discovery" and "clients do not need preinstalled boot-server inception material" because "signed replies prepend the boot-server KEL" (`kf-boot` README §Transport And Auth). Its business routes are signed `exn` under KRAM, and "This service does not use ESSR." (same section), which is consistent with bible/09.
+[practice] The KERI Foundation boot service applies percolated discovery to itself: "clients verify the service by percolated discovery" and "clients do not need preinstalled boot-server inception material" because "signed replies prepend the boot-server KEL" (`kf-boot` README §Transport And Auth, L99-101 @`ab0e3c296`). Its business routes are signed `exn` under KRAM, and "This service does not use ESSR." (same section), which is consistent with bible/09.
 
 ## 11. KERIdemlia: DHT discovery, and whether it fits the untrusted-discovery doctrine
 
@@ -258,7 +262,7 @@ This is the origin of the spec's "backer" (a ledger-registrar alternative to a w
 
 A terminology collision to flag. The deck's "Locality is not trustworthy" means network position (being inside a perimeter grants nothing). The spec's "local event" means an event "sourced locally on a device under the supervision of the validator or was received via some protected channel using some form of MFA" (§Validator Roles and Event Locality, L1762). These are consistent (spec locality is earned by authentication, not by network position) but a reader skimming both will think they contradict.
 
-[code] The Foundation services are hio programs. kf-boot "runs under one root HIO `Doist`" with Falcon served by an hio HTTP server doer (`kf-boot` README §Runtime Shape). Kent Bull's KERIpy Async Architecture talk is the community's tutorial on the Doist/Doer/DoDoer model (talks-B.md §6); it is not mined further here because it is about programming model, not operations.
+[practice] The Foundation services are hio programs. kf-boot "runs under one root HIO `Doist`" with Falcon served by an hio HTTP server doer (`kf-boot` README §Runtime Shape, L139 @`ab0e3c296`). Kent Bull's KERIpy Async Architecture talk is the community's tutorial on the Doist/Doer/DoDoer model (talks-B.md §6); it is not mined further here because it is about programming model, not operations.
 
 Deployment stack [practice]: Python 3.14, libsodium, Falcon, nginx TLS termination, Circus under systemd (`kf-boot` setup guide; `witness-hk` `ansible/README.md` §Architecture). Sam's objection to containers is relayed, not argued: caption `Don't tell Sam though because he does not like Docker for this kind of a deployment for security reasons` and caption `Sam's pretty adamant that there's some major security concerns about that approach.` (Hansen, Witnesses & Watchers). No source I read states what the concerns are. This is a gap: a doctrine-level claim, that KERI infrastructure should not be containerized, that exists only as hearsay in one talk.
 
@@ -287,7 +291,7 @@ Ecosystem recommendations as roadmap: Phil Feairheller expects the Foundation to
 2. What are Sam's security concerns about containerized witness and watcher deployment? The only source is relayed hearsay (§13).
 3. Does any watcher implementation share first-seen KELs or duplicity evidence with other watchers, as the spec's incentive argument assumes? `watopnet` at `9be717f8a` does not (§7.3).
 4. How does a validator reconcile the spec's confidential-watcher-set guidance (L45) with subscribing to a vendor's shared watcher network (§7.1)?
-5. Is a batch TOTP code across all of an AID's witnesses an acceptable instance of the spec's "unique authentication factor" per witness (§4)?
+5. Is a batch TOTP secret across all of an AID's witnesses (the `secret` form part `witness-hk` accepts at registration) an acceptable instance of the spec's "unique authentication factor" per witness? And for a multi-key AID, where `witness-hk` at `48bb46a24` gives every member key the same secret for a witness, is a second factor that any one member holds whole consistent with the spec's threshold framing (§4)?
 6. Does one witness per controller AID have a privacy rationale anyone has written down, or is it purely operational (§5)?
 7. Why does the registrar allow-list observers, and how does a verifier obtain an observer that every relevant issuer's registrar will serve (§8)?
 8. Which witness does the `witness-hk` Ansible pilot deploy, keripy's `runWitness` or `witopnet` (§13)?

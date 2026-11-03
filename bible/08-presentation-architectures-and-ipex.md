@@ -8,7 +8,7 @@ An ACDC presentation discloses not a credential but a directed acyclic graph of 
 
 This is the least-settled area of the KERI/ACDC design space, revised in public and in place; read it as a map of a live argument, not a conformance reference. Before relying on a claim, check keripy discussion [#1627](https://github.com/WebOfTrust/keripy/discussions/1627), then [#1613](https://github.com/WebOfTrust/keripy/discussions/1613), whose body still carries the self-declared version string "v1.5 2026/08/18" although GitHub records later edits, then the open keripy and `kswg-acdc-specification` pull requests in [Sources](#sources).
 
-The distance from normative is uneven. The authentication half, [section 7](#authentication-factors) through [section 10](#anchoring), is in no specification. The structural half, [section 2](#one-dag-one-origin) and [section 4](#disclosure-paths), is in the ACDC `v1.1` branch only, so it is [spec-next]; `main` at `f0bd097de` does not contain the words Disclosure Paths. [spec] covers the bespoke ACDC, four of the five unary edge operators, the m-ary operators, the edge `s` constraint, and an IPEX route table that negotiates by naming attributes. keripy at `80f77b73b` is ahead of both branches in places, in a V2 IPEX module its CLI does not run ([section 6](#two-ipex)).
+The distance from normative is uneven. The authentication half, [section 7](#authentication-factors) through [section 10](#anchoring), is in no specification. The structural half, [section 2](#one-dag-one-origin) and [section 4](#disclosure-paths), is in the ACDC `v1.1` branch only, so it is [spec-next]; `main` at `f0bd097de` does not contain the words Disclosure Paths. [spec] covers the bespoke ACDC, four of the five unary edge operators, the m-ary operators, the edge `s` constraint, and an IPEX route table that negotiates by naming attributes. keripy at `94f5423a3` is ahead of both branches in places, in a V2 IPEX module its CLI does not run ([section 6](#two-ipex)).
 
 ## 1. The four presentation architectures {#architectures}
 
@@ -41,6 +41,10 @@ Several disconnected DAGs, each with its own origin, in one exchange under a mul
 The origin is a source, not a root of authority. Edges point near to far and carry the far node's digest, so authority flows toward the origin while commitment flows from it. #1627 uses "root of the DAG" for the far, deepest node, the opposite end; translate when reading it beside the spec.
 
 The DAG is well-ordered, so "A well-ordered DAG with a single source node linearizes into a unique, reproducible order" (ACDC spec > Disclosure Paths > DAG of ACDCs > Ordering, L1831 @2362e48a1), breadth-first by choice. That lets `dp` identify an ACDC by position rather than by SAID, so a disclosure request adds no correlator of its own. The branch overloads "node" on purpose: "node path" in [section 4](#disclosure-paths) means a block within one ACDC, "origin node" a node of the DAG.
+
+### The Dossier spec's graph-root rule {#dossier-graph-root}
+
+[spec] The Dossier spec normalizes a presented dossier the same way: "the dossier under evaluation MUST be the only ACDC that no other ACDC in the set points to" (Dossier spec > Dossier Data Model > The Edges Attribute > The Dossier as Graph Root, L98 @6fcf84127). Its claim that ACDC "already requires" one origin (L100) holds for `v1.1` only. It names this chapter's second problem too: "The act of delivery SHOULD itself be authenticated, separately from the dossier's own anchor" (Dossier spec > The Operational Lifecycle > Presentation as a Self-Contained Package, L349 @6fcf84127).
 
 ## 3. The bespoke origin ACDC {#bespoke-origin}
 
@@ -84,27 +88,35 @@ The route table differs by branch. On `main` the `apply` row reads "Schema or it
 
 ### An empty `dp` {#empty-dp}
 
-In an answer, an empty list means "the answering path list is the same as the one it answers"; unsolicited, it "MUST NOT be an empty list" (ACDC spec > Disclosure Paths > Disclosure Paths, `dp`, Field > Solicited Response, L1917 @2362e48a1). [spec-next] Sam has ruled otherwise, so the branch lags its editor: "If there is no prior message then an empty [] means give me nothing. To get everything their must be a path." (keripy PR #1698, comment of 2026-10-01, R-052, https://github.com/WebOfTrust/keripy/pull/1698#issuecomment-5937132701). [proposal] keripy's upstream head follows him, "An empty plan inherits from a prior message and means no disclosure", and validates `dp` on `agree` and `grant` too (keripy acdc/ipexing.py, IpexHandler.verify, L513-519 @c102367ea). [code]
+In an answer, an empty list means "the answering path list is the same as the one it answers"; unsolicited, it "MUST NOT be an empty list" (ACDC spec > Disclosure Paths > Disclosure Paths, `dp`, Field > Solicited Response, L1917 @2362e48a1). [spec-next] Sam has ruled otherwise, so the branch lags its editor: "If there is no prior message then an empty [] means give me nothing. To get everything their must be a path." (keripy PR #1698, comment of 2026-10-01, R-052, https://github.com/WebOfTrust/keripy/pull/1698#issuecomment-5937132701). [proposal] keripy follows him, "An empty plan inherits from a prior message and means no disclosure when the message opens a thread.", and requires `dp` on `agree` and `grant` too (keripy acdc/ipexing.py, IpexHandler.verify, L580-586 @94f5423a3). [code]
 
 ### Predefined shapes {#predefined-shapes}
 
 [proposal] Sam expects the general machinery to be used narrowly: "So predefined shapes will be the norm." (keripy discussion #1542, comment of 2026-07-30, R-055, https://github.com/WebOfTrust/keripy/discussions/1542#discussioncomment-17842586), with shapes defined by EGFs. He adds a rule no branch carries: an `offer` whose origin schema differs from the `apply`'s "is functionally the same as if the Offerer spurned the apply and then initiated a new IPEX with an unsolicited offer", and an IPEX may start with an `offer` or a `grant` (same discussion, https://github.com/WebOfTrust/keripy/discussions/1542#discussioncomment-17841472).
 
-### `dp` in keripy: negotiated, not enforced {#dp-in-keripy}
+### `dp` in keripy: negotiated, then enforced on the grant {#dp-in-keripy}
 
-[code] keripy requires `dp` in `q` of `apply` and `offer`, as one validated triple in a one-element list (keripy acdc/ipexing.py, IpexHandler.verify, L497-503 @80f77b73b): "We currently only support one DAG (until Multi DAG), so exactly one entry is required" (keripy acdc/ipexing.py, _validSingleDagList, L223 @b8f60166b). An `offer` answering an `apply` inherits its plan. But `grant`, the verb that discloses, never reads `dp` (keripy acdc/ipexing.py, IpexHandler.verify, L591-596 @80f77b73b), so a grant disclosing more or less than agreed is accepted, and `Compactor.compact(paths=…)` has no caller in `src/` and no translation from `dp` paths. `dp` is implemented as negotiation, not enforcement ([question 8](#q-dp-enforcement)).
+[code] V2 requires `dp` in `q` of all four disclosure verbs, as one triple in a one-element list: "We currently only support one DAG (until Multi DAG), so exactly one entry is required." (keripy acdc/ipexing.py, _validSingleDagList, L269 @94f5423a3). An `agree` may not change the plan, and "A Grant may repeat but may not renegotiate an accepted prior plan." (IpexHandler.verify, L691). Each disclosed section must equal the `Compactor` partial for its requested paths, and "The plan must account for every disclosed node in canonical BFS order." (IpexHandler._verifyDisclosurePlan, L1089). A grant disclosing more or less than agreed is refused. V1, which the CLI runs, has no `dp` check; `vc/protocoling.py` never mentions it ([question 8](#q-dp-enforcement)).
+
+### A grant must keep the Offer's promise {#offer-fulfillment}
+
+[code] An Offer may name its origin by SAID alone, a "commitment-only Offer" (keripy acdc/ipexing.py, offer, L2384 @94f5423a3), or carry nodes without issuer proofs. A grant answering an `agree` must deliver that origin, or, where the Offer carried field-map metadata, a root matching its issuer, `rd` and non-empty sections: "Only field-map metadata can promise a different credential root." (IpexHandler._verifyOfferFulfillment, L1198). A SAID-only Offer answered by a different root escrows, and nothing traced releases it ([question 8](#q-dp-enforcement)).
 
 ## 5. Edges and operators, as presentation uses them {#edges}
 
-`I2I` closes the bespoke recipe, and every proposal to signal multiple endorsement in the ACDC is a new edge-group operator ([section 9](#multiple-endorsement)). The operators, their keripy enforcement, `E1E`, the proposed `I1I` and `DI1I`, and the decided v1.1 change of the empty-operator default to `NI2I` live in [chapter 05, section 5](05-acdc-and-verifiable-data.md#edges). Two facts from there matter here. keripy's `vdr/verifying.py` and V2 `acdc/ipexing.py` disagree on unrecognized, conflicting and absent operators, so an edge can pass credential processing and fail grant verification ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#module-disagreement)). And only V2 evaluates edge-groups over a disclosed DAG, implementing `AND` and `OR` only. [code]
+`I2I` closes the bespoke recipe, and every proposal to signal multiple endorsement in the ACDC is a new edge-group operator ([section 9](#multiple-endorsement)). The operators, their keripy enforcement, `E1E`, the proposed `I1I` and `DI1I`, and the decided v1.1 change of the empty-operator default to `NI2I` live in [chapter 05, section 5](05-acdc-and-verifiable-data.md#edges). [code] keripy's `vdr/verifying.py` and V2 `acdc/ipexing.py` now share one `AND`/`OR` algebra and agree on unrecognized, listed and absent operators, but each walks the Edge Section itself: "So this module holds no storage and no evidence." (keripy acdc/chaining.py, module docstring, L16 @94f5423a3). They still differ on schema pins, the schema validator, compact Edge Sections and nesting depth, which v1 bounds at 8 and V2 does not ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#module-disagreement)). The difference that matters most here is revocation. v1 refuses a chain through a revoked far node, while in V2 "No registry-state policy lives here." (keripy acdc/ipexing.py, IpexHandler, L484 @94f5423a3): a V2 grant whose DAG holds a revoked credential is accepted, the state recorded in `exrs` for an application or EGF to judge.
 
-The operator namespace has no registry. The Dossier spec writes `MxN`, `RMxN`, `MxQ` and `RMxQ` into it, "following ACDC operator conventions" (Dossier spec > Joint Issuance > Threshold Operators, L364-372 @6037adfb9); nothing prevents a future collision.
+The operator namespace has no registry. The Dossier spec writes `MxN`, `RMxN`, `MxQ` and `RMxQ` into it, "defined for the `o` field of an edge group to support joint issuance" (Dossier spec > Joint Issuance > Threshold Operators, L624 @6fcf84127). Nothing prevents a future collision.
+
+### Edge validation as its own layer {#edge-layer}
+
+[proposal] "I agree that the edge logic should be at its own layer and have its one verification function" (keripy PR #1681, comment of 2026-10-15, R-080, https://github.com/WebOfTrust/keripy/pull/1681#issuecomment-6201960001), "one" reading as "own", staged with `I2I` kept in IPEX `verify` meanwhile. No such layer exists at `94f5423a3`. [code]
 
 ## 6. Two IPEX state machines, and only one of them runs {#two-ipex}
 
 ### V1 and V2 {#ipex-v1}
 
-[code] keripy has two IPEX implementations, and every [code] claim must say which. V1, `vc/protocoling.py`, is what the CLI loads (keripy cli/commands/ipex/list.py, L25 @80f77b73b). Its legal-predecessor table runs `apply`, `offer`, `agree`, `grant`, `admit`, with `spurn` answering any of the first four; it rejects a second response to one prior and fails closed on an unmatched route (keripy vc/protocoling.py, PreviousRoutes and verify, L16-22 and L55-106 @b8f60166b; byte-identical at `80f77b73b`). V2, `acdc/ipexing.py`, is library and tests only: its `loadHandlers` (L2149-2167 @80f77b73b) has no caller in `src/keri`. V2 claims are about code that exists, not behavior keripy performs, and every authentication mechanism in sections 7, 9 and 10 is in V2.
+[code] keripy has two IPEX implementations, and every [code] claim must say which. V1, `vc/protocoling.py`, is what the CLI loads (keripy cli/commands/ipex/list.py, L25 @94f5423a3). Its legal-predecessor table runs `apply`, `offer`, `agree`, `grant`, `admit`, with `spurn` answering any of the first four; it rejects a second response to one prior and fails closed on an unmatched route (keripy vc/protocoling.py, PreviousRoutes and verify, L16-22 and L55-106 @b8f60166b; byte-identical at `94f5423a3`). V2, `acdc/ipexing.py`, is library and tests only: its `loadHandlers` (L2851 @94f5423a3) has no caller in `src/keri`. V2 claims are about code that exists, not behavior keripy performs, and every authentication mechanism in sections 7, 9 and 10 is in V2.
 
 ### The split is deliberate {#split-deliberate}
 
@@ -112,15 +124,15 @@ The operator namespace has no registry. The Dossier spec writes `MxN`, `RMxN`, `
 
 ### Where V1 and V2 disagree {#v1-v2-differences}
 
-[code] V2 lets a `grant` answer an `apply` directly, `Ipex.grant: (Ipex.apply, Ipex.agree),` (keripy acdc/ipexing.py, PreviousRoutes, L35 @80f77b73b); V1 requires `agree` first; neither ACDC branch specifies predecessors. V2 adds role symmetry between prior and reply, rejection of orphan nests and dangling edges because "grant must disclose one fully closed reachable DAG rooted at the message's `a.o[0]`", a one-nest-per-node guard against substitution, edge-group evaluation, and the checks of sections 7 and 10.
+[code] V2 lets a `grant` answer an `apply` directly, `Ipex.grant: (Ipex.apply, Ipex.agree),` (keripy acdc/ipexing.py, PreviousRoutes, L41 @94f5423a3); V1 requires `agree` first; neither ACDC branch specifies predecessors. V2 adds role symmetry between prior and reply, rejection of orphan nests and dangling edges, "Grant fails closed on dangling references" (IpexHandler._walkGraph, L1267), a one-nest-per-node guard against substitution, edge-group evaluation, the plan and Offer checks of [section 4](#dp-in-keripy), per-node schema validation, and the checks of sections 7 and 10.
 
 ### Spurning a grant {#spurn-grant}
 
-[code] V2 refuses a spurn only of a grant that answers a prior: `if verb == Ipex.spurn and pverb == Ipex.grant and pserder.ked.get("p", ""):` (keripy acdc/ipexing.py, IpexHandler._verifyReplyChain, L761 @80f77b73b), unchanged at `c102367ea`. `raw/09` section 7b states the reverse and is wrong. V1 lets a spurn answer any grant. The rule is Sam's: "an unsolicited grant i.e using a xip message should be spurnable. that is nuance i did not anticipate." (keripy issue #1628, comment of 2026-08-19, R-051, https://github.com/WebOfTrust/keripy/issues/1628#issuecomment-5349282926). A disclosee who never asked can refuse a credential; one who agreed cannot repudiate after the grant. [proposal] Neither branch's route table has a row for spurning a `grant` (ACDC spec > IPEX Protocol Messages, L1812-1816 @f0bd097de; L2005-2009 @2362e48a1) ([question 11](#q-spurn-grant)).
+[code] V2 refuses a spurn only of a grant that answers a prior: `if verb == Ipex.spurn and pverb == Ipex.grant and pserder.ked.get("p", ""):` (keripy acdc/ipexing.py, IpexHandler._verifyReplyChain, L939 @94f5423a3). V1 lets a spurn answer any grant. The rule is Sam's: "an unsolicited grant i.e using a xip message should be spurnable. that is nuance i did not anticipate." (keripy issue #1628, comment of 2026-08-19, R-051, https://github.com/WebOfTrust/keripy/issues/1628#issuecomment-5349282926). A disclosee who never asked can refuse a credential; one who agreed cannot repudiate after the grant. [proposal] Neither branch's route table has a row for spurning a `grant` (ACDC spec > IPEX Protocol Messages, L1812-1816 @f0bd097de; L2005-2009 @2362e48a1) ([question 11](#q-spurn-grant)).
 
 ### Deferral and refusal {#defer-vs-refuse}
 
-[code] The exchange handler escrows a message whose chain is missing, because "Registry-backed IPEX grants may arrive before the disclosee has fetched the issuer's TEL history from observers", and drops one whose behavior check fails before it is logged (keripy peer/exchanging.py, Exchanger.processEvent, L389-410 @80f77b73b). Only the grant route opts out of waiting on missing foreign evidence: "Opted routes request the KEL and continue with known factors." (keripy peer/exchanging.py, Exchanger.processEvent, L167 @80f77b73b).
+[code] The exchange handler escrows a message whose chain is missing, because "Registry-backed IPEX grants may arrive before the disclosee has fetched the issuer's TEL history from observers", and drops one whose behavior check fails before it is logged (keripy peer/exchanging.py, Exchanger.processEvent, L390-406 @94f5423a3). A message whose schema is not cached escrows separately, under its exchange and schema SAIDs, while the schema is queried (L408-427). Only the grant route opts out of waiting on missing foreign evidence: "Opted routes request the KEL and continue with known factors." (keripy peer/exchanging.py, Exchanger.processEvent, L170 @94f5423a3).
 
 ## 7. Authentication factors: the second problem {#authentication-factors}
 
@@ -132,11 +144,11 @@ Each ACDC in a granted DAG needs an Issuer factor; the `grant` needs a fresh Gra
 
 ### The issuer factor in keripy {#issuer-factor-every-node}
 
-[code] V2 requires "one valid issuer authentication factor per node" (keripy acdc/ipexing.py, IpexHandler._verifyIssuerAuthGraph, L1132 @80f77b73b), choosing one without fallthrough: registry if a top-level `rd` is present, else an issuer-KEL seal, where "An invalid anchor must not silently downgrade the ACDC to signature authentication.", else signatures that "already name the current state" (keripy acdc/ipexing.py, IpexHandler._verifyIssuerAuthNode, L1237-1240 @80f77b73b). By inference from the code, not a run, an unanchored ACDC signed under since-rotated keys no longer authenticates in a V2 grant ([question 9](#q-current-keys)).
+[code] V2 authenticates each node by "its declared issuer authentication factor" (keripy acdc/ipexing.py, IpexHandler._authenticateIssuer, L1822 @94f5423a3), without fallthrough: registry if a top-level `rd` is present, else an issuer-KEL seal, where "An invalid anchor must not silently downgrade the ACDC to signature authentication." (L1889-1890), else signatures that "already name the current state" (L1927). The result is a verdict member, "so an Operator that does not need this node is not made to wait on it or fail because of it." (IpexHandler._verifyIssuerAuthNode, L1801-1803): a node behind an unneeded `OR` branch may fail without failing the grant, while the origin's factor is always required. By inference from the code, not a run, an unanchored ACDC signed under since-rotated keys no longer authenticates in a V2 grant ([question 9](#q-current-keys)).
 
 ### Vocabulary and the receiver AID {#receiver-aid}
 
-The Discloser sends `offer` and `grant`; the Disclosee sends `apply`, `agree` and `admit`. "In common parlance, a Grantor is a Presentor, and the grant is a presentation." Every message names both parties, and Sam treats the negotiating AIDs as the price of a binding contract rather than a leak: "Proof of participation is not the same as correlation." (keripy discussion #1542, comment of 2026-07-23, R-054, https://github.com/WebOfTrust/keripy/discussions/1542#discussioncomment-17755467). [proposal] V2 refuses a reply whose prior names no receiver (keripy acdc/ipexing.py, IpexHandler._verifyReplyChain, L766-768 @80f77b73b). [code]
+The Discloser sends `offer` and `grant`; the Disclosee sends `apply`, `agree` and `admit`. "In common parlance, a Grantor is a Presentor, and the grant is a presentation." (keripy discussion #1613 > Introduction). Every message names both parties, and Sam treats the negotiating AIDs as the price of a binding contract rather than a leak: "Proof of participation is not the same as correlation." (keripy discussion #1542, comment of 2026-07-23, R-054, https://github.com/WebOfTrust/keripy/discussions/1542#discussioncomment-17755467). [proposal] V2 refuses a reply whose prior names no receiver (keripy acdc/ipexing.py, IpexHandler._verifyReplyChain, L945-947 @94f5423a3). [code]
 
 ## 8. Freshness: KRAM, and what rests on it {#freshness-kram}
 
@@ -144,9 +156,9 @@ KRAM is treated in [chapter 09](09-kram-and-request-authentication.md); this sec
 
 ### The evidence policy {#evidence-policy}
 
-[code] keripy's `Kramer` passes non-sender attachments through, and each route decides their fate: a route without a `verifyEvidence` policy rejects foreign evidence (keripy peer/exchanging.py, Exchanger.processEvent, L140 @80f77b73b). In V2, "Only Grant accepts supplemental grantor evidence." (keripy acdc/ipexing.py, IpexHandler.verifyEvidence, L1574 @80f77b73b), keeping signatures under the endorser's current establishment event and fresh source seals, a valid seal displacing the same AID's signatures. Accepted endorsements are indexed by AID in `eidx`. V1 has no policy and refuses. A valid source seal authenticates an `exn` sender on its own, after which an invalid optional sender signature group is tolerated; do not simplify that into a conjunction.
+[code] keripy's `Kramer` passes non-sender attachments through, and each route decides their fate: a route without a `verifyEvidence` policy rejects foreign evidence (keripy peer/exchanging.py, Exchanger.processEvent, L283-287 @94f5423a3). In V2, "Only Grant accepts supplemental grantor evidence." (keripy acdc/ipexing.py, IpexHandler.verifyEvidence, L2232 @94f5423a3). It keeps non-sender signatures only under the endorser's current establishment event, but a verified source seal survives rotation: "A later key rotation does not invalidate that permanent commitment." (L2247-2248). A valid seal displaces the same AID's signatures, and accepted signers and anchorers are indexed by AID in `eidx`. V1 has no policy and refuses. A valid source seal authenticates an `exn` sender on its own, after which an invalid optional sender signature group is tolerated; do not simplify that into a conjunction. The V2 builder signs "only when no sender anchor was created so the wire carries one sender factor." (keripy acdc/ipexing.py, _sign, L437-438 @94f5423a3).
 
-V2 also reads KRAM's acceptance time: "A presentation requirement needs a completed KRAM acceptance." (keripy acdc/ipexing.py, IpexHandler._verifyPresentationAuthGraph, L1524 @80f77b73b), with the receiver time `rdt` as the registry-history cutoff ([chapter 10, section 6](10-presentation-registries.md#rdt-coupling)).
+V2 also reads KRAM's acceptance time: "A presentation requirement needs a completed KRAM acceptance." (keripy acdc/ipexing.py, IpexHandler._verifyPresentationAuthGraph, L2181 @94f5423a3), with the receiver time `rdt` as the registry-history cutoff ([chapter 10, section 6](10-presentation-registries.md#rdt-coupling)).
 
 ### Tethering {#tethering}
 
@@ -164,7 +176,7 @@ V2 also reads KRAM's acceptance time: "A presentation requirement needs a comple
 
 ### What keripy does with endorsements {#keripy-endorsement}
 
-[code] V2's `grant` generator takes endorsers, "Additional local habitats that sign the same outer exchange as non-sender grantors (e.g proxy AIDs).", and anchorers (keripy acdc/ipexing.py, _sign, L291-294 @80f77b73b). The verifier filters and stores endorsements as [section 8](#evidence-policy) describes, then unpacks `_, _, extraSeals = evidence` (keripy acdc/ipexing.py, IpexHandler.verify, L605 @80f77b73b) and discards the signatures: only seals count, and only toward `ax`. #1613's per-Grantor endorsement requirement has no consumer, the multisig pre-protocol is moot in the code, and whether non-sender signatures are threshold-checked is unverified ([question 6](#q-endorsement-signatures)).
+[code] V2's `grant` generator takes endorsers, "Additional local habitats that sign the same outer exchange as non-sender endorsers (e.g. principal AIDs).", and anchorers (keripy acdc/ipexing.py, _sign, L354-357 @94f5423a3), #1613's shape of a proxy sender and an endorsing principal. The verifier filters and stores endorsements as [section 8](#evidence-policy) describes, then unpacks `_, _, extraSeals = evidence` (keripy acdc/ipexing.py, IpexHandler.verify, L784 @94f5423a3) and discards the signatures: only seals count, and only toward `ax`. #1613's per-Grantor endorsement requirement has no consumer, the multisig pre-protocol is moot in the code, and whether non-sender signatures are threshold-checked is unverified ([question 6](#q-endorsement-signatures)).
 
 ### Live co-presence versus durable consent {#copresence-vs-consent}
 
@@ -180,15 +192,21 @@ This comes from #1613, in neither ACDC branch; all three anchoring legs are [cod
 
 ### `ax` in keripy {#ax-keripy}
 
-[code] Anchoring is negotiated state: replies preserve it, and an `offer` may initiate it but not drop it (keripy acdc/ipexing.py, IpexHandler.verify, L561-568 @80f77b73b); that one-sidedness is an invariant. "Agree and Admit satisfy anchoring directly through their sender." (keripy acdc/ipexing.py, IpexHandler.verify, L573 @80f77b73b), by a seal in the sender's KEL whose digest is the exn's SAID; missing KEL evidence defers rather than refuses. For a grant, "A truthy ax requires one permitted Grant anchorer." (keripy acdc/ipexing.py, IpexHandler.verify, L620 @80f77b73b): any anchoring AID among `candidates = (serder.pre, origin.iseaid, origin.israid)` (L648), the sender or the origin's Issuee or Issuer, including Issuees a presentation registry authenticated. So a grant can satisfy `ax` with no sender anchor. `o` and `ax` are one-item lists on the wire, "until Multi DAG" ([section 11](#dag-soup)).
+[code] Anchoring is negotiated state: replies preserve it, and an `offer` may initiate it but not drop it (keripy acdc/ipexing.py, IpexHandler.verify, L640-647 @94f5423a3); that one-sidedness is an invariant. "Agree and Admit satisfy anchoring directly through their sender." (keripy acdc/ipexing.py, IpexHandler.verify, L652 @94f5423a3), by a seal in the sender's KEL whose digest is the exn's SAID; missing KEL evidence defers rather than refuses. For a grant, "A truthy ax requires one permitted Grant anchorer." (keripy acdc/ipexing.py, IpexHandler.verify, L797 @94f5423a3): any anchoring AID among `candidates = (serder.pre, origin.iseaid, origin.israid)` (L816), the sender or the origin's Issuee or Issuer, including Issuees a presentation registry authenticated. So a grant can satisfy `ax` with no sender anchor. `o` and `ax` are one-item lists on the wire, "until Multi DAG" ([section 11](#dag-soup)).
 
 ### An origin `o` on the `offer` {#offer-origin}
 
-[proposal] "The offer message also needs to have an origin `o` field to replace the ACDC field." (keripy PR #1629, review of 2026-08-20, R-053, https://github.com/WebOfTrust/keripy/pull/1629#pullrequestreview-4987948288), naming the metadata ACDC DAG whose rule section the agreent must see before agreeing. Neither branch has it.
+[proposal] "The offer message also needs to have an origin `o` field to replace the ACDC field." (keripy PR #1629, review of 2026-08-20, R-053, https://github.com/WebOfTrust/keripy/pull/1629#pullrequestreview-4987948288), naming the metadata ACDC DAG whose rule section the agreent must see before agreeing. Neither branch has it. keripy V2 has it as an optional one-SAID list on the `offer`, and holds the grant to it ([section 4](#offer-fulfillment)). [code]
 
 ### Presentation registries {#presentation-registries}
 
-[Chapter 10](10-presentation-registries.md) is their home. An Issuee-controlled registry binds the `grant` SAID, signalled by the issuer through `rd` and `i` in the ACDC's attribute section. V2 will "Verify every presentation registry declared across the DAG." (keripy acdc/ipexing.py, IpexHandler.verify, L609 @80f77b73b) on every `grant`, and a binding authenticates its Issuee without an endorsement, where #1613 says such a grant is "always double-authenticated" ([chapter 10, section 7](10-presentation-registries.md#keripy-verifier)). #1613 also floats restricting `rd` in `a` to presentation registries ([question 5](#q-rd-restriction)).
+[Chapter 10](10-presentation-registries.md) is their home. An Issuee-controlled registry binds the `grant` SAID, signalled by the issuer through `rd` and `i` in the ACDC's attribute section. V2 will "Verify every presentation registry declared for this disclosure." (keripy acdc/ipexing.py, IpexHandler.verify, L788 @94f5423a3) on every `grant`, reading declarations from `a` only and exempting the origin of an issuance grant, Issuer to Issuee. A binding authenticates its Issuee without an endorsement, where #1613 says such a grant is "always double-authenticated" ([chapter 10, section 7](10-presentation-registries.md#keripy-verifier)). [code] #1613 also floats restricting `rd` in `a` to presentation registries ([question 5](#q-rd-restriction)).
+
+### Auxiliary registry exchanges: `/ipex/dhke` and `/ipex/unblind` {#aux-registry-exchanges}
+
+[proposal] #1740, Sam's draft of 2026-10-30, concerns the Issuer's blindable state registry. It adds two signed `qry`/`rpy` pairs beside an IPEX, kept out of its hash chain so the DHKE is not publicly correlatable: `/ipex/dhke`, agreeing a salt per registry between Issuer and Issuee, and `/ipex/unblind`, by which a verifier holding later `bup` events asks the presenter to unblind them. "This ephemerally binds the auxiliary message pair to the associated IPEX issuance exchange without changing the IPEX exchange messages." (keripy discussion #1740 > Auxiliary Mechanism for DHKE). It adds that "the Disclosee (verifier) MUST NOT send an `admit` message until it has fully verified the state of any ACDCs in the disclosure." (#1740 > Auxiliary Mechanism for Unblinding Registry State), a duty on the sender that keripy has no hook for. Nothing implements either exchange. [code]
+
+The in-band order clashes with keripy: "The Issuer sends the query after its `grant` message." (#1740 > Auxiliary Mechanism for DHKE), so the issuing `bup` follows the grant, but "A grant with rd must carry exactly one node-local registry proof group." (keripy tests/acdc/test_ipexing.py, L5721 @94f5423a3), and V2 refuses one without it ([question 12](#q-dhke-order)). [code]
 
 ### Why anchor, and the contractual logic {#contract-logic}
 
@@ -230,22 +248,24 @@ Under the ontology recipe a presentation is a branch whose source is not the ont
 
 ## 13. Ground-truth matrix {#ground-truth}
 
-keripy at `80f77b73b` unless a cell says otherwise; V2 means `acdc/ipexing.py`, which nothing in `src/keri` calls. Operator rows are in [chapter 05, section 5.1](05-acdc-and-verifiable-data.md#verifying-ground-truth).
+keripy at `94f5423a3` unless a cell says otherwise; V2 means `acdc/ipexing.py`, which nothing in `src/keri` calls. Operator rows are in [chapter 05, section 5.1](05-acdc-and-verifiable-data.md#verifying-ground-truth).
 
 | Construct | ACDC `main` | ACDC `v1.1` | Proposed in | keripy |
 |---|---|---|---|---|
 | One DAG, one origin | absent | present | #1549 | grant must disclose one closed DAG from `a.o[0]` (V2) |
 | Bespoke origin | present | present | #1627 | named, not built |
-| `dp` paths in `q` | absent | present | #1512, #1542, #1549, PR #1698 | wire shape on `apply`/`offer`; not enforced; at `c102367ea` also `agree`/`grant` |
+| `dp` paths in `q` | absent | present | #1512, #1542, #1549, PR #1698 | required on `apply`, `offer`, `agree`, `grant`; grant must match the plan exactly (V2) |
 | `apply`/`offer` route rows | label lists | `dp` | — | `dp` (V2) |
 | Spurn of `grant` | no row | no row | issue #1628 | V2: flow-starting only; V1: any |
 | Predecessor table | none | none | — | V1: `agree` before `grant`; V2: `grant` may answer `apply` |
 | KRAM | absent from KERI spec | — | KRAM whitepaper, #1613 | see [chapter 09](09-kram-and-request-authentication.md#keripy) |
-| Non-sender endorsements | — | — | #1555, #1613 | V2 `grant` keeps valid subset, then discards signatures from the verdict |
-| Issuer factor per node | — | — | #1613 | V2: exactly one of registry, KEL seal, current-key signature |
+| Non-sender endorsements | — | — | #1555, #1613 | V2 `grant` keeps current-key signatures and seals across rotation, then discards signatures from the verdict |
+| Issuer factor per node | — | — | #1613 | V2: one of registry, KEL seal, current-key signature, as a verdict an unneeded `OR` branch may lose |
 | `ax`, origin `o` in `grant` | — | — | #1613 | one-item lists; `grant` anchored by sender or origin Issuee or Issuer (V2) |
-| Origin `o` in `offer` | — | — | PR #1629 | not checked |
-| Presentation registry | `rd` in `a` permitted | same | #1095, #1613 | verified on V2 `grant` ([chapter 10](10-presentation-registries.md#keripy-verifier)) |
+| Origin `o` in `offer` | — | — | PR #1629 | optional SAID; grant must keep the Offer's promise (V2) |
+| Presentation registry | `rd` in `a` permitted | same | #1095, #1613 | verified on V2 `grant`, issuance origin exempt ([chapter 10](10-presentation-registries.md#keripy-verifier)) |
+| Disclosed node's registry state | — | — | #1740 | V2 records in `exrs`, never judges; v1 refuses a revoked far node |
+| `/ipex/dhke`, `/ipex/unblind` | — | — | #1740 | absent |
 | Tethering | — | — | #1613 | absent |
 | `ME`, `IAND`, group-scoped defaults | — | — | #1555, #1556 | absent at `42db8991b`, not re-tested |
 
@@ -279,15 +299,15 @@ Either a policy layer reading `eidx` is coming or anchoring has replaced #1613's
 
 ### Question 7: What should a validator do with an unrecognized operator token? {#q-unknown-operator}
 
-keripy's two modules differ, and Sam assents to the diagnosis that neither branch says: "This seems right." (kswg-acdc-specification issue #201, comment of 2026-07-31, R-031, https://github.com/trustoverip/kswg-acdc-specification/issues/201#issuecomment-5138898171). No remedy is stated ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#module-disagreement)).
+keripy's two modules now both refuse to read past one, but the v1 site says the refusal "needs S. Smith's buy-in via ACDC #201" (keripy vdr/verifying.py, Verifier.verifyChain, L826 @94f5423a3). Sam assents to the diagnosis that neither branch says: "This seems right." (kswg-acdc-specification issue #201, comment of 2026-07-31, R-031, https://github.com/trustoverip/kswg-acdc-specification/issues/201#issuecomment-5138898171). No remedy is stated ([chapter 05, section 5.1](05-acdc-and-verifiable-data.md#module-disagreement)).
 
-### Question 8: Is unenforced `dp` a gap or a design? {#q-dp-enforcement}
+### Question 8: Does `dp` enforcement belong in the verifier? {#q-dp-enforcement}
 
-Sam's view on a neighboring question is that "each type of use case needs a specific workflow that defines by construction what is disclosed at what stage." (issue #1532, comment of 2026-07-23, R-063, https://github.com/WebOfTrust/keripy/issues/1532#issuecomment-5058749739). If `dp` enforcement follows that, it belongs in EGF workflow tooling, not the verifier; the inference is this chapter's. Whether KERIA or signify enforce it is unchecked.
+keripy V2 enforces it there ([section 4](#dp-in-keripy)). Sam's view on a neighboring question is that "each type of use case needs a specific workflow that defines by construction what is disclosed at what stage." (issue #1532, comment of 2026-07-23, R-063, https://github.com/WebOfTrust/keripy/issues/1532#issuecomment-5058749739), which points to EGF workflow tooling; the inference is this chapter's. Whether a SAID-only Offer answered by a different root can succeed is untraced, and KERIA and signify are unchecked.
 
 ### Question 9: Is "current keys only" intended for issuer signatures? {#q-current-keys}
 
-If so, rotation silently invalidates every unanchored, registryless ACDC an issuer signed, for IPEX; if not, it is a bug ([section 7](#issuer-factor-every-node)).
+If so, rotation silently invalidates every unanchored, registryless ACDC an issuer signed, for IPEX; if not, it is a bug ([section 7](#issuer-factor-every-node)). The same module keeps an endorser's seal across rotation and says why ([section 8](#evidence-policy)); for issuer signatures it gives no reason.
 
 ### Question 10: `dp`'s syntax is normative and its only binding is not {#q-dp-normative-seam}
 
@@ -297,12 +317,16 @@ Sam forecasts, assuming an IETF working group, that "IPEX probably gets its own 
 
 Sam and V2 say so; the spec has no row and V1 differs ([section 6](#spurn-grant)).
 
+### Question 12: How does #1740's issuance order meet keripy's grant? {#q-dhke-order}
+
+The in-band `bup` follows the `grant`, which keripy V2 then refuses ([section 10](#aux-registry-exchanges)); the out-of-band salt exchange fits. Either the issuance grant may lack its node's registry proof, or keripy must defer it; neither source says which.
+
 ## Sources {#sources}
 
 - ACDC spec — Authentic Chained Data Containers (ACDC) specification, Trust Over IP. trustoverip/kswg-acdc-specification, spec/spec-body.md, on two lines; the branch is part of the citation. `main` @`f0bd097de` (2026-08-28) for [spec] claims (route table L1809-1818, Bespoke Issued ACDCs L1860). `v1.1` @`2362e48a1` (2026-09-11) for [spec-next] claims (Disclosure Paths L1809-1986, `dp` in `apply`/`offer` L2013-2019, route table L2004-2009, bulk issuance L3049). Mined in raw/03.
-- Dossier spec — KSWG Dossier specification, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md, Threshold Operators (L364), @`6037adfb9` (2026-08-12). Mined in raw/04.
-- keripy — KERI reference implementation, WebOfTrust/keripy, src/keri and tests. `main` @`80f77b73b` (2026-10-01) for [code] claims not stamped otherwise (`acdc/ipexing.py`, `peer/exchanging.py`, `cli/commands/ipex/list.py`). `upstream/main` @`b8f60166b` (2026-09-14) for `_validSingleDagList` and `vc/protocoling.py` (byte-identical at `80f77b73b`). @`42db8991b` (2026-08-25) for the `ME`, `IAND` and group-default absences. Upstream `main` @`c102367ea` (2026-10-14), `acdc/ipexing.py` only, via the GitHub contents API. Mined in raw/09, raw/15, raw/16 and raw/21.
-- keripy discussions — WebOfTrust/keripy discussions, https://github.com/WebOfTrust/keripy/discussions, by SmithSamuelM; bodies are revised in place, so quote, do not cite by line; snapshots of 2026-09-15, ruling comments from the raw/21 cache of 2026-10-14. #1512 (R-062), #1542 (R-054 to R-056), #1549, #1555, #1556, #1613 (body says v1.5 2026-08-18), #1617 (R-064), #1627 (last edited 2026-09-11), #1095. Mined in raw/09, raw/15, raw/16 and raw/21.
-- keripy issues and PRs — WebOfTrust/keripy, https://github.com/WebOfTrust/keripy/issues and https://github.com/WebOfTrust/keripy/pulls, cited for Sam's rulings by comment URL from the raw/21 cache of 2026-10-14: PR #1170 (R-078), PR #1492 (R-057), PR #1505 (R-049, R-050, R-058), issue #1532 (R-063), issue #1628 (R-051), PR #1629 (R-053), PR #1698 (R-052). Mined in raw/21.
+- Dossier spec — KSWG Dossier specification, v0.7 Draft, Trust Over IP. trustoverip/kswg-dossier-specification, spec/dossier-spec-body.md, `main` @`6fcf84127` (2026-10-13): The Dossier as Graph Root (L92-102), Presentation as a Self-Contained Package (L338-351), Threshold Operators (L623-633). Mined in raw/04.
+- keripy — KERI reference implementation, WebOfTrust/keripy, src/keri and tests. `main` @`94f5423a3` (2026-10-30) for [code] claims not stamped otherwise (`acdc/ipexing.py`, `acdc/chaining.py`, `peer/exchanging.py`, `vdr/verifying.py`, `cli/commands/ipex/list.py`, `tests/acdc/test_ipexing.py`). `upstream/main` @`b8f60166b` (2026-09-14) for `vc/protocoling.py` (byte-identical at `94f5423a3`). @`42db8991b` (2026-08-25) for the `ME`, `IAND` and group-default absences. The edge-reduction code merged in PR #1681 was written by Daniel Hardman, the corpus's author, so its comments' readings of the ACDC spec are an interested party's. Mined in raw/09, raw/15, raw/16 and raw/21.
+- keripy discussions — WebOfTrust/keripy discussions, https://github.com/WebOfTrust/keripy/discussions, by SmithSamuelM; bodies are revised in place, so quote, do not cite by line; snapshots of 2026-09-15, #1740 of 2026-11-03, ruling comments from the raw/21 cache of 2026-10-14. #1512 (R-062), #1542 (R-054 to R-056), #1549, #1555, #1556, #1613 (body says v1.5 2026-08-18), #1617 (R-064), #1627 (last edited 2026-09-11), #1740 (a draft, Sam still adding examples on 2026-11-01), #1095. Mined in raw/09, raw/15, raw/16 and raw/21.
+- keripy issues and PRs — WebOfTrust/keripy, https://github.com/WebOfTrust/keripy/issues and https://github.com/WebOfTrust/keripy/pulls, cited for Sam's rulings by comment URL from the raw/21 cache of 2026-10-14 and its scan of 2026-11-03: PR #1170 (R-078), PR #1492 (R-057), PR #1505 (R-049, R-050, R-058), issue #1532 (R-063), issue #1628 (R-051), PR #1629 (R-053), PR #1681 (R-080), PR #1698 (R-052). Mined in raw/21.
 - KRAM whitepaper — KERI Request Authentication Mechanism, v0.7.6, Samuel M. Smith. SmithSamuelM/Papers, whitepapers/kram.md, `master` @`67550b477`. Treated in [chapter 09](09-kram-and-request-authentication.md). Mined in raw/15.
 - kswg-acdc-specification issues and PRs — trustoverip/kswg-acdc-specification, https://github.com/trustoverip/kswg-acdc-specification/issues. Issue #201 (R-031), mined in raw/21; PR #204 (pending), not mined in a raw note.

@@ -57,10 +57,10 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: fbdd4a615, date: 2026-10-03},
+         last_scanned: {commit: fbdd4a615, date: 2026-11-03},
          last_mined:   {commit: fbdd4a615, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[spec-next]",
-         last_scanned: {commit: 3753f3797, date: 2026-10-03},
+         last_scanned: {commit: 3753f3797, date: 2026-11-03},
          last_mined:   {commit: 3753f3797, date: 2026-09-15}}
     feeds: [raw/01-keri-spec.md]
     chapters: ["01", "02", "03", "04", "06", "07", "09"]
@@ -78,10 +78,10 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: bad6edd84, date: 2026-10-03},
+         last_scanned: {commit: bad6edd84, date: 2026-11-03},
          last_mined:   {commit: bad6edd84, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[spec-next]",
-         last_scanned: {commit: 65fd7518b, date: 2026-10-03},
+         last_scanned: {commit: 65fd7518b, date: 2026-11-03},
          last_mined:   {commit: 65fd7518b, date: 2026-09-15}}
     feeds: [raw/02-cesr-spec.md]
     chapters: ["04", "07"]
@@ -99,10 +99,10 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: f0bd097de, date: 2026-10-03},
+         last_scanned: {commit: f0bd097de, date: 2026-11-03},
          last_mined:   {commit: f0bd097de, date: 2026-09-15}}
       - {name: v1.1, role: forward, marker: "[spec-next]",
-         last_scanned: {commit: 2362e48a1, date: 2026-10-03},
+         last_scanned: {commit: 2362e48a1, date: 2026-11-03},
          last_mined:   {commit: 2362e48a1, date: 2026-09-15}}
     feeds: [raw/03-acdc-spec.md]
     chapters: ["05", "07", "08", "10"]
@@ -115,14 +115,19 @@ sources:
     kind: git
     path: me/kswg-dossier-specification
     remote: upstream
-    watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
+    watch: [spec/dossier-spec-body.md, spec/dossier-spec-head.md, spec/terms-definitions, schemas, .ref]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: 3ff1b3202, date: 2026-10-03},
-         last_mined:   {commit: b9227753c, date: 2026-09-15}}
+         last_scanned: {commit: 6fcf84127, date: 2026-11-03},
+         last_mined:   {commit: 6fcf84127, date: 2026-11-03}}
     feeds: [raw/04-dossier-spec.md]
     chapters: ["05", "06", "08"]
+    caveat: >-
+      Re-mined 2026-11-03 at 6fcf84127: spec/dossier-spec-body.md and spec/dossier-spec-head.md in full;
+      schemas/dossier-base.json and schemas/endorsement.json only at the lines raw/04 cites; six of the 29
+      glossary files. The .ref material is gitignored and cannot be pinned, so freshness cannot see quotes
+      from it. spec/dossier-spec-head.md and schemas/ joined `watch` on 2026-11-03.
 
   # ---------------------------------------------------------------- implementations
 
@@ -130,23 +135,28 @@ sources:
     kind: git
     path: wot/keripy
     remote: upstream
-    watch: [src/keri]
+    # tests/spec is left out on purpose: it copies specification text, and freshness searches one
+    # combined corpus, so watching it would let a dropped spec quote pass on keripy's copy. ~2s7o
+    watch: [src/keri, tests/acdc, tests/app, tests/core, tests/sedi, tests/vdr]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 80f77b73b, date: 2026-10-03},
-         last_mined:   {commit: 80f77b73b, date: 2026-10-03}}
+         last_scanned: {commit: 94f5423a3, date: 2026-11-03},
+         last_mined:   {commit: 94f5423a3, date: 2026-11-03}}
     feeds: [raw/09-keripy-code.md, raw/15-kram.md, raw/16-presentation-registries.md,
             raw/17-spac-tsp-privacy.md, raw/18-infrastructure-ops.md,
             raw/19-authorization-and-agents.md, raw/21-sam-rulings.md]
     chapters: ["03", "04", "05", "08", "09", "10", "11", "12", "13"]
     caveat: >-
-      Mined 2026-10-03 at 80f77b73b, PARTIALLY, and each note's header says which parts: raw/09 read
-      acdc/ipexing.py and vdr/verifying.py in full, counting.py/structing.py/exchanging.py in part, and
-      only the cited passages of coring.py/eventing.py/parsing.py; vdr/eventing.py and app/habbing.py were
-      NOT re-read. raw/16 read the presentation-registry paths of ipexing.py and regeventing.py; raw/15
-      read only the changed hunks of kraming.py and Baser.clean(). Claims outside those regions keep their
-      older stamps (b8f60166b or 3a8e01ae). Version line still 2.1.0-dev1. KERIA consumes keripy 1.2.x
+      Mined 2026-11-03 at 94f5423a3, PARTIALLY, and each note's header says which parts: raw/09 read
+      acdc/chaining.py, vdr/verifying.py and acdc/scheming.py in full, acdc/ipexing.py in full except the
+      `apply` builder and the admit/spurn/loadHandlers bodies, the changed regions of vdr/eventing.py and
+      peer/exchanging.py, and only diffs of kering.py, core/eventing.py, counting.py, regeventing.py,
+      registering.py, basing.py and habbing.py; coring.py, indexing.py, helping.py and serdering.py were
+      NOT re-read, and raw/09's sections resting on them keep 80f77b73b or 3a8e01ae stamps. raw/21 read
+      core/eventing.py's out-of-order escrow path and parsing.py's msgProcess drop. raw/15 (KRAM) was not
+      re-read this pass: kraming.py did not change. raw/16's 2026-11 reading is recorded in its header.
+      Version line still 2.1.0-dev1. KERIA consumes keripy 1.2.x
       (keri==1.2.14), not this line — see raw/10 §11a. raw/17 (spac/, app/forwarding.py, app/keeping.py,
       peer/exchanging.py, core/counting.py) and raw/18 (app/agenting.py, app/indirecting.py) cite the files
       they read at 927c0cb87, which is ahead of last_mined; those readings cover only the files named.
@@ -159,7 +169,7 @@ sources:
     check: monthly
     branches:
       - {name: knowledge, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 9489ac9bd, date: 2026-10-03},
+         last_scanned: {commit: 9489ac9bd, date: 2026-11-03},
          last_mined:   {commit: 9489ac9bd, date: 2026-09-15}}
     feeds: [raw/08-keripy-kb.md]
     chapters: ["03", "04", "07"]
@@ -178,7 +188,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 928ce26a4, date: 2026-10-03},
+         last_scanned: {commit: 928ce26a4, date: 2026-11-03},
          last_mined:   {commit: 928ce26a4, date: 2026-10-03}}
     feeds: [raw/10-keria-signify.md]
     chapters: ["03", "06"]
@@ -194,18 +204,20 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 5a174b545, date: 2026-10-03},
-         last_mined:   {commit: 5a174b545, date: 2026-10-03}}
+         last_scanned: {commit: 6e07dc926, date: 2026-11-03},
+         last_mined:   {commit: 6e07dc926, date: 2026-11-03}}
     feeds: [raw/10-keria-signify.md]
     chapters: ["03", "06"]
     caveat: >-
       RETARGETED 2026-09-15, development -> main, by hand after the refresh flagged it. `development`
       is a real branch and genuinely the head of that name, but it has not moved since 2024-04-12;
-      the project develops on `main` (ffba8406e, 2026-09-10). A pin on a dormant branch is the
-      failure this manifest exists to prevent, wearing a valid commit hash. ffba8406e was
-      SPOT-CHECKED, not fully re-read — raw/10 says which claims that covers. Note also that the
-      CESR post-quantum and stream-parser work is NOT upstream: those commits live only on
-      feat/cesr-pq-codes and feat/cesr-stream-parser* in Daniel's fork.
+      the project develops on `main`. A pin on a dormant branch is the failure this manifest exists to
+      prevent, wearing a valid commit hash. last_mined 6e07dc926 covers ONLY src/keri/core/parsing.ts
+      (in full), matter.ts's code tables and the exports.ts change (raw/10 §12); the rest of signify-ts
+      remains mined at ffba8406e (spot-checked, not fully re-read) or 5a174b545. The CESR 1.1
+      post-quantum code table (sizes only, no PQ signing or verification) and a v1/v2 CESR stream parser
+      (exported, not called internally) are on upstream main; no tag contains them yet. The codes are
+      [spec-next] in CESR, and kswg-cesr-specification#178 proposes reverting them from v1.1.
 
   # ---------------------------------------------------------------- papers and analysis
 
@@ -217,7 +229,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: 68a5e2f76, date: 2026-10-03},
+         last_scanned: {commit: 68a5e2f76, date: 2026-11-03},
          last_mined:   {commit: 68a5e2f76, date: 2026-10-03}}
     feeds: [raw/05-papers-priority.md, raw/06-papers-di-drift.md, raw/19-authorization-and-agents.md]
     chapters: ["01", "02", "03", "04", "05", "06", "07"]
@@ -234,7 +246,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: 149fa6c35, date: 2026-10-03},
+         last_scanned: {commit: 149fa6c35, date: 2026-11-03},
          last_mined:   {commit: 149fa6c35, date: 2026-07-17}}
     feeds: [raw/07-security-analysis.md]
     chapters: ["01", "02", "07"]
@@ -298,7 +310,7 @@ sources:
     check: monthly
     branches:
       - {name: master, role: standardizing, marker: "[proposal]",
-         last_scanned: {commit: b47f21597, date: 2026-10-14},
+         last_scanned: {commit: b47f21597, date: 2026-11-03},
          last_mined:   {commit: b47f21597, date: 2026-10-14}}
     feeds: [raw/15-kram.md, raw/17-spac-tsp-privacy.md, raw/18-infrastructure-ops.md,
             raw/19-authorization-and-agents.md, raw/20-identity-theory-reputation-sedi.md]
@@ -330,15 +342,19 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
-         last_scanned: {commit: 5599b4556, date: 2026-10-14},
-         last_mined:   {commit: 5599b4556, date: 2026-10-14}}
+         last_scanned: {commit: ccda6b331, date: 2026-11-03},
+         last_mined:   {commit: ccda6b331, date: 2026-11-03}}
     feeds: [raw/17-spac-tsp-privacy.md]
     chapters: ["04", "06", "07", "12"]
     caveat: >-
-      Trust Spanning Protocol, Experimental Implementor's Draft Rev 3 with Errata (2026-09-30), wire version
-      0.2. [spec] means present in the line ToIP is standardizing, and that line calls itself experimental.
-      Only spec/spec.md is rendered (specs.json markdown_paths); the other spec/*.md files are template
-      residue. The test-vector appendix is not mined.
+      Trust Spanning Protocol, status line "Release 1.0" (spec.md L4 @ccda6b331, committed 2026-10-21), wire
+      version 1.0 (`YTSP-BAA`). The repository records no ToIP approval or release date, and the text still
+      carries a "Latest Draft:" label, a placeholder contributor list, an HPKE Internet-Draft as a normative
+      reference and a provisional ML-DSA code; describe it as the editors' Release 1.0, not as ToIP-approved.
+      [spec] means present in the line ToIP is standardizing. Only spec/spec.md is rendered (specs.json
+      markdown_paths); the other spec/*.md files are template residue. The test-vector appendix is not
+      mined. The local `main` in this clone sat at 5599b4556 on 2026-11-03. freshness.py reads a local branch
+      only when its remote-tracking ref is absent, so origin/main is what quotes are checked against.
 
   - id: did-webs-spec
     kind: git
@@ -348,7 +364,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[proposal]",
-         last_scanned: {commit: 2d84ef2b0, date: 2026-10-14},
+         last_scanned: {commit: 2d84ef2b0, date: 2026-11-03},
          last_mined:   {commit: 2d84ef2b0, date: 2026-10-14}}
     feeds: [raw/20-identity-theory-reputation-sedi.md]
     chapters: ["01", "06", "14"]
@@ -369,8 +385,8 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 39e1c3fc7, date: 2026-10-14},
-         last_mined:   {commit: 39e1c3fc7, date: 2026-10-14}}
+         last_scanned: {commit: 48bb46a24, date: 2026-11-03},
+         last_mined:   {commit: 48bb46a24, date: 2026-11-03}}
     feeds: [raw/18-infrastructure-ops.md]
     chapters: ["11"]
     caveat: >-
@@ -385,7 +401,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
-         last_scanned: {commit: 9be717f8a, date: 2026-10-14},
+         last_scanned: {commit: 9be717f8a, date: 2026-11-03},
          last_mined:   {commit: 9be717f8a, date: 2026-10-14}}
     feeds: [raw/18-infrastructure-ops.md]
     chapters: ["11"]
@@ -401,7 +417,7 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
-         last_scanned: {commit: 14c8f616e, date: 2026-10-14},
+         last_scanned: {commit: ab0e3c296, date: 2026-11-03},
          last_mined:   {commit: 14c8f616e, date: 2026-10-14}}
     feeds: [raw/18-infrastructure-ops.md]
     chapters: ["11"]
@@ -416,8 +432,8 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
-         last_scanned: {commit: d6368aef9, date: 2026-10-14},
-         last_mined:   {commit: d6368aef9, date: 2026-10-14}}
+         last_scanned: {commit: f7d7a8fd2, date: 2026-11-03},
+         last_mined:   {commit: f7d7a8fd2, date: 2026-11-03}}
     feeds: [raw/18-infrastructure-ops.md, raw/14-kericonf-2026.md]
     chapters: ["10", "11"]
     caveat: >-
@@ -433,8 +449,8 @@ sources:
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[practice]",
-         last_scanned: {commit: bf14eac4d, date: 2026-10-14},
-         last_mined:   {commit: bf14eac4d, date: 2026-10-14}}
+         last_scanned: {commit: 32dcbd712, date: 2026-11-03},
+         last_mined:   {commit: 32dcbd712, date: 2026-11-03}}
     feeds: [raw/18-infrastructure-ops.md, raw/14-kericonf-2026.md]
     chapters: ["10", "11"]
     caveat: >-
@@ -479,7 +495,7 @@ sources:
     kind: gh-discussions
     repo: WebOfTrust/keripy
     check: monthly
-    since: 2026-10-03
+    since: 2026-11-03
     primary_authors: [SmithSamuelM]
     feeds: [raw/15-kram.md, raw/16-presentation-registries.md, raw/08-keripy-kb.md, raw/21-sam-rulings.md]
     chapters: ["03", "05", "06", "07", "08", "09", "10", "12", "13", "14"]
@@ -496,7 +512,7 @@ sources:
     kind: gh-prs
     repo: WebOfTrust/keripy
     check: monthly
-    since: 2026-10-03
+    since: 2026-11-03
     feeds: []
     chapters: ["03", "04", "05", "08", "09", "10"]
     caveat: >-
@@ -507,7 +523,7 @@ sources:
     kind: gh-issues
     repo: WebOfTrust/keripy
     check: monthly
-    since: 2026-10-14
+    since: 2026-11-03
     primary_authors: [SmithSamuelM]
     feeds: [raw/21-sam-rulings.md]
     chapters: ["03", "04", "05", "08", "09"]
@@ -524,7 +540,7 @@ sources:
       - trustoverip/kswg-acdc-specification
       - trustoverip/kswg-cesr-specification
     check: monthly
-    since: 2026-10-14
+    since: 2026-11-03
     primary_authors: [SmithSamuelM]
     feeds: [raw/21-sam-rulings.md]
     chapters: ["03", "04", "05", "08"]
