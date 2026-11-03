@@ -135,7 +135,9 @@ sources:
     kind: git
     path: wot/keripy
     remote: upstream
-    watch: [src/keri, tests]
+    # tests/spec is left out on purpose: it copies specification text, and freshness searches one
+    # combined corpus, so watching it would let a dropped spec quote pass on keripy's copy. ~2s7o
+    watch: [src/keri, tests/acdc, tests/app, tests/conformance, tests/core, tests/sedi, tests/vdr]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
