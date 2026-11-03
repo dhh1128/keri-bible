@@ -112,7 +112,7 @@ One implementation frames the table, and it can do nothing else with it. [code] 
 
 signify-ts is also the evidence for [section 5.3](#unused-slot-agility). Its stream parser sizes every primitive by table lookup on the code alone — `const sizage = sizes.get(head.slice(0, hs));` (signify-ts src/keri/core/parsing.ts, probePrimitive, L299 @`6e07dc926`) — and the commit that added the 33 rows, `52534a9`, touches only `matter.ts` and a test, so adding them needed no parser change. Nothing in signify-ts calls that parser: its one reference in `src` is the re-export `export * from './keri/core/parsing.ts';` (signify-ts src/exports.ts, L32 @`6e07dc926`), so it is public API for consumers and not the path `SignifyClient` uses on the wire.
 
-Pull request trustoverip/kswg-cesr-specification#178, open, unmerged, unreviewed and with no stated reason, proposes to revert the table from `v1.1`. The [spec-next] markers stand, but the table is contested on its own branch. Treat the mechanism as settled and demonstrated in two implementations, and the codes as forward-branch text that one client frames and no implementation can sign or verify with.
+Pull request trustoverip/kswg-cesr-specification#178, open, unmerged, unreviewed and with no stated reason, proposes to revert the table from `v1.1`. The [spec-next] markers stand, but the table is contested on its own branch. Treat the mechanism as settled and demonstrated by signify-ts's parser, and the codes as forward-branch text that one client frames and no implementation can sign or verify with.
 
 ## 6. Sizing math and the table taxonomy {#sizing-taxonomy}
 

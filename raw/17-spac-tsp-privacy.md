@@ -294,7 +294,7 @@ Status, verbatim: "Release 1.0" (`tswg-tsp-specification` `spec/spec.md`, status
 
 - The contributor list is still template text: "The contributor list goes here" (L17).
 - The HPKE specification it requires is cited as an Internet-Draft, `draft-ietf-hpke-hpke-04` (§Normative References, L1592), and the post-quantum KEM reference "is an active Internet-Draft" (§HPKE PQ and PQ/T Algorithms, L1048).
-- The ML-DSA-65 signature code is not registered: "The code point 1AAQ is provisional." (§ML-DSA-65 Signature, L1404).
+- Its ML-DSA-65 signature code collides with CESR's forward branch. TSP says "It is identified by the CESR code `1AAQ`" (§ML-DSA-65 Signature, L1401) and "The code point 1AAQ is provisional. It is the next available code in the CESR master code table for genus -_AAACAA and does not conflict with any currently assigned code" (L1404). That holds for CESR `main` `bad6edd84`, which has no post-quantum codes, but CESR `v1.1` at `65fd7518b` assigns "`1AAQ` | FN-DSA-512 public verification key" (spec/spec-body.md L1021) and puts the ML-DSA-65 signature at `1AAT` (L1024), and signify-ts `main` at `6e07dc926` sizes `1AAQ` as that 1200-character key (src/keri/core/matter.ts L173). A parser built to `v1.1` would read TSP's 4416-character signature as a 1200-character key and lose the stream.
 
 What the status line does not say is who released it. Nothing in `spec/spec.md`, `specs.json` or `spec/revision_history.md` records a ToIP approval vote or a release date; the date 2026-10-21 is the commit's, not the document's. The bible should therefore say that TSP's editors label it Release 1.0, version 1.0 on the wire, and should stop calling it experimental; it should not say that ToIP has approved it. Open question 11.
 

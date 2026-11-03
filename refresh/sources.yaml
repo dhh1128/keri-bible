@@ -115,7 +115,7 @@ sources:
     kind: git
     path: me/kswg-dossier-specification
     remote: upstream
-    watch: [spec/dossier-spec-body.md, spec/terms-definitions, .ref]
+    watch: [spec/dossier-spec-body.md, spec/dossier-spec-head.md, spec/terms-definitions, schemas, .ref]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[spec]",
@@ -126,8 +126,8 @@ sources:
     caveat: >-
       Re-mined 2026-11-03 at 6fcf84127: spec/dossier-spec-body.md and spec/dossier-spec-head.md in full;
       schemas/dossier-base.json and schemas/endorsement.json only at the lines raw/04 cites; six of the 29
-      glossary files. The .ref material is gitignored and cannot be pinned. spec/dossier-spec-head.md and
-      schemas/ are not in `watch`, so freshness cannot see quotes from them (raw/04 checked those by hand).
+      glossary files. The .ref material is gitignored and cannot be pinned, so freshness cannot see quotes
+      from it. spec/dossier-spec-head.md and schemas/ joined `watch` on 2026-11-03.
 
   # ---------------------------------------------------------------- implementations
 
@@ -135,7 +135,7 @@ sources:
     kind: git
     path: wot/keripy
     remote: upstream
-    watch: [src/keri]
+    watch: [src/keri, tests]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",
@@ -351,8 +351,8 @@ sources:
       reference and a provisional ML-DSA code; describe it as the editors' Release 1.0, not as ToIP-approved.
       [spec] means present in the line ToIP is standardizing. Only spec/spec.md is rendered (specs.json
       markdown_paths); the other spec/*.md files are template residue. The test-vector appendix is not
-      mined. The local `main` in this clone sat at 5599b4556 on 2026-11-03; freshness.py reads it as well
-      as origin/main, so a quote dropped upstream can still pass there.
+      mined. The local `main` in this clone sat at 5599b4556 on 2026-11-03. freshness.py reads a local branch
+      only when its remote-tracking ref is absent, so origin/main is what quotes are checked against.
 
   - id: did-webs-spec
     kind: git
