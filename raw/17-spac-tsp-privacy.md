@@ -25,6 +25,8 @@ Implementation: `WebOfTrust/keripy` `upstream/main` @`927c0cb87` (2026-10-10), l
 
 Talks: KERI Conference 2026 caption text at `.ignored/conf26/text/` (CONF26-subtitles HEAD `006042d`): the SPAC & TSP talk read in full; the State of the KERI Suite talk, the Future of KERI talk, the Digital Identity Tradespace talk and the It's KERI or Surveillance talk grepped for SPAC, TSP, ESSR, tunnel and metadata passages and read around each hit; topic summaries `talks-A.md`-`talks-D.md` grepped for ESSR, TSP and SPAC.
 
+ESSR outside keripy, mined 2026-11-03 for §12a, each a fresh clone under `~/code/wot/` read at its tip: `healthKERI/kept` @`d10cabd` (2026-08-11; initial commit 2026-03-19 by Philip Feairheller), `src/kept/core/authentication.py`, `src/kept/essr/server/applications.py`, `src/kept/essr/client/handlers.py` and `src/kept/hk/essring.py` read; `healthKERI/keriguard-plugin` @`e4133df` (2026-08-18), `plugins/admin/src/keriguard_admin/core/essring.py` read; `healthKERI/castellan-plugin` @`4d4f99d` (2026-11-03), `src/castellan/core/remoting.py` read as far as its ESSR client; `healthKERI/docs` @`790de9e` (2025-04-28), `essentials/essr.mdx` read in full and found to be an explainer with no protocol detail; `keri-foundation/locksmith` `origin/main` @`c97c7e3` (2026-10-26), `TODO.md` and a grep of `src`. KERIA and signify-ts are mined in `raw/10` §10a. Pointers to these repositories came from a peer session preparing a TSP/SPAC explainer.
+
 Coverage-gap report that motivated this note: `.ignored/coverage-gaps-2026-10.md` §2.1.
 
 ---
@@ -118,7 +120,7 @@ Sam relays RFC 9180 §9.1.1: all HPKE variants are "vulnerable to key-compromise
 
 Encrypt-then-sign is not enough either: "An attacker can strip the signature and resign the ciphertext with the attacker's key but has never seen the plaintext of the cipher." (§Best Combined Authenticity and Confidentiality, L366). The fix binds both ends: "we must not only bind the recipient's public key to the signature in plaintext but also bind the sender's public key inside the ciphertext" (L366). That construction is ESSR, "Encrypt Sender's key and then Sign Receiver's key" (§Modified ESSR, L370), from An, ePrint 2001/079.
 
-The property table (L378-381) is the citation to carry: encrypt-then-sign provides TUF-PTXT, TUF-CTXT and RUF-CTXT; ESSR provides all four. In words: "Simply using the encrypt then sign approach provides TUF-PTXT, TUF-CTXT, and RUF-CTXT but not RUF-PTXT." (L372). The claim is Sam's reading of An's paper `[proposal]`; the ToIP TSP spec states the same result independently and more carefully (§11.3).
+The property table (L378-381) is the citation to carry: encrypt-then-sign provides TUF-PTXT, TUF-CTXT and RUF-CTXT; ESSR provides all four. In words: "Simply using the encrypt then sign approach provides TUF-PTXT, TUF-CTXT, and RUF-CTXT but not RUF-PTXT." (L372). The claim is Sam's reading of An's paper, and An's paper bears it out: her Figure 3 gives Encrypt-then-Sign TUF-PTXT, TUF-CTXT and RUF-CTXT but not RUF-PTXT, and Figure 4 gives ESSR all four. Two conditions travel with it. Figure 3 assumes a strongly unforgeable signature; under a weakly unforgeable one (Figure 2) Encrypt-then-Sign also loses TUF-CTXT and RUF-CTXT, which is the content behind SPAC's Ed25519-over-ECDSA argument (§4.1). And ESSR assumes "the base public key encryption scheme is IND-CCA secure, and the base signature scheme is strongly unforgeable" (Figure 4 caption). The construction binds keys, "encrypt the sender's public key together with the plaintext, and for RUF-PTXT security, sign the receiver's public key together with the ciphertext" (§1.4); KERI's AID substitution is outside her proof. Read 2026-11-03 from `.ignored/sources/an-2001-079/` (ePrint PostScript, sha256 in its SOURCE.md; the text extraction drops the "c" glyph, so quotes were checked against the rendered page). The ToIP TSP spec states the same result independently (§11.3).
 
 The strongest form of the claim, and the one most likely to be challenged, is in the "too clever by half" appendix `[proposal]`:
 
@@ -367,6 +369,25 @@ So keripy implements direct-mode ESSR from sender to agent or mailbox, with SPAC
 
 ---
 
+## 12a. ESSR outside keripy `[code]`
+
+KERIA and signify-ts. Both halves of an ESSR tunnel between a Signify client and its own agent, requests and responses, at KERIA @`7e685edaa` and signify-ts @`ffba8406e`. Mined in `raw/10` §10a and written up in chapter 12 §11.
+
+healthKERI's `kept`, whose README title is "KERI/ESSR Protected TCP" (`README.md`:1 @`d10cabd`), carries ESSR between arbitrary KERI AIDs over raw TCP, not only to one's own agent, and tunnels HTTP requests and MCP sessions through it (`examples/servers/mcp-simple-essr`).
+
+- Encrypt sender. The sender's AID goes inside the plaintext, `payload = dict(i=hab.pre, **payload)` (`src/kept/core/authentication.py`, `CryptSigner.encode`, :171 @`d10cabd`), which is CBOR-encoded and sealed to the receiver's first current key converted to X25519, `pubkey = pysodium.crypto_sign_pk_to_box_pk(rkever.verfers[0].raw)` (:188).
+- Sign receiver. The outer message is a KERI v1 `exn` carrying a Blake3 digest of the ciphertext, with `recipient=rkever.prefixer.qb64,  # Must sign receiver` (:200), signed with `hab.endorse`.
+- The wire. The ciphertext follows the `exn` as an `ESSRPayloadGroup` count code over 64 KiB `Bytes_L0` chunks, `code=CtrDex_1_0.ESSRPayloadGroup` (:211). This is the CESR v1 counter keripy also defines, not the `-E##` wrapper.
+- Receive. The server rejects a message whose signed receiver is not one of its identifiers or a delegate of its encryption target (`src/kept/essr/server/applications.py`, `ESSRHandler.handle`, :91-95), decrypts, and rejects a mismatch between the encrypted sender and the signer: "dessr: invalid essr req message, encrypted sender={sender} not equal to message signer=" (:125). It then requires the sender's KEL to be known (:131). kept's general client applies the same encrypted-sender check to responses (`src/kept/essr/client/handlers.py`:71).
+
+The healthKERI API client in the same repository omits that check. `src/kept/hk/essring.py` wraps its `/essr/req` in a `/fwd` `exn` whose payload names both ends in the clear, `payload=dict(src=exn.ked["i"], dest=exn.ked["rp"], ctx={})` (:303). Its response handler's docstring says it "verifies that the sender is in the encrypted payload" (:478), but the code checks only that the signed receiver is itself, `if self.hab.pre != rp:` (:498), then decrypts (:505) and returns the payload, without comparing the encrypted `i` to the signer. That is the check that defeats ESSR's strip-and-resign attack (§4.3). The impact is bounded: a response is matched by `reqid`, a random nonce inside the request's ciphertext (:239), so a re-signer can re-attribute a genuine response but cannot forge one. `healthKERI/keriguard-plugin` carries a copy of this client with the same receiver-only check (`plugins/admin/src/keriguard_admin/core/essring.py`:466 @`e4133df`), and `healthKERI/castellan-plugin` reaches its Castellan server through an ESSR client held in plugin state (`src/castellan/core/remoting.py`, `_get_essr`, :27-31 @`4d4f99d`).
+
+Locksmith no longer has its own ESSR. Its `TODO.md` says the healthKERI version was taken out of core, to "Re-implement watcher management, witness account lifecycle, and ESSR integration in a KERI Foundation plugin (removed healthKERI-specific implementation from core)" (`TODO.md`:8 @`c97c7e3`), and lists "reconcile essr vs http for witnesses" (:12). `keri-foundation/witness-hk` has no ESSR on any branch, per the same peer session's grep; not re-checked here.
+
+Common to all of them: one key per receiver (no multisig), sealed box only (no HPKE), no routing, relationship forming or padding, and source and destination visible outside the ciphertext. Every implementation read is SPAC's first step, direct and not private, in different transports: HTTP to one's own agent (KERIA), TCP between peers (kept), and a mailbox `exn` (keripy).
+
+---
+
 ## 13. The 2026 talks: status and intent only
 
 These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotation. They support status and intent, never a design detail.
@@ -387,13 +408,13 @@ These are paraphrases of edited auto-captions (`raw/14` §0). None is a quotatio
 ## 14. Open questions and gaps
 
 1. Which form of the PAC trilemma is current, "at the highest level" (2023) or "to the same degree" (2021, 2025)? They make different claims. No source reconciles them.
-2. An's ePrint 2001/079 was not read. The ESSR property table (§4.3) is relayed through Sam and through the ToIP spec. Before the bible states it as established, someone should read An's paper.
+2. An proves ESSR's properties for public keys (§4.3). Does RUF-PTXT survive the substitution of a rotating AID for a static key? The TSP spec argues it by composition (§11.3); no cited proof makes the argument.
 3. The time-value argument (§7.1) has no numbers. No source estimates a correlation time constant for any market, so the claim that partitioned contexts make privacy "sustainably protectable indefinitely" (`SPAC_Message.md` L1068) is a conditional with an unmeasured condition.
 4. VID syntax (§11.6): does the ToIP spec require a bare KERI AID to be wrapped as a URN or DID? §VID Syntax (L158) and §Examples (L206) point different ways at `ccda6b331`. This is worth raising with Sam, who co-authors both.
 5. The SPAC paper's `-K##` hop-list code (L1377) contradicts its own tables and the ToIP spec. Probably a typo; worth a one-line fix upstream.
 6. `4F`: QB2 plaintext (CESR spec) or sniffable-stream plaintext (papers)? The two describe different payloads under the same code.
 7. Is the destinationless ESSR variant (§4.5) sound? The birthday-attack argument is sketched, not made.
-8. keripy's ESSR receive path. The KERIA PR named in the talks was not located or read. Until it is, the statement that ESSR is implemented holds for the send side only `[code]`.
+8. Peer-to-peer ESSR receive paths. KERIA receives ESSR from its own client (`raw/10` §10a) and healthKERI's `kept` from any known AID (§12a), but keripy's `/essr/req` send path still has no receiver in keripy, and the agent-to-agent streams reported for Veridian's fork were not read.
 9. The Seven Privacies title. The deck never enumerates seven privacies; this note's mapping to the "Combinations" slide is an inference and should be checked with Sam before the bible uses the phrase as a defined term.
 10. Gaps in reading, recorded as such: the TSP spec's test-vector appendix was not read at `ccda6b331`, and RFC 9334 and the TCG Attestation Framework, which the spec cites for "appraisal" (§11.2), were not read; the 2021 PAC deck's slides 33-78 and 93-228 (KERI tutorial material) were skimmed by title only. No other source in the assignment went unread.
 11. Who released TSP 1.0? The status line says "Release 1.0" (L4 @`ccda6b331`), but the file still carries a "Latest Draft:" label, a placeholder contributor list, a normative reference to an HPKE Internet-Draft and a provisional ML-DSA code (§11.2), and the repository records no ToIP approval or release date. Whether this is a ToIP-approved specification or an editors' release label decides how the bible may describe TSP's maturity. The ToIP site or the TSWG's records would settle it; neither was consulted.

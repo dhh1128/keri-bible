@@ -198,10 +198,56 @@ sources:
          last_scanned: {commit: 928ce26a4, date: 2026-11-03},
          last_mined:   {commit: 928ce26a4, date: 2026-10-03}}
     feeds: [raw/10-keria-signify.md]
-    chapters: ["03", "06"]
+    chapters: ["03", "06", "12"]
     caveat: >-
       First anchoring, 2026-09-15; the pin was `unknown` before. Upstream renamed `development` to
       `main`, which is why a bare `git fetch upstream` failed here until the refspec was made explicit.
+
+  - id: kept
+    kind: git
+    path: wot/kept
+    remote: origin
+    watch: [src/kept, README.md]
+    check: monthly
+    branches:
+      - {name: main, role: standardizing, marker: "[code]",
+         last_scanned: {commit: d10cabd, date: 2026-11-03},
+         last_mined:   {commit: d10cabd, date: 2026-11-03}}
+    feeds: [raw/17-spac-tsp-privacy.md]
+    chapters: ["12"]
+    caveat: >-
+      healthKERI's ESSR-over-TCP library, first mined 2026-11-03 (raw/17 section 12a). Only the ESSR
+      encode, server handler, client handler and healthKERI API client files were read.
+
+  - id: keriguard-plugin
+    kind: git
+    path: wot/keriguard-plugin
+    remote: origin
+    watch: [plugins/admin/src/keriguard_admin/core/essring.py]
+    check: quarterly
+    branches:
+      - {name: main, role: standardizing, marker: "[code]",
+         last_scanned: {commit: e4133df, date: 2026-11-03},
+         last_mined:   {commit: e4133df, date: 2026-11-03}}
+    feeds: [raw/17-spac-tsp-privacy.md]
+    chapters: ["12"]
+    caveat: >-
+      Read only for its copy of kept's healthKERI API client, compared on 2026-11-03.
+
+  - id: locksmith
+    kind: git
+    path: wot/locksmith
+    remote: origin
+    watch: [TODO.md, src/locksmith]
+    check: quarterly
+    branches:
+      - {name: main, role: standardizing, marker: "[code]",
+         last_scanned: {commit: c97c7e3, date: 2026-11-03},
+         last_mined:   {commit: c97c7e3, date: 2026-11-03}}
+    feeds: [raw/17-spac-tsp-privacy.md]
+    chapters: ["12"]
+    caveat: >-
+      Read 2026-11-03 only for TODO.md's note that ESSR left core, and a grep of src for ESSR.
 
   - id: signify-ts
     kind: git
@@ -214,7 +260,7 @@ sources:
          last_scanned: {commit: 6e07dc926, date: 2026-11-03},
          last_mined:   {commit: 6e07dc926, date: 2026-11-03}}
     feeds: [raw/10-keria-signify.md]
-    chapters: ["03", "06"]
+    chapters: ["03", "06", "12"]
     caveat: >-
       RETARGETED 2026-09-15, development -> main, by hand after the refresh flagged it. `development`
       is a real branch and genuinely the head of that name, but it has not moved since 2024-04-12;
