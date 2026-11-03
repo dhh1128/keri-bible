@@ -175,9 +175,21 @@ def tracked_refs() -> list[tuple[Path, str, list[str]]]:
         base = root / s["path"]
         watch = s.get("watch", ["."])
         for b in s.get("branches", []):
-            out.append((base, f"{s['remote']}/{b['name']}", watch))
-            out.append((base, b["name"], watch))     # local-only branch fallback (worktrees)
+            remote_ref = f"{s['remote']}/{b['name']}"
+            out.append((base, remote_ref, watch))
+            # The local branch is a fallback for a branch that exists only locally (worktrees),
+            # never a second corpus beside the remote one. Read both and a checkout whose local
+            # `main` lags `origin/main` keeps text the source has since dropped, so a quote
+            # attributed to the new pin passes on the obsolete branch's say-so — TSP's local
+            # `main` sat five commits behind when the 2026-11 refresh moved its pin.
+            if not ref_resolves(base, remote_ref):
+                out.append((base, b["name"], watch))
     return out
+
+
+def ref_resolves(repo: Path, ref: str) -> bool:
+    return subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify", "--quiet", ref],
+                          capture_output=True).returncode == 0
 
 
 def read_ref(repo: Path, ref: str, watch: list[str]) -> str | None:
