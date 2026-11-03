@@ -135,9 +135,16 @@ sources:
     kind: git
     path: wot/keripy
     remote: upstream
-    # tests/spec is left out on purpose: it copies specification text, and freshness searches one
-    # combined corpus, so watching it would let a dropped spec quote pass on keripy's copy. ~2s7o
-    watch: [src/keri, tests/acdc, tests/app, tests/core, tests/sedi, tests/vdr]
+    # detect.py diffs `watch`, so it sees every test change, tests/spec included: that directory
+    # regenerates the ACDC specification's worked examples (03b1ef4ea changed them there alone).
+    # freshness.py reads `quote_watch`, which leaves tests/spec out because it copies specification
+    # prose. A quote is checked against the source its @commit names, so keripy's copy cannot pass an
+    # attributed ACDC quote anyway; the exclusion covers quotes with no stamp. Update quote_watch
+    # when keripy adds a test directory.
+    watch: [src/keri, tests]
+    quote_watch: [src/keri, tests/acdc, tests/app, tests/cli, tests/comply, tests/core, tests/db,
+                  tests/demo, tests/end, tests/help, tests/peer, tests/sedi, tests/spac, tests/vc,
+                  tests/vdr, tests/wasm, tests/conftest.py, tests/test_kering.py]
     check: monthly
     branches:
       - {name: main, role: standardizing, marker: "[code]",

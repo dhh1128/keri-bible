@@ -173,7 +173,7 @@ def tracked_refs() -> list[tuple[Path, str, list[str]]]:
         if s["kind"] != "git":
             continue                 # GitHub and web sources have no checkout; see class 2 below
         base = root / s["path"]
-        watch = s.get("watch", ["."])
+        watch = quote_scope(s)
         for b in s.get("branches", []):
             remote_ref = f"{s['remote']}/{b['name']}"
             out.append((base, remote_ref, watch))
@@ -185,6 +185,20 @@ def tracked_refs() -> list[tuple[Path, str, list[str]]]:
             if not ref_resolves(base, remote_ref):
                 out.append((base, b["name"], watch))
     return out
+
+
+def quote_scope(source: dict) -> list[str]:
+    """The paths a source's quotations are checked against: `quote_watch` when the manifest sets
+    it, else `watch`.
+
+    The two answer different questions. `watch` is what detect.py diffs, so it decides which commits
+    count as the source moving, and it wants breadth: keripy's tests/spec regenerates the ACDC
+    specification's worked examples, and a correction made only there (03b1ef4ea) is movement the
+    refresh must see. `quote_watch` is the text a quotation may be found in, and it wants the
+    opposite: tests/spec carries copies of specification prose, and a copy outliving the original is
+    exactly how a dropped quote would pass.
+    """
+    return source.get("quote_watch", source.get("watch", ["."]))
 
 
 def ref_resolves(repo: Path, ref: str) -> bool:
@@ -269,17 +283,61 @@ def _convert_or_warn(label: str, name: str, data: bytes) -> str:
         return ""
 
 
-def build_corpus() -> tuple[str, int, int]:
-    chunks, resolved, repos = [], 0, set()
+class Corpus:
+    """The normalized source text, kept per repository as well as joined.
+
+    A quotation is checked against the source its citation names, not against everything. One
+    joined corpus let a quote pass if its words survived anywhere: keripy's tests/spec copies ACDC
+    specification text, so an ACDC quote the specification dropped would still have "verified"
+    against keripy's copy. The citation's `@<commit>` stamp is what names the source, so each quote
+    is searched in the repositories that contain that commit. A quote with no stamp, or one whose
+    commit no checked-out repository holds, falls back to the joined text, which is the old
+    behavior and no weaker than it.
+    """
+
+    def __init__(self) -> None:
+        self.by_repo: dict[str, list[str]] = {}
+        self.extra: list[str] = []             # text with no repository: snapshotted discussions
+        self.resolved = 0
+        self._joined: str | None = None
+        self._holders: dict[str, list[str]] = {}
+
+    def add(self, repo: str, text: str) -> None:
+        self.by_repo.setdefault(repo, []).append(norm(text))
+        self._joined = None
+
+    @property
+    def joined(self) -> str:
+        if self._joined is None:
+            self._joined = " ".join([t for ts in self.by_repo.values() for t in ts] + self.extra)
+        return self._joined
+
+    def holders(self, sha: str) -> list[str]:
+        """Repositories in the corpus whose object store has `sha` as a commit."""
+        if sha not in self._holders:
+            self._holders[sha] = [r for r in self.by_repo if subprocess.run(
+                ["git", "-C", r, "cat-file", "-e", f"{sha}^{{commit}}"],
+                capture_output=True).returncode == 0]
+        return self._holders[sha]
+
+    def find(self, needle: str, sha: str | None) -> tuple[bool, bool]:
+        """(found, attributed): found in the cited source, or in everything when unattributable."""
+        repos = self.holders(sha) if sha else []
+        if not repos:
+            return needle in self.joined, False
+        return any(needle in t for r in repos for t in self.by_repo[r]), True
+
+
+def build_corpus() -> Corpus:
+    corpus = Corpus()
     for repo, ref, watch in tracked_refs():
         if not (repo / ".git").exists():
             continue
         text = read_ref(repo, ref, watch)
         if text is None:
             continue                 # this branch does not exist here; a sibling entry may
-        resolved += 1
-        repos.add(str(repo))
-        chunks.append(norm(text))
+        corpus.resolved += 1
+        corpus.add(str(repo), text)
 
     for repo in {r for r, _, _ in tracked_refs()}:
         if not (repo / ".git").exists():
@@ -290,9 +348,9 @@ def build_corpus() -> tuple[str, int, int]:
     cache = REPO / ".cache" / "discussions"
     if cache.is_dir():
         for f in cache.glob("*.md"):
-            chunks.append(norm(f.read_text(encoding="utf-8", errors="replace")))
-        resolved += 1
-    return " ".join(chunks), resolved, len(repos)
+            corpus.extra.append(norm(f.read_text(encoding="utf-8", errors="replace")))
+        corpus.resolved += 1
+    return corpus
 
 
 def longest_fragment(span: str) -> str:
@@ -300,24 +358,68 @@ def longest_fragment(span: str) -> str:
     return max((p.strip() for p in re.split(r"\.\.\.|…", span)), key=len, default="")
 
 
+# A citation's commit stamp, with or without the backticks: `@b47f21597` or @`927c0cb87`.
+_STAMP = re.compile(r"@`?([0-9a-f]{7,40})\b")
+
+
 def quoted_needles(text: str) -> list[tuple[str, str]]:
     """Every checkable quotation in `text`, as (normalized needle, original fragment) pairs."""
+    return [(needle, frag) for needle, frag, _ in cited_needles(text)]
+
+
+def cited_needles(text: str) -> list[tuple[str, str, str | None]]:
+    """Every checkable quotation with the commit its own citation names, or None.
+
+    The stamp must sit in the parenthetical that immediately follows the quote, which is where
+    "(SPAC paper > Head, L1207 @b47f21597)" sits. Nothing looser is safe. Searching on to the next
+    quote picked up a later sentence's stamp for a different source, and inheriting an earlier stamp
+    for a bare "(L359)" named the wrong document. Both turned a sound quote into a false miss, so a
+    quote without a stamp of its own stays unattributed and is checked against everything.
+    """
     out = []
-    for span in _QUOTED.findall(text):
-        if len(span) < MINLEN or len(span) > MAXLEN or "](" in span:
-            continue            # mis-paired quotes and link-bearing prose, not citations
-        # Citation glue: the regex happily pairs one quote's closing mark with the next
-        # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
-        # @`181569b64`).` is not a quotation and can never be found in a source.
-        if _GLUE.search(span) or not _OPENS.match(span.strip()):
-            continue
-        frag = longest_fragment(span)
-        if len(frag) < MINLEN:
-            continue
-        # Editorial insertions — [sic], [emphasis added], [the Issuee] — are the quoter's
-        # words, not the source's, so they must come out before matching.
-        out.append((norm(_EDITORIAL.sub(" ", frag)).strip(" \t.,;:!?()[]{}…"), frag))
+    for line in text.splitlines():
+        for m in _QUOTED.finditer(line):
+            hit = _needle(m.group(1))
+            if hit:
+                out.append((*hit, _own_stamp(line, m.end())))
     return out
+
+
+def _own_stamp(line: str, end: int) -> str | None:
+    """The commit in the parenthetical opening within a few characters of `end`, nested
+    parentheses included, as in "(CESR spec > Master code table for genus/version `-_AAACAA`
+    (KERI/ACDC protocol stack Version 2.00), L939 @bad6edd84)"."""
+    gap = re.match(r"[\s.,;:!?]{0,3}\(", line[end:])
+    if not gap:
+        return None
+    start = end + gap.end()
+    depth = 1
+    for i in range(start, len(line)):
+        if line[i] == "(":
+            depth += 1
+        elif line[i] == ")":
+            depth -= 1
+            if depth == 0:
+                stamp = _STAMP.search(line, start, i)
+                return stamp.group(1) if stamp else None
+    return None
+
+
+def _needle(span: str) -> tuple[str, str] | None:
+    """(normalized needle, original fragment) for one quoted span, or None if it is not a quotation."""
+    if len(span) < MINLEN or len(span) > MAXLEN or "](" in span:
+        return None             # mis-paired quotes and link-bearing prose, not citations
+    # Citation glue: the regex happily pairs one quote's closing mark with the next
+    # quote's opening one, capturing the parenthetical between them — `(wtbo §4, L91
+    # @`181569b64`).` is not a quotation and can never be found in a source.
+    if _GLUE.search(span) or not _OPENS.match(span.strip()):
+        return None
+    frag = longest_fragment(span)
+    if len(frag) < MINLEN:
+        return None
+    # Editorial insertions — [sic], [emphasis added], [the Issuee] — are the quoter's
+    # words, not the source's, so they must come out before matching.
+    return norm(_EDITORIAL.sub(" ", frag)).strip(" \t.,;:!?()[]{}…"), frag
 
 
 def load_baseline() -> dict:
@@ -339,27 +441,33 @@ def main() -> int:
         targets.append(REPO / "keri-doctrine.md")
 
     print("building normalized source corpus from tracked refs...", file=sys.stderr)
-    corpus, refs, repos = build_corpus()
+    corpus = build_corpus()
+    refs, repos = corpus.resolved, len(corpus.by_repo)
 
     # A dead config looks exactly like total citation rot. Refuse to report that as a result.
     if refs == 0:
         print("ERROR: no source ref resolved. Check refresh/sources.yaml (or set CODE_ROOT). "
               "Not reporting drift.", file=sys.stderr)
         return 2
-    print(f"corpus: {len(corpus)} bytes from {refs} refs across {repos} repos", file=sys.stderr)
+    print(f"corpus: {len(corpus.joined)} bytes from {refs} refs across {repos} repos", file=sys.stderr)
 
     baseline = load_baseline()
-    total = live = 0
+    total = live = attributed = 0
     missing: list[tuple[str, str, str]] = []      # (key, file, quote)
+    elsewhere: list[tuple[str, str, str]] = []    # (file, commit, quote): missing from the cited source only
     for tf in targets:
         if not tf.is_file():
             continue
-        for needle, frag in quoted_needles(tf.read_text(encoding="utf-8")):
+        for needle, frag, sha in cited_needles(tf.read_text(encoding="utf-8")):
             total += 1
-            if needle in corpus:
+            found, by_source = corpus.find(needle, sha)
+            attributed += by_source
+            if found:
                 live += 1
-            else:
-                missing.append((key_of(needle), tf.name, frag))
+                continue
+            missing.append((key_of(needle), tf.name, frag))
+            if by_source and needle in corpus.joined:
+                elsewhere.append((tf.name, sha, frag))
 
     fresh = [m for m in missing if m[0] not in baseline["misses"]]
     healed = [k for k in baseline["misses"] if k not in {m[0] for m in missing}]
@@ -378,6 +486,8 @@ def main() -> int:
 
     print(f"freshness: {live} live / {len(missing)} missing of {total} checked quotes "
           f"(minlen {MINLEN}, markup-normalized)")
+    print(f"attribution: {attributed} checked against the source their @commit names, "
+          f"{total - attributed} against every source (no stamp, or a commit no checkout holds)")
     if update:
         print("new misses: n/a (baseline was just rewritten from this run)")
         fresh = []
@@ -390,6 +500,14 @@ def main() -> int:
               "actionable signal: a source moved under a citation.")
         for k, f, q in fresh:
             print(f"  ! [{f}] {q}")
+
+    if elsewhere:
+        print()
+        print("FOUND ONLY ELSEWHERE — missing from the source the citation's commit names, but present in")
+        print("another source. Either the citation names the wrong commit, or the text survives only as")
+        print("a copy. Both are misses; a single joined corpus used to pass them.")
+        for f, sha, q in elsewhere:
+            print(f"  ? [{f}] @{sha} {q}")
 
     if missing:
         print()

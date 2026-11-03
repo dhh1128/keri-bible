@@ -27,7 +27,7 @@ Both lines are pinned separately in `sources.yaml`, and the `main`↔`v1.1` diff
 |---|---|
 | `sources.yaml` | The manifest and watermark. Every source, its tracked branches, its pins, which note it feeds, which chapters depend on it. |
 | `detect.py` | Phase 1. Deterministic, no model. Writes `state/<YYYY-MM>/delta.md`. Exit 0 = material, 10 = quiet, 2 = error. |
-| `freshness.py` | Quote-drift checker. Source roots generated from `sources.yaml`, not hardcoded. Reports what is NEWLY broken against `freshness-baseline.json` rather than re-listing a standing backlog. |
+| `freshness.py` | Quote-drift checker. Source roots generated from `sources.yaml`, not hardcoded. A quote whose own citation carries an `@<commit>` stamp is checked only against the repositories holding that commit; an unstamped quote is checked against all of them. Each source's quotable paths are `quote_watch` when set, else `watch`, which is what `detect.py` diffs. Reports what is NEWLY broken against `freshness-baseline.json` rather than re-listing a standing backlog. |
 | `freshness-baseline.json` | Quotes known not to resolve, so a run can report new breakage. Not absolution — it holds real drift nobody has re-anchored yet. |
 | `snapshot-discussions.py` | Caches cited GitHub discussions locally and tracks their hashes, so their quotes are verifiable and in-place edits are visible. |
 | `prompts/standards.md` | The contract every phase is bound by. |

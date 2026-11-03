@@ -4,7 +4,7 @@ Read this before editing anything under `raw/`, `bible/`, or `keri-doctrine.md`.
 
 ## 1. Every claim carries a quote, and every quote carries a pin
 
-A claim enters the corpus only with a **verbatim quote of 25 words or fewer** from a primary source, plus `file §heading` and a line-number hint, at a **named commit**. The quoted text is the citation of record; the line number is a hint that will drift and is expected to. If you cannot produce the quote, you do not have the claim — write down the gap instead, in the note's open-questions section.
+A claim enters the corpus only with a **verbatim quote of 25 words or fewer** from a primary source, plus `file §heading` and a line-number hint, at a **named commit**. The quoted text is the citation of record; the line number is a hint that will drift and is expected to. If you cannot produce the quote, you do not have the claim — write down the gap instead, in the note's open-questions section. Put the commit stamp (`@<sha>`) in the parenthetical directly after the quote, not only in a later citation or the note's header: `freshness.py` checks a quote against the source its own stamp names, and a quote without one can only be checked against every source at once, where a copy elsewhere passes it.
 
 Primary means the source itself. A diff is not the source. A commit message is not the source. Another note's summary is not the source, and neither is a previous session's output. Open the file at the commit and read the passage the quote comes from, including enough around it to know the quote is not reversed by its next sentence. This corpus has already been burned twice by relaying someone else's summary as though it were the source.
 

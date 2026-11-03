@@ -395,6 +395,61 @@ class TrackedRefs(unittest.TestCase):
         self.assertEqual(self.refs(), ["origin/main", "main"])
 
 
+class Attribution(unittest.TestCase):
+    """freshness checks a stamped quote against the source its own citation names, and only that."""
+
+    Q = "the quick brown fox jumps over the lazy dog today"
+
+    def stamp(self, line):
+        [(_, _, sha)] = freshness.cited_needles(line)
+        return sha
+
+    def test_stamp_in_the_quotes_own_parenthetical(self):
+        self.assertEqual(self.stamp(f'He wrote "{self.Q}" (SPAC paper > Head, L12 @b47f21597).'), "b47f21597")
+        self.assertEqual(self.stamp(f'"{self.Q}" (keripy x.py, L3 @`927c0cb87`)'), "927c0cb87")
+
+    def test_nested_parentheses_in_the_locator(self):
+        line = f'"{self.Q}" (CESR spec > table `-_AAACAA` (KERI/ACDC stack Version 2.00), L939 @bad6edd84)'
+        self.assertEqual(self.stamp(line), "bad6edd84")
+
+    def test_no_stamp_is_borrowed_from_a_neighbour(self):
+        # A later sentence's citation, for another source, is not this quote's.
+        self.assertIsNone(self.stamp(f'so "{self.Q}" (CESR spec, L266). keripy agrees (x.py @b8f60166b).'))
+        # Nor does a bare line citation inherit the stamp of the citation before it.
+        line = f'X (TSP, L4 @ccda6b331), and "{self.Q}" (L359), has aged.'
+        self.assertIsNone(freshness.cited_needles(line)[-1][2])
+
+    def test_quote_scope_prefers_quote_watch(self):
+        self.assertEqual(freshness.quote_scope({"watch": ["a"], "quote_watch": ["b"]}), ["b"])
+        self.assertEqual(freshness.quote_scope({"watch": ["a"]}), ["a"])
+        self.assertEqual(freshness.quote_scope({}), ["."])
+
+    def test_a_copy_in_another_source_does_not_pass_a_stamped_quote(self):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        shas = {}
+        for name, text in (("spec", "the current specification text\n"), ("impl", f"{self.Q}\n")):
+            repo = tmp / name
+            repo.mkdir()
+            git = lambda *a: subprocess.run(["git", "-C", str(repo), *a], check=True,
+                                            capture_output=True, text=True)
+            git("init", "-q", "-b", "main")
+            git("config", "user.email", "t@example.com")
+            git("config", "user.name", "t")
+            (repo / "doc.md").write_text(text)
+            git("add", "doc.md")
+            git("commit", "-q", "-m", name)
+            shas[name] = git("rev-parse", "--short=9", "HEAD").stdout.strip()
+        corpus = freshness.Corpus()
+        corpus.add(str(tmp / "spec"), "the current specification text")
+        corpus.add(str(tmp / "impl"), self.Q)
+        needle = freshness.norm(self.Q)
+        self.assertEqual(corpus.find(needle, shas["spec"]), (False, True))   # cited spec dropped it
+        self.assertEqual(corpus.find(needle, shas["impl"]), (True, True))
+        self.assertEqual(corpus.find(needle, None), (True, False))           # unstamped: everything
+        self.assertEqual(corpus.find(needle, "deadbeef0"), (True, False))    # commit nobody holds
+
+
 class Manifest(unittest.TestCase):
     """Every source in refresh/sources.yaml is a kind detect.py handles, with the keys it reads."""
 
