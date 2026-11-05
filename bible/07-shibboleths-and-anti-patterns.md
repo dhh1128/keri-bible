@@ -116,7 +116,7 @@ Federation moves centralization; trust registries are "a band aid; they just mov
 
 ### 5.8 "TSP gives forward secrecy, like any modern secure-messaging protocol." {#tsp-forward-secrecy}
 
-[spec] "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (TSP spec > Security and Privacy Considerations > Limits, L1515 @`ccda6b331`), in a specification its editors label "Release 1.0" (TSP spec, L4 @`ccda6b331`). KERI's messaging work treats accountability, not ratcheted secrecy, as the remedy; rotation protects only what follows it ([chapter 12, section 10](12-confidentiality-and-secure-messaging.md#tsp-spec)).
+[spec] "TSP does not provide forward secrecy: an adversary that has recorded earlier messages and later obtains the decryption key can read them." (TSP spec > Security and Privacy Considerations > Limits, L1515 @`ccda6b331`), in a specification its editors label "Release 1.0" (TSP spec, L4 @`ccda6b331`). KERI's messaging work treats accountability, not ratcheted secrecy, as the remedy. Rotation with erasure would give forward secrecy per key state, and keripy's and signify-ts's default salty keystores defeat it ([chapter 12, section 4](12-confidentiality-and-secure-messaging.md#forward-secrecy)).
 
 ## 6. SD-JWT / W3C-VC / DID "decentralized" drift tells {#vc-drift-tells}
 
