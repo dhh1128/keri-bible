@@ -1,6 +1,6 @@
 # cron-name: keri-bible monthly refresh
 # cron-boxes: kelun
-# cron-mailto: daniel.hardman@bakobo.com
+# cron-mailto: daniel.hardman@gmail.com
 #
 # 3rd of the month, 05:23 local. A couple of days in so the month's merges have settled, and
 # off the hour because everything else in the world fires at :00.
