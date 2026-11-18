@@ -49,9 +49,16 @@ def strip_literals(line: str) -> str:
 def prose_lines(text: str):
     """Yield (lineno, line, in_fence) for every line, tracking fenced code blocks as CommonMark
     does: a fence opens with three or more backticks or tildes (an info string allowed) indented
-    at most three spaces, and closes only with a bare run of the same character at least as long."""
+    at most three spaces, and closes only with a bare run of the same character at least as long.
+    YAML frontmatter at the top of the file (a SKILL.md has one) is reported as fenced too: it is
+    data, not prose."""
     fence = None  # (char, length) of the open fence
+    front = text.startswith("---\n")
     for n, line in enumerate(text.split("\n"), 1):
+        if front:
+            yield n, line, True
+            front = n == 1 or line != "---"
+            continue
         m = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
         if fence is None and m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
             fence = (m.group(1)[0], len(m.group(1)))

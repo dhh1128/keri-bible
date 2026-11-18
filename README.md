@@ -15,6 +15,16 @@ A synthesized doctrine reference for KERI, CESR, and ACDC, built up from primary
 
 The table of contents at the top of `keri-bible.md` is generated from the chapter titles and is the authoritative list.
 
+## Using it with an AI assistant
+
+The corpus is also packaged as an Agent Skill, `keri-bible`. It answers questions about KERI, CESR and ACDC from the chapters, citing each section and the primary sources it quotes and carrying the provenance markers through. Invoked alongside another task, such as a design, a review or a plan, it reads the doctrine first and lets it shape the work. `skill/SKILL.md` holds its instructions; `skill/build_skill.py` packages it, and the Pages workflow publishes the result next to the site on every push to `main`.
+
+- Claude Code: `claude plugin marketplace add dhh1128/keri-bible`, then `claude plugin install keri-bible@keri-bible`. Ask a KERI question, or put `/keri-bible:keri-bible` in front of a prompt. Third-party marketplaces do not auto-update by default; turn it on under `/plugin` > Marketplaces, or run `claude plugin update keri-bible` after a refresh.
+- claude.ai, the Claude desktop app and ChatGPT: download https://dhh1128.github.io/keri-bible/keri-bible-skill.zip and upload it in the product's skills settings, which some plans and organizations have to turn on first. An uploaded copy does not update itself; download it again after a refresh.
+- Codex, or Claude Code without the plugin: unzip the same file into your skills directory (`~/.codex/skills/` or `~/.claude/skills/`).
+
+The skill carries a copy of the corpus, because hosted assistants run skills in a sandbox that cannot read a clone or rely on reaching the site. The stamp at the top of its `SKILL.md` names the last commit it was built from. `python3 skill/build_skill.py` builds it locally into `_skill/`.
+
 ## Building
 
 `python3 build-bible.py > keri-bible.md` regenerates the assembled reference from `bible/*.md`. Run it after editing any section file.

@@ -1,6 +1,7 @@
 name: Pages
 
 # Builds the published site from the chapters, the doctrine and the house style's marker legend,
+# packages the skill and the Claude Code plugin (skill/build_skill.py) into the same tree,
 # and deploys it to GitHub Pages. The build job holds only a read-only token; the deploy job, which
 # holds the Pages and OIDC permissions, runs no repository code.
 
@@ -24,6 +25,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # The skill's stamp is the last commit that touched its inputs, which needs history.
+          fetch-depth: 0
 
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
@@ -37,6 +40,9 @@ jobs:
 
       - name: Build the site
         run: zensical build --clean --strict
+
+      - name: Package the skill and the plugin beside the site
+        run: python skill/build_skill.py --out _skill && cp _skill/*.zip _site/html/
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0

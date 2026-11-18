@@ -1,0 +1,18 @@
+{
+  "name": "keri-bible",
+  "description": "The KERI Bible as a Claude Code plugin: cited answers about KERI, CESR and ACDC, and a doctrine lens for design and review work.",
+  "owner": {
+    "name": "Daniel Hardman",
+    "url": "https://github.com/dhh1128"
+  },
+  "plugins": [
+    {
+      "name": "keri-bible",
+      "description": "Answers about KERI, CESR and ACDC grounded in the KERI Bible, with citations and provenance markers, and a doctrine lens for design and review work.",
+      "source": {
+        "source": "archive",
+        "url": "https://dhh1128.github.io/keri-bible/keri-bible-plugin.zip"
+      }
+    }
+  ]
+}

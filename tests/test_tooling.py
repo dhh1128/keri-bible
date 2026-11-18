@@ -526,6 +526,12 @@ class Lint(unittest.TestCase):
         self.assertTrue(lint_corpus.check_wrap("x.md", "A paragraph that\ncontinues here.\n"))
         self.assertEqual(lint_corpus.check_wrap("x.md", "- item\n- item\n\n| a |\n| b |\n\n```\ncode\ncode\n```\n"), [])
 
+    def test_frontmatter_is_not_prose_but_what_follows_it_is(self):
+        self.assertEqual(lint_corpus.check_wrap("x.md", "---\nname: x\ndescription: y\n---\n\n# T\n\nOne line.\n"), [])
+        self.assertTrue(lint_corpus.check_wrap("x.md", "---\nname: x\n---\n\nA paragraph that\ncontinues here.\n"))
+        # A horizontal rule further down is not frontmatter.
+        self.assertTrue(lint_corpus.check_wrap("x.md", "# T\n\n---\nA paragraph that\ncontinues here.\n"))
+
 
 class Build(unittest.TestCase):
     def test_prefixes_anchors_and_rewrites_links(self):
@@ -556,6 +562,91 @@ class SiteNav(unittest.TestCase):
                     listed.update(v for v in value if isinstance(v, str))
         chapters = {f"bible/{p.name}" for p in (ROOT / "bible").glob("*.md")}
         self.assertEqual(chapters - listed, set(), "chapters missing from zensical.toml's nav")
+
+
+class SkillPackage(unittest.TestCase):
+    """skill/build_skill.py must produce a skill whose links resolve and whose zips are reproducible."""
+
+    @classmethod
+    def setUpClass(cls):
+        import json
+        import re
+        import zipfile
+        from unittest import mock
+        sys.path.insert(0, str(ROOT / "skill"))
+        import build_skill
+        cls.json, cls.re, cls.zipfile = json, re, zipfile
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.out = Path(cls.tmp.name)
+        # The real stamp needs full git history, which CI's shallow checkout does not have.
+        with mock.patch.object(build_skill, "stamp", return_value="Corpus stamp: test."):
+            build_skill.build(cls.out / "a")
+            build_skill.build(cls.out / "b")
+        cls.skill = cls.out / "a" / "keri-bible"
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_frontmatter_meets_the_agent_skills_limits(self):
+        text = (self.skill / "SKILL.md").read_text(encoding="utf-8")
+        front = text.split("---\n")[1]
+        name = self.re.search(r"^name: (.*)$", front, self.re.M).group(1)
+        desc = self.re.search(r"^description: (.*)$", front, self.re.M).group(1)
+        self.assertRegex(name, r"^[a-z0-9-]{1,64}$")
+        self.assertLessEqual(len(desc), 1024)
+        self.assertNotIn("<", desc)
+        self.assertIn("Corpus stamp: test.", text)
+        self.assertNotIn("{{", text)
+
+    def test_every_relative_link_resolves_inside_the_skill(self):
+        link = self.re.compile(r"\]\(([^)\s]+)\)")
+        broken = []
+        for md in self.skill.rglob("*.md"):
+            for target in link.findall(md.read_text(encoding="utf-8")):
+                if "://" in target or target.startswith(("mailto:", "#")):
+                    continue
+                file_part, _, anchor = target.partition("#")
+                dest = (md.parent / file_part).resolve()
+                if not dest.is_file():
+                    broken.append(f"{md.relative_to(self.skill)} -> {target}")
+                elif anchor and "{#%s}" % anchor not in dest.read_text(encoding="utf-8"):
+                    broken.append(f"{md.relative_to(self.skill)} -> {target} (no anchor)")
+        self.assertEqual(broken, [])
+
+    def test_files_named_in_skill_md_exist(self):
+        text = (self.skill / "SKILL.md").read_text(encoding="utf-8")
+        for path in set(self.re.findall(r"`(references/[^`#*]+\.md)", text)):
+            self.assertTrue((self.skill / path).is_file(), path)
+
+    def test_index_lists_every_chapter_and_anchor(self):
+        index = (self.skill / "references/index.md").read_text(encoding="utf-8")
+        for chapter in (ROOT / "bible").glob("*.md"):
+            self.assertIn(f"references/bible/{chapter.name}", index)
+            for anchor in self.re.findall(r"^#{2,4} .*\{#([a-z0-9-]+)\}\s*$", chapter.read_text(encoding="utf-8"), self.re.M):
+                self.assertIn(f"`#{anchor}`", index, f"{chapter.name}#{anchor}")
+
+    def test_zips_are_reproducible(self):
+        for name in ("keri-bible-skill.zip", "keri-bible-plugin.zip"):
+            self.assertEqual((self.out / "a" / name).read_bytes(), (self.out / "b" / name).read_bytes(), name)
+
+    def test_zip_layouts(self):
+        skill = self.zipfile.ZipFile(self.out / "a" / "keri-bible-skill.zip").namelist()
+        self.assertIn("keri-bible/SKILL.md", skill)
+        plugin = self.zipfile.ZipFile(self.out / "a" / "keri-bible-plugin.zip")
+        self.assertIn("skills/keri-bible/SKILL.md", plugin.namelist())
+        manifest = self.json.loads(plugin.read(".claude-plugin/plugin.json"))
+        self.assertEqual(manifest["name"], "keri-bible")
+        # A pinned version would hold every user on their cached copy; the archive digest versions it.
+        self.assertNotIn("version", manifest)
+
+    def test_marketplace_points_at_the_published_plugin(self):
+        market = self.json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+        (entry,) = market["plugins"]
+        self.assertEqual(entry["name"], "keri-bible")
+        self.assertEqual(entry["source"]["source"], "archive")
+        self.assertTrue(entry["source"]["url"].endswith("/keri-bible-plugin.zip"))
+        self.assertNotIn("sha256", entry["source"], "a pin would freeze the plugin at one build")
 
 
 if __name__ == "__main__":
