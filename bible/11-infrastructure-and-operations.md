@@ -42,7 +42,7 @@ Both are this chapter's reading of READMEs, not of code. First, the relationship
 
 ### What is normative {#kawa-arithmetic}
 
-[spec] KAWA fixes the arithmetic and nothing else: "at most one sufficient agreement occurs or none at all" provided "at most F* = N-M of the witnesses are potentially unavailable and at most F < M is duplicitous" (KERI spec > Immunity and Availability, L1866 @fbdd4a615). Its bounds and the toad discipline are [chapter 02, section 7](02-security-model-and-threat-posture.md#immunity-constraint). The specification says nothing about where witnesses run, who runs them, or how many is enough, so the diversity doctrine below has no normative text behind it; the specification's one use of common-mode is about reserve rotation keys, not witnesses (KERI spec > Reserve Rotation, L1503 @fbdd4a615).
+[spec] KAWA fixes the arithmetic and nothing else: "at most one sufficient agreement occurs or none at all" provided "at most F* = N-M of the witnesses are potentially unavailable and at most F < M is duplicitous" (KERI spec > Immunity and Availability, L1866 @fbdd4a615). F < M is shorthand: the bound the specification points to is ⌈(N + F + 1)/2⌉ ≤ M ≤ N - F, which makes M a majority of N. That bound and the toad discipline are [chapter 02, section 7](02-security-model-and-threat-posture.md#immunity-constraint). The specification says nothing about where witnesses run, who runs them, or how many is enough, so the diversity doctrine below has no normative text behind it; the specification's one use of common-mode is about reserve rotation keys, not witnesses (KERI spec > Reserve Rotation, L1503 @fbdd4a615).
 
 ### The common-mode argument {#common-mode}
 
@@ -57,7 +57,7 @@ Diversity defends against faulty witnesses, not against the controller who choos
 - [practice] GLEIF runs five (KERIConf26 caption, Evan Asawaka, Mobile Wallet, 21:17); no governance framework read gives witness-count guidance.
 - [practice] healthKERI lets the user choose N per region.
 
-At 3-of-4, F* = 1, so one witness may be down, and F < M tolerates a duplicitous witness that 1-of-1 (F = 0) cannot.
+At 3-of-4, F* = 1, so one witness may be down, and one duplicitous witness is tolerated, which 1-of-1 (F = 0) cannot do. 3-of-4 is the smallest pool that tolerates a duplicitous witness, the first row of the whitepaper's table of immune thresholds (KERI WP > 11.4.2.4 Immune, Figure 11.4, p.99 @`b47f21597`). F < M is not the test: 4-of-7 passes it and tolerates no duplicitous witness, and seven witnesses need M = 5 to tolerate two ([chapter 02, section 7](02-security-model-and-threat-posture.md#immunity-constraint)).
 
 ### Placement as deployed {#placement}
 
@@ -245,6 +245,7 @@ The diversity doctrine is synthesis from KAWA's independence assumption, carried
 - dg-c01-claude.md to dg-c06-claude.md — model-authored analyses, keri-security-analysis corpus, @149fa6c35 (2026-04-23), cited only from their non-normative section 7 (Pragmatic CISO's Operational Plausibility Notes). Mined in raw/07 section 13.8.
 - Hio deck — Hierarchical Asynchronous Coroutines and I/O, Samuel M. Smith. SmithSamuelM/Papers, presentations/Hio.web.pdf, master @b47f21597; pages are PDF pages. [proposal]. Mined in raw/18.
 - KERI spec — Key Event Receipt Infrastructure (KERI) specification, Trust Over IP. trustoverip/kswg-keri-specification, spec/spec-body.md, main @fbdd4a615 (2026-08-28); the absence of "mailbox" was checked on main and on v1.1 @3753f3797 by raw/18. Mined in raw/01 and raw/18.
+- KERI WP — Key Event Receipt Infrastructure (KERI) Design, whitepaper by Samuel M. Smith, v2.63 2025/09/14 (original 2019/07/03). SmithSamuelM/Papers, whitepapers/KERI_WP_2.x.web.pdf, master @`b47f21597` (2026-08-11). Read through `pdftotext -layout` and cited by section, equation and page, the page being both the PDF page and the printed n/142 folio. [proposal], though the KERI spec cites it as the proof of its immunity result. Mined in raw/18 section 3.1.1.
 - KERIConf26 caption — hand-corrected auto-captions of the KERI Conference 2026 talks (2026-04-22 to 23), keri-foundation/CONF26-subtitles @006042d (2026-10-04). Quoted as the captions read, for intent and framing only; times are cue starts. Where a quote comes from a Q&A after someone else's talk, the locator names the talk and the text names the speaker. Mined in raw/14 and raw/18.
 - KERIdemlia paper — WIP: Keridemlia White Paper, Ryan W. West and Samuel M. Smith, 2021. SmithSamuelM/Papers, whitepapers/keridemlia.pdf, master @b47f21597. Quotes checked against an OCR of an unreadable text layer. [proposal]. Mined in raw/18.
 - keripy — the KERI reference implementation, WebOfTrust. WebOfTrust/keripy, main @927c0cb87 (2026-10-10): src/keri/app/indirecting.py, src/keri/kering.py, src/keri/app/agenting.py. Mined in raw/18.

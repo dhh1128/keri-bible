@@ -360,6 +360,8 @@ sources:
       - presentations/SEDI_Tradeoff.web.pdf
       - presentations/SecurityThreatsMitigationsSEDI.web.pdf
       - presentations/DuplicityGame_IIW_2020_A.pdf
+      # KAWA immune constraint, mined in raw/18 section 3.1.1
+      - whitepapers/KERI_WP_2.x.web.pdf
     check: monthly
     branches:
       - {name: master, role: standardizing, marker: "[proposal]",
