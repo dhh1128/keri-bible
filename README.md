@@ -17,13 +17,33 @@ The table of contents at the top of `keri-bible.md` is generated from the chapte
 
 ## Using it with an AI assistant
 
-The corpus is also packaged as an Agent Skill, `keri-bible`. It answers questions about KERI, CESR and ACDC from the chapters, citing each section and the primary sources it quotes and carrying the provenance markers through. Invoked alongside another task, such as a design, a review or a plan, it reads the doctrine first and lets it shape the work. `skill/SKILL.md` holds its instructions; `skill/build_skill.py` packages it, and the Pages workflow publishes the result next to the site on every push to `main`.
+The corpus is also packaged as an Agent Skill, `keri-bible`, that does two jobs. It answers questions about KERI, CESR and ACDC from the chapters, citing each section and the primary sources it quotes and carrying the provenance markers through. And it guides other work, such as a design, a review, a threat model or a plan, by reading the doctrine first and letting it shape how the work is framed and judged.
 
-- Claude Code: `claude plugin marketplace add dhh1128/keri-bible`, then `claude plugin install keri-bible@keri-bible`. Ask a KERI question, or put `/keri-bible:keri-bible` in front of a prompt. Third-party marketplaces do not auto-update by default; turn it on under `/plugin` > Marketplaces, or run `claude plugin update keri-bible` after a refresh.
-- claude.ai, the Claude desktop app and ChatGPT: download https://dhh1128.github.io/keri-bible/keri-bible-skill.zip and upload it in the product's skills settings, which some plans and organizations have to turn on first. An uploaded copy does not update itself; download it again after a refresh.
+### Installing it
+
+- Claude Code: `claude plugin marketplace add dhh1128/keri-bible`, then `claude plugin install keri-bible@keri-bible`.
+- claude.ai, the Claude desktop app and ChatGPT: download https://dhh1128.github.io/keri-bible/keri-bible-skill.zip and upload it in the product's skills settings, which some plans and organizations have to turn on first.
 - Codex, or Claude Code without the plugin: unzip the same file into your skills directory (`~/.codex/skills/` or `~/.claude/skills/`).
 
-The skill carries a copy of the corpus, because hosted assistants run skills in a sandbox that cannot read a clone or rely on reaching the site. The stamp at the top of its `SKILL.md` names the last commit it was built from. `python3 skill/build_skill.py` builds it locally into `_skill/`.
+### Asking a question
+
+Ask in plain words; the assistant picks the skill up when the question is about KERI, CESR or ACDC. For example, "What does a witness receipt threshold protect against, and what doesn't it?" or "Can an ACDC be revoked without a registry?" The answer comes back with links to the chapter sections it rests on, the spec or code quotes behind them, and a marker such as `[spec]` or `[proposal]` that says what kind of evidence each claim has. When the bible doesn't cover something, the answer says so rather than filling the gap.
+
+### Guiding a design or review
+
+Name the skill along with the task, so the assistant applies it even when the task doesn't mention KERI by name. In Claude Code, put `/keri-bible:keri-bible` in front of the prompt; elsewhere, start with "Using the keri-bible skill". For example:
+
+- `/keri-bible:keri-bible Design how our mobile wallet should check an issuer's key state before accepting a credential.`
+- `/keri-bible:keri-bible Review this architecture for a credential status service:` followed by the document or a path to it.
+- `Using the keri-bible skill, draft a threat model for delegated identifiers in our agent platform.`
+
+The assistant does the task you asked for, framed in KERI's terms. Where the work relies on a doctrine rule it cites the section behind it, and where the request assumes something KERI rejects, such as a central service that vouches for a key, it says so, explains why with a citation, and carries on from the corrected premise. It presents KERI's position as KERI's, including the weaknesses the bible records, so it also works when you are evaluating KERI rather than adopting it. It is one voice applying a lens, not an adversarial review, so its agreement with a design is weak evidence that the design is sound.
+
+### Keeping it current
+
+The skill carries a copy of the corpus, because hosted assistants run skills in a sandbox that cannot read a clone or rely on reaching the site. The stamp at the top of its `SKILL.md` names the commit it was built from, and the Pages workflow rebuilds it on every push to `main`. Claude Code does not auto-update third-party marketplaces by default: turn it on under `/plugin` > Marketplaces, or run `claude plugin update keri-bible`. An uploaded copy never updates itself, so download it again after a refresh.
+
+`skill/SKILL.md` holds the skill's instructions and `skill/build_skill.py` packages it; `python3 skill/build_skill.py` builds it locally into `_skill/`.
 
 ## Building
 

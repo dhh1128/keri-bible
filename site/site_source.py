@@ -58,7 +58,7 @@ def front_page(chapters: list[tuple[str, str]], sha: str) -> str:
         "",
         "## Use it with an AI assistant {#skill}",
         "",
-        "The chapters are also packaged as an Agent Skill that answers KERI questions with citations to these sections, or applies the doctrine as a lens to other work. Download [keri-bible-skill.zip](https://dhh1128.github.io/keri-bible/keri-bible-skill.zip) to upload to Claude or ChatGPT, or install it in Claude Code with `claude plugin marketplace add dhh1128/keri-bible` and `claude plugin install keri-bible@keri-bible`. The [README](" + REPO + "#using-it-with-an-ai-assistant) has the details.",
+        "The chapters are also packaged as an Agent Skill. It answers KERI questions with citations to these sections, and it guides design and review work by applying the doctrine as a lens, flagging premises KERI rejects and citing the sections a design relies on. Download [keri-bible-skill.zip](https://dhh1128.github.io/keri-bible/keri-bible-skill.zip) to upload to Claude or ChatGPT, or install it in Claude Code with `claude plugin marketplace add dhh1128/keri-bible` and `claude plugin install keri-bible@keri-bible`. The [README](" + REPO + "#using-it-with-an-ai-assistant) has install steps and example prompts for both uses.",
         "",
         "## Citing this work {#citing}",
         "",
